@@ -1,0 +1,11 @@
+INSERT INTO usuarios (`username`, `senha`, `created`, `modified`, `nome`, `sobrenome`, `endereco`, `instituicao`, `departamento`, `data_nascimento`, `key`, `status`, `obs`, `credencial`, `email`, `celular`, `telefone`, `cpf`, `tipo`, `newsletter`, `cep`) 
+values ('teste1213','123456','','','teste1','sobrenometeste','rua um','instituicaoteste1','departamentoteste1','dt nascimento 22-08-1989','keyTeste1','1','obsTeste1','1','tes1241124te111@teste.com','(11)912345623','(11)24218095','38116290851','tipoTeste','newsletterTeste1','07052200');
+
+INSERT INTO usuarios (`username`, `senha`, `created`, `modified`, `nome`, `sobrenome`, `endereco`, `instituicao`, `departamento`, `data_nascimento`, `key`, `status`, `obs`, `credencial`, `email`, `celular`, `telefone`, `cpf`, `tipo`, `newsletter`, `cep`) 
+values ('teste11231','654321','','','teste2','sobrenometeste2','rua dois','instituicaoteste2','departamentoteste2','dt nascimento 22-08-1989','keyTeste2','1','obsTeste2','1','te42141ste15@teste.com','(11)912345623','(11)24218095','38116290851','tipoTeste2','newsletterTeste2','07052200');
+
+INSERT INTO usuarios (`username`, `senha`, `created`, `modified`, `nome`, `sobrenome`, `endereco`, `instituicao`, `departamento`, `data_nascimento`, `key`, `status`, `obs`, `credencial`, `email`, `celular`, `telefone`, `cpf`, `tipo`, `newsletter`, `cep`) 
+values ('teste1312','123456','','','teste3','sobrenometeste3','rua tres','instituicaoteste3','departamentoteste3','dt nascimento 22-08-1989','keyTeste3','1','obsTeste3','1','test312412e14@teste.com','(11)912345623','(11)24218095','38116290851','tipoTeste3','newsletterTeste3','07052200');
+
+INSERT INTO usuarios (`username`, `senha`, `created`, `modified`, `nome`, `sobrenome`, `endereco`, `instituicao`, `departamento`, `data_nascimento`, `key`, `status`, `obs`, `credencial`, `email`, `celular`, `telefone`, `cpf`, `tipo`, `newsletter`, `cep`) 
+values ('teste1121','654321','','','teste4','sobrenometeste4','rua quatro','instituicaoteste4','departamentoteste4','dt nascimento 22-08-1989','keyTeste4','1','obsTeste4','1','tes1231te13@teste.com','(11)912345623','(11)24218095','38116290851','tipoTeste4','newsletterTeste4','07052200')
