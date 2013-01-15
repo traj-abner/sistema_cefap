@@ -82,20 +82,56 @@ class Usuarios extends CI_Controller{
                     $pagination = $total / $limit;
                     $page = ceil($pagination);
                     $links = "";
+					if ($npage > $page)
+					{
+						$buttonArray[2] = '#';
+						$buttonArray[3] = '#';
+					}
                     for($i = 1; $i <= $page; $i++){
                         $order = $this->uri->segment(3, 'id');
                         
                         $url = base_url("usuarios/listar/$order/$limit/$i");
-                        $links .= "<a href='$url'>$i</a>";   
+                        $links .= "<a href='$url'>$i</a>&nbsp;";
+						$urlarray[$i-1]=$url;
+							if ($i == 1) 
+							{
+								$buttonArray[0] = $url;
+								$buttonArray[1] = '#';
+							}
+							if ($i >= 1) 
+									if ($i == $npage - 1):
+										$buttonArray[1] = $url;
+									endif;
+							else
+								$buttonArray[1] = '#';
+							if ($i <= $page)
+							{
+									if ($i == $npage): $buttonArray[2] = '#'; endif;
+									if ($i == $npage + 1): $buttonArray[2] = $url; endif;
+							}
+							else
+								$buttonArray[2] = '#';
+							if ($i == $page) 
+							{
+								$buttonArray[3] = $url;
+							}
                         
-                        }     
+                    } 
+						$data['buttonArray'] = $buttonArray;
+						$data['urlarray'] = $urlarray;  
                         $data['page'] =  $links;
+
+						
+						
                  /*END PAGINAÇÃO*/     
         
          $data['title'] = 'Lista de Usuários';
          $this->load->view('usuario_listar',$data);
         
     }
+	
+
+		
     
     public function adicionar(){
 		

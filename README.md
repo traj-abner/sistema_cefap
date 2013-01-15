@@ -1,5 +1,22 @@
 sistema_cefap
 ================================================================================
+v0.11
+15/01/13 - Abner
+#descrição
+Correção na lista de usuários
+
+#changelog
+Implementada navegação de página por botões na lista de usuários
+
+#known issues
+Evento de seleção não reinicia select box
+
+
+#todo
+corrigir evento de seleção das select boxes
+
+================================================================================
+================================================================================
 
 v0.10
 03/01/13 - Thais

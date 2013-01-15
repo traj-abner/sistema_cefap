@@ -33,10 +33,10 @@
         <div class="qntd_usuario_listar">
             <h3>Usuários por página:</h3>
             <select id="selectQntd" class="input-mini">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
+                    <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
+                    <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
+                    <option <?php if ($limit == '20') echo 'selected="selected"'; ?> value="20">20</option>
+                    <option <?php if ($limit == '30') echo 'selected="selected"'; ?> value="30">30</option>
             </select>
         </div>
     </div>
@@ -61,12 +61,13 @@
     
     
 <!-- tabela -->	
+
     <ul class="pager">
-            <li><a href="#"><i class="icon-fast-backward"></i></a></li>
-            <li><a href="#"><i class="icon-backward"></i></a></li>
-            <li><input type="text" class="input-mini input-page" /></li>
-            <li><a href="#"><i class="icon-forward"></i></a></li>
-            <li><a href="#"><i class="icon-fast-forward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[0]; ?>"><i class="icon-fast-backward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[1]; ?>"><i class="icon-backward"></i></a></li>
+            <li><input type="text" id="gotopage" class="input-mini input-page" /></li>
+            <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
     </ul>
     <?php if($this->uRole == CREDENCIAL_USUARIO_SUPERADMIN){?>
          <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='../usuarios/adicionar'" />
@@ -420,12 +421,20 @@
         for (obj in this){
           text += this[obj] + separator}
         return text.slice(0,text.length - separator.length)}
-        
+
+
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
            window.location.href = '<?php echo base_url("usuarios/listar/id");  ?>' + '/' + option + '/0' ;
         });
+   		
+		jQuery('#gotopage').change(function(){
+		   var qtd = $("#selectQntd option:selected").val();
+           var option = jQuery(this).val();
+           window.location.href = '<?php echo base_url("usuarios/listar/id");  ?>' + '/' + qtd + '/' + option ;
+        });
+   
    
         jQuery(".change_option").change(function(){
          
@@ -472,6 +481,7 @@
                             jQuery("#myModal").html(data);
                             jQuery("#myModal").modal();
                         });
+						
                     break;
 
                     default:
@@ -479,7 +489,8 @@
                         id = id[1];
                         window.location.href = '<?php echo base_url(''); ?>' + option;
                      break;
-                }  
+                } 
+				
            }
         });    
     });
