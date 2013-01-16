@@ -64,7 +64,7 @@
             <div class="control-group">
                 <label for="tipoagendamento" class="control-label">Tipo de Agendamento</label>
                 <div class="controls">
-                    <input type="radio" value="calendario" name="tipo_agendamento">Calendario
+                    <input type="radio" value="calendario" checked="checked" name="tipo_agendamento">Calendario
                     <input type="radio" value="individualizado" name="tipo_agendamento">Individualizado
                 </div>
             </div>
@@ -77,7 +77,8 @@
             <div class="selecionador" id="selecionador_administradores">
                 
                 <input type="hidden" name="hidden_selecionador_administradores" id="hidden_selecionador_administradores" value="">
-
+                <input type="hidden" name="hidden_facility_id" id="hidden_facility_id" value="<?php echo $this->uri->segment(3); ?>">
+                
                 <div class="selecionador_primeiro">
                         <p>Administradores não selecionados</p>
 

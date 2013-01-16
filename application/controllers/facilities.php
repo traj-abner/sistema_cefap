@@ -24,7 +24,7 @@ class Facilities extends CI_Controller {
         
         redirect('main');
     }
-    
+	  
     public function listar(){
         
         //COMUM: apenas facilities com o status "ATIVO";
@@ -47,16 +47,17 @@ class Facilities extends CI_Controller {
 
 
             $offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
-            if($offset <= 0){
-                $offset = 1;
+            if($offset < 0){
+                $offset = 0;
             }                    
             $fclt = new Facility();
+			
             $u = $this->session->userdata('credencial');
             
             switch ($u){
                 
                 case CREDENCIAL_USUARIO_COMUM :
-                    $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->limit($limit, $offset);
+                    $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->where('status',STATUS_FACILITIES_ATIVO)->limit($limit, $offset);
                 break;
                 case CREDENCIAL_USUARIO_SUPERADMIN :
                     $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->limit($limit, $offset);
@@ -65,6 +66,8 @@ class Facilities extends CI_Controller {
                 case CREDENCIAL_USUARIO_ADMIN :
                     $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->limit($limit, $offset)->where_not_in('status', STATUS_FACILITIES_EXCLUIDO)->limit($limit, $offset); 
                 break;
+				
+				
                 }
             //ordena de acordo com a opção que o usuário escolher    
             if(empty($order)){
@@ -73,9 +76,25 @@ class Facilities extends CI_Controller {
             }else{
                 $fclt->order_by($order, $exib);
             }
+			$i=0;
+			
 
             $fclt->get();
-
+			
+			foreach ($fclt as $ft)
+			{
+				$cdr[$i] = '';
+				$admins = mysql_query('select u.id, u.nome from usuarios as u inner join coordenadores_facilities as c_f on u.id = c_f.usuario_id where c_f.facility_id = \''.$ft->id.'\'');
+				while ($r = mysql_fetch_array($admins))
+					$cdr[$i] .= '<li>' . $r['nome'] . '</li>';
+				if ($cdr[$i] == '') $cdr[$i] = "Nenhum Registro Encontrado";
+				$i++;	
+			}
+			$data['coord'] = $cdr;
+			
+			$cd = new Usuario();
+			$cd->select('credencial')->where('id', $this->session->userdata('id'))->get();
+			$data['uRole'] = $cd->credencial;
             $data['img'] = $order;
             $data['fclts'] = $fclt; 
             $data['limit'] = $limit;
@@ -91,17 +110,46 @@ class Facilities extends CI_Controller {
             $pagination = $total / $limit;
             $page = ceil($pagination);
             $links = "";
+			if ($npage > $page)
+					{
+						$buttonArray[2] = '#';
+						$buttonArray[3] = '#';
+					}
             for($i = 1; $i <= $page; $i++){
                 $order = $this->uri->segment(3, 'id');
 
-                $url = base_url("usuarios/listar/$order/$limit/$i");
+                $url = base_url("facilities/listar/$order/$limit/$i");
                 $links .= "<a href='$url'>$i</a>";   
-
-                }     
+				$urlarray[$i-1]=$url;
+							if ($i == 1) 
+							{
+								$buttonArray[0] = $url;
+								$buttonArray[1] = '#';
+							}
+							if ($i >= 1) 
+									if ($i == $npage - 1):
+										$buttonArray[1] = $url;
+									endif;
+							else
+								$buttonArray[1] = '#';
+							if ($i <= $page)
+							{
+									if ($i == $npage): $buttonArray[2] = '#'; endif;
+									if ($i == $npage + 1): $buttonArray[2] = $url; endif;
+							}
+							else
+								$buttonArray[2] = '#';
+							if ($i == $page) 
+							{
+								$buttonArray[3] = $url;
+							}
+                }    
+				$data['buttonArray'] = $buttonArray;
+				$data['urlarray'] = $urlarray;  
                 $data['page'] =  $links;
          /*END PAGINAÇÃO*/     
 
-        $data['title'] = 'Lista de Usuários';
+        $data['title'] = 'Lista de Facilities';
         $this->load->view('facilities_listar',$data);
     }
     
@@ -142,7 +190,53 @@ class Facilities extends CI_Controller {
         $data['title'] = 'Cadastro de Facility';
         $this->load->view($view, $data);
     }
-    
+	
+	public function inativar(){
+        
+        
+        // default view
+        $fclt = new Facility();
+        $fclt->where('id', $this->uri->segment(3))->get();
+        $data['fclt'] = $fclt;
+        
+				$sql = "update facilities set status = '" . STATUS_FACILITIES_INATIVO . "' where id = '" . $this->uri->segment(3) . "' limit 1";
+                $fclt = new Facility();
+                mysql_query($sql);
+                if( !$fclt->save() ) { // error on save
+				
+                    $data['msg'] = $fclt->error->string;;
+                    $data['msg_type'] = 'error';	
+				
+                }else {
+                    $data['msg'] = 'Inativa&ccedil;&atilde;o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg_type'] = 'alert-success';
+                }
+			redirect(base_url('facilities/listar',$data));
+    }
+	
+	public function ativar(){
+        
+        
+        // default view
+        $fclt = new Facility();
+        $fclt->where('id', $this->uri->segment(3))->get();
+        $data['fclt'] = $fclt;
+        
+				$sql = "update facilities set status = '" . STATUS_FACILITIES_ATIVO . "' where id = '" . $this->uri->segment(3) . "' limit 1";
+                $fclt = new Facility();
+                mysql_query($sql);
+                if( !$fclt->save() ) { // error on save
+				
+                    $data['msg'] = $fclt->error->string;;
+                    $data['msg_type'] = 'error';	
+				
+                }else {
+                    $data['msg'] = 'Inativa&ccedil;&atilde;o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg_type'] = 'alert-success';
+                }
+			redirect(base_url('facilities/listar',$data));
+    }
+    //@todo
     public function editar(){
         
         $fclt = new Facility();
@@ -160,7 +254,10 @@ class Facilities extends CI_Controller {
                 $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
                 $fclt->usuario_id       = $post['hidden_selecionador_administradores'];
-                
+				$fclt->facility_id       = $post['hidden_facility_id'];
+				
+                $sql = "update facilities set nome_abreviado = '" . $post['nomeabrev'] . "', nome = '" . $post['nome_completo'] . "', tipo_agendamento = '" . $post['tipo_agendamento'] . "' where id = '" .  $post['hidden_facility_id'] . "' limit 1";
+				echo $sql;
                 if( !$fclt->save() ) { // error on save
 				
                     $data['msg'] = $fclt->error->string;;

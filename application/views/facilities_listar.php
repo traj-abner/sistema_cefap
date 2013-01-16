@@ -2,33 +2,23 @@
 <?php 
     $this->load->view('header');  
 ?>
-<style>
-   .select p {text-align: center; background-color: #FFFFFF; border: 0px #FFFFFF}
-   .qntd_usuario_listar {float: right; margin-top:-32px;}
-   #selectQntd {margin-top: 2px; margin-left:25%}
-   .img-order{background-image: url(images/asc.png);}
-   /*CSS DOS DADOS PESSOAIS*/
-   .form-actions {width:800px;}
-   .user_info {margin-left:30px; margin-top:30px; width: 800px;}
-   .pull-right #Creditos {width:500px;}
-   h1 {font-size: 30px; color: #B1C5C9; float: left;}
-   #myModal {height:800px; width: 885px;}
-   .modal.fade.in {top:27%; bottom: 10%;}
-   .modal-body {max-height:588px;}
-   .modal {left: 41%;}
-   .btn-right {margin-left: 550px;}
-   .btn-right-creditos {margin-left: 389px; margin-top: -30px;}
-   .modal th {background-color: #ccc}
-   #btn-right-listar{float:right; margin-right: 20px;}
-   
-</style>
-
-<div id="myModal" class="modal hide fade">
-</div>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
 
 
 <div id="main_content">	
-   <div id="breadcrumbs"><?php echo set_breadcrumb(); ?> </div> 
+   <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
+    <div class="well"><h2>Lista de Facilities</h2>
+        <div class="qntd_usuario_listar">
+            <h3>Usuários por página:</h3>
+            <select id="selectQntd" class="input-mini">
+                    <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
+                    <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
+                    <option <?php if ($limit == '20') echo 'selected="selected"'; ?> value="20">20</option>
+                    <option <?php if ($limit == '30') echo 'selected="selected"'; ?> value="30">30</option>
+            </select>
+        </div>
+    </div>
+    
 
     <?php
     if(isset($msg) && isset($msg_type)){ ?>
@@ -47,34 +37,66 @@
     
 <!-- tabela -->	
     <ul class="pager">
-            <li><a href="#"><i class="icon-fast-backward"></i></a></li>
-            <li><a href="#"><i class="icon-backward"></i></a></li>
-            <li><input type="text" class="input-mini input-page" /></li>
-            <li><a href="#"><i class="icon-forward"></i></a></li>
-            <li><a href="#"><i class="icon-fast-forward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[0]; ?>"><i class="icon-fast-backward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[1]; ?>"><i class="icon-backward"></i></a></li>
+            <li><input type="text" id="gotopage" class="input-mini input-page" /></li>
+            <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
+            <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
     </ul>
 
-   <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='../usuarios/adicionar'" />
+   <?php if($uRole == CREDENCIAL_USUARIO_SUPERADMIN){?>
+         <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='<?php echo base_url("facilities/adicionar");  ?>'" />
+    <?php } ?>      
      
 <table class="table">
     <caption >Lista de Usuários</caption>
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
-                        <th><a href=''>Nome
-                            
+                        <th><a href='<?php echo base_url("facilities/listar/nome/$limit/$perpage/ASC"); ?>'>Nome
+                            <?php 
+                                if(isset($img) && $img == 'nome'){
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/nome/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/nome/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
                             </a>
                         </th>
-                        <th><a href=''>Agendamento
-                                              
+                        <th><a href='<?php echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/ASC"); ?>'>Agendamento
+                            <?php 
+                                if(isset($img) && $img == 'tipo_agendamento'){
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
                             </a>
                         </th>
                         <th><a href=''>Administradores
                             
                             </a>
                         </th>
-                        <th><a href=''>Arquivos
-                           
+                        <th><a href='<?php echo base_url("facilities/listar/arquivos/$limit/$perpage/ASC"); ?>'>Arquivos
+                            <?php 
+                                if(isset($img) && $img == 'arquivos'){
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/arquivos/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("facilities/listar/arquivos/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
                             </a>
                         </th>
                         
@@ -83,42 +105,55 @@
         </thead>
         
         <tbody>  
+        	<?php $i=0; ?>
             <?php foreach($fclts as $fclt){ ?>
 
                 <tr class="listar_usuario" id="id-<?php echo $fclt->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
                         <td><?php echo $fclt->nome;?></td>
                         <td><?php echo $fclt->tipo_agendamento;?></td>
-                        <td></td>
+                        <td align="center"><a href="#myModal<?php echo $i; ?>" role="button" class="btn" data-toggle="modal">Visualizar</a></td>
                         <td><?php echo $fclt->arquivos;?></td>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
-                                <option value='<?php echo ("facilities/editar/$fclt->id"); ?>'>Editar</option>
+                                
                                 <option value="ver_detalhes">Ver detalhes</option>
-                                <option value="ver_extrato">Ver extrato</option>
-                                <option value="inativar">Inativar</option>
+                                <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>
+                                        <option value="ver_extrato">Ver extrato</option>
+                                    <?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN): ?>
+                                        <option value='<?php echo ("facilities/editar/$fclt->id"); ?>'>Editar</option>
+                                        <?php if ($fclt->status == STATUS_FACILITIES_ATIVO):?>
+                                            <option value="<?php echo ("facilities/inativar/$fclt->id"); ?>">Inativar</option>
+                                        <?php else: ?>
+                                            <option value="<?php echo ("facilities/ativar/$fclt->id"); ?>">Ativar</option>
+                                        <?php endif;
+                                	endif;
+                                endif; ?>
                             </select>
                         </td>
                 </tr>
-           <?php } ?>
+                <?php //@todo ?>
+                <div id="myModal<?php echo $i; ?>" class="modal hide fade">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Lista de Administradores da Facility <?php echo $fclt->nome; ?></h3>
+                    </div>
+                    <div class="modal-body">
+                    	<ul><?php echo $coord[$i]; ?></ul>
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    </div>
+                </div>
+                <?php ?>
+           <?php $i++; } ?>
         
         </tbody>
     </table>
          
     
-    <div class="select">
-        <p>Com marcados:
-            <select class="change_option" id="comMarcados">
-                <option value="selecione">Selecione...</option>
-                <option value="">Ativar</option>
-                <option value="">Inativar</option>
-                <option value="">Bloquear</option>
-                
-                <option value="">Enviar Mensagem</option>
-            </select>
-        </p>
-    </div>
+    
     
 </div>
 <?php
@@ -151,9 +186,15 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("usuarios/listar/id");  ?>' + '/' + option + '/0' ;
+           window.location.href = '<?php echo base_url("facilities/listar/id");  ?>' + '/' + option + '/1' ;
         });
-   
+		jQuery('#gotopage').change(function(){
+		   var qtd = $("#selectQntd option:selected").val();
+           var option = jQuery(this).val();
+           window.location.href = '<?php echo base_url("facilities/listar/id");  ?>' + '/' + qtd + '/' + option ;
+        });
+		
+				   
         jQuery(".change_option").change(function(){
          
            var option = jQuery(this).val();
@@ -175,7 +216,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('usuarios/mudar_status'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('facilities/mudar_status'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um usuário');
                          return;

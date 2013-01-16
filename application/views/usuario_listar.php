@@ -2,27 +2,7 @@
 <?php 
     $this->load->view('header');  
 ?>
-<style>
-   .select p {text-align: center; background-color: #FFFFFF; border: 0px #FFFFFF}
-   .qntd_usuario_listar {float: right; margin-top:-32px;}
-   #selectQntd {margin-top: 2px; margin-left:25%}
-   .img-order{background-image: url(images/asc.png);}
-   /*CSS DOS DADOS PESSOAIS*/
-   .form-actions {width:800px;}
-   .user_info {margin-left:30px; margin-top:30px; width: 800px;}
-   .pull-right #Creditos {width:500px;}
-   h1 {font-size: 30px; color: #B1C5C9; float: left;}
-   #myModal {height:800px; width: 885px;}
-   .modal.fade.in {top:27%; bottom: 10%;}
-   .modal-body {max-height:588px;}
-   .modal {left: 41%;}
-   .btn-right {margin-left: 550px;}
-   .btn-right-creditos {margin-left: 389px; margin-top: -30px;}
-   .modal th {background-color: #ccc}
-   #btn-right-listar{float:right; margin-right: 20px;}
-   
-</style>
-
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
 <div id="myModal" class="modal hide fade">
 </div>
 
@@ -426,7 +406,7 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("usuarios/listar/id");  ?>' + '/' + option + '/0' ;
+           window.location.href = '<?php echo base_url("usuarios/listar/id");  ?>' + '/' + option + '/1' ;
         });
    		
 		jQuery('#gotopage').change(function(){

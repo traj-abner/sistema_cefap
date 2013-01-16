@@ -1,5 +1,26 @@
 sistema_cefap
 ================================================================================
+v0.12
+16/01/13 - Abner
+#descrição
+Correções na lista de facilities
+
+#changelog
+Implementada navegação de página por botões na lista de usuários
+Implementada seleção de ordenação
+Implementada visualização de administradores
+Correção de BUG: query não retornava primeiro resultado
+
+#known issues
+
+
+
+#todo
+Terminar formatação da visualização de administradores
+
+================================================================================
+================================================================================
+
 v0.11
 15/01/13 - Abner
 #descrição

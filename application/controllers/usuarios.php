@@ -22,6 +22,7 @@ class Usuarios extends CI_Controller{
         redirect('main');
     }
     
+	
     public function listar(){
         //usuários com credencial 'comum' não tem acesso a esta página e são redirecionados para a main automaticamente.
         if ( $this->uRole == CREDENCIAL_USUARIO_COMUM) {
@@ -43,8 +44,8 @@ class Usuarios extends CI_Controller{
                     
                     
                     $offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
-                    if($offset <= 0){
-                        $offset = 1;
+                    if($offset < 0){
+                        $offset = 0;
                     }                    
                     $user = new Usuario();
                     

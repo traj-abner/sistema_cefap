@@ -1,0 +1,17 @@
+/*css dados pessoais*/
+ .select p {text-align: center; background-color: #FFFFFF; border: 0px #FFFFFF}
+   .qntd_usuario_listar {float: right; margin-top:-32px;}
+   #selectQntd {margin-top: 2px; margin-left:25%}
+   .img-order{background-image: url(images/asc.png);}
+.form-actions {width:80%;}
+   .user_info {margin-left:30px; margin-top:30px; width: 800px;}
+   .pull-right #Creditos {width:500px;}
+   h1 {font-size: 30px; color: #B1C5C9; float: left;}
+   #myModal {height:90%; width: 885px; min-height:500px;}
+   .modal.fade.in {top:27%; bottom: 10%;}
+   .modal-body {max-height:588px;}
+   .modal {left: 41%;}
+   .btn-right {margin-left: 550px;}
+   .btn-right-creditos {margin-left: 389px; margin-top: -30px;}
+   .modal th {background-color: #ccc}
+   #btn-right-listar{float:right; margin-right: 20px;}

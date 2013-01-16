@@ -27,7 +27,9 @@
 	<div id="content">
 		<div id="main_menu_container">
 			<ul id="main_menu_left" class="main_menu">
-				<li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
+				<li id="mm_dashboard" class="mm_primeiro"><a href="<?php echo base_url(); ?>">Dashboard</a>
+				</li>
+                <li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
 					<ul class="main_submenu" id="main_submenu_agendamentos">
 						<li><a href="#">Testando item de menu</a></li>
 						<li><a href="#">Testando item de menu</a></li>
@@ -38,13 +40,14 @@
 				</li>
 				<li id="mm_facilidades" class="mm_primeiro"><a href="#">Facilidades</a>
 					<ul class="main_submenu" id="main_submenu_facilidades">
-						<li><a href="#">Testando item de menu</a></li>
+						<li><a href="<?php echo base_url('facilities/listar'); ?>">Listar Facilidades</a></li>
 						<li><a href="#">Testando item de menu</a></li>
 						<li><a href="#">Testando item de menu</a></li>
 						<li><a href="#">Testando item de menu</a></li>
 						<li><a href="#">Testando item de menu</a></li>
 					</ul><!-- end main_submenu_facilidades -->
 				</li>
+                
 			</ul><!-- end main_menu_left -->
 			
 			<ul id="main_menu_right" class="main_menu">
