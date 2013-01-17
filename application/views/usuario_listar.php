@@ -9,7 +9,7 @@
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Adicionar Usuário</h2>
+    <div class="well"><h2>Lista de Usu&aacute;rios</h2>
         <div class="qntd_usuario_listar">
             <h3>Usuários por página:</h3>
             <select id="selectQntd" class="input-mini">

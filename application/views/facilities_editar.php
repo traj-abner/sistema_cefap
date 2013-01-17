@@ -41,7 +41,7 @@
         "form"  => array('class' => 'form-horizontal', 'id' => 'form_adicionar', 'name' => 'frmfacilities')
     );
 
-        echo form_open('facilities/editar',$attributes['form']);
+        echo form_open('facilities/editar/'.$fclt->id,$attributes['form']);
     ?>
             <div class="control-group">
                 <label for="nomeabrev" class="control-label">Nome Abreviado</label>

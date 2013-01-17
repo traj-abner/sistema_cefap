@@ -1,8 +1,10 @@
-/*css dados pessoais*/
+
+/*css seleção de quantidade de registros por página*/
  .select p {text-align: center; background-color: #FFFFFF; border: 0px #FFFFFF}
    .qntd_usuario_listar {float: right; margin-top:-32px;}
    #selectQntd {margin-top: 2px; margin-left:25%}
    .img-order{background-image: url(images/asc.png);}
+   /*css modal*/
 .form-actions {width:80%;}
    .user_info {margin-left:30px; margin-top:30px; width: 800px;}
    .pull-right #Creditos {width:500px;}
@@ -12,6 +14,20 @@
    .modal-body {max-height:588px;}
    .modal {left: 41%;}
    .btn-right {margin-left: 550px;}
-   .btn-right-creditos {margin-left: 389px; margin-top: -30px;}
+   .btn-right-creditos {margin-left: 257px; margin-top: -20px;}
    .modal th {background-color: #ccc}
    #btn-right-listar{float:right; margin-right: 20px;}
+  
+   /*css modal pequeno*/
+   .form-actions-small {width:30%;}
+   .user_info-small {margin-left:30px; margin-top:30px; width: 800px;}
+   .pull-right-small #Creditos {width:500px;}
+   h1 {font-size: 30px; color: #B1C5C9; float: left;}
+   #myModal-small {height:300px;; width: 350px; min-height:120px; margin-left:20px; margin-top:70px;}
+   .modal.fade.in-small {top:27%; bottom: 10%;}
+   .modal-body-small {max-height:588px; padding: 25px 25px 25px 25px;}
+   .modal-small {left: 41%;}
+   .btn-right-small {margin-left: 550px;}
+   .btn-right-creditos-small {margin-left: 389px; margin-top: -30px;}
+   .modal-small th {background-color: #ccc}
+   #btn-right-listar-small{float:right; margin-right: 20px;}/* CSS Document */

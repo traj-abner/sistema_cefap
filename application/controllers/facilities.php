@@ -81,17 +81,6 @@ class Facilities extends CI_Controller {
 
             $fclt->get();
 			
-			foreach ($fclt as $ft)
-			{
-				$cdr[$i] = '';
-				$admins = mysql_query('select u.id, u.nome from usuarios as u inner join coordenadores_facilities as c_f on u.id = c_f.usuario_id where c_f.facility_id = \''.$ft->id.'\'');
-				while ($r = mysql_fetch_array($admins))
-					$cdr[$i] .= '<li>' . $r['nome'] . '</li>';
-				if ($cdr[$i] == '') $cdr[$i] = "Nenhum Registro Encontrado";
-				$i++;	
-			}
-			$data['coord'] = $cdr;
-			
 			$cd = new Usuario();
 			$cd->select('credencial')->where('id', $this->session->userdata('id'))->get();
 			$data['uRole'] = $cd->credencial;
@@ -119,7 +108,7 @@ class Facilities extends CI_Controller {
                 $order = $this->uri->segment(3, 'id');
 
                 $url = base_url("facilities/listar/$order/$limit/$i");
-                $links .= "<a href='$url'>$i</a>";   
+                $links .= "<a href='$url'>$i</a>&nbsp;";   
 				$urlarray[$i-1]=$url;
 							if ($i == 1) 
 							{
@@ -158,6 +147,7 @@ class Facilities extends CI_Controller {
         
         // default view
         $view = 'facilities_adicionar';
+		$check = '';
         if($this->input->post('submit')){
 
                 $fclt = new Facility();
@@ -169,8 +159,11 @@ class Facilities extends CI_Controller {
                 $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
                 $fclt->usuario_id       = $post['hidden_selecionador_administradores'];
-                
-                if( !$fclt->save() ) { // error on save
+				$usrs = explode(',',$post['hidden_selecionador_administradores']);
+		
+				$cd = new Usuario();
+                $cd->where_in($usrs)->get();
+                if( !$fclt->save_usuarios($cd->all) ) { // error on save --> http://datamapper.wanwizard.eu/pages/save.html
 				
                     if ( $fclt->valid ) { // validation ok; database error on insert or update
                             $data['msg'] = MSG_ERRO_BD;
@@ -184,9 +177,10 @@ class Facilities extends CI_Controller {
                 }else {
                 $data['msg'] = 'Nova facility ' .$fclt->nome. ' cadastrada com sucesso!';
                 $data['msg_type'] = 'success';
-                $view = 'usuarios_listar';
+                $view = 'facilities_adicionar';
                 }
         }
+
         $data['title'] = 'Cadastro de Facility';
         $this->load->view($view, $data);
     }
@@ -198,10 +192,7 @@ class Facilities extends CI_Controller {
         $fclt = new Facility();
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;
-        
-				$sql = "update facilities set status = '" . STATUS_FACILITIES_INATIVO . "' where id = '" . $this->uri->segment(3) . "' limit 1";
-                $fclt = new Facility();
-                mysql_query($sql);
+        		$fclt->status = STATUS_FACILITIES_INATIVO;
                 if( !$fclt->save() ) { // error on save
 				
                     $data['msg'] = $fclt->error->string;;
@@ -222,9 +213,7 @@ class Facilities extends CI_Controller {
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;
         
-				$sql = "update facilities set status = '" . STATUS_FACILITIES_ATIVO . "' where id = '" . $this->uri->segment(3) . "' limit 1";
-                $fclt = new Facility();
-                mysql_query($sql);
+				$fclt->status = STATUS_FACILITIES_ATIVO;
                 if( !$fclt->save() ) { // error on save
 				
                     $data['msg'] = $fclt->error->string;;
@@ -242,10 +231,8 @@ class Facilities extends CI_Controller {
         $fclt = new Facility();
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;
-        
         if($this->input->post('submit')){
 
-                $fclt = new Facility();
                 $post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
                 
                 $fclt->nome_abreviado	= $post['nomeabrev'];
@@ -253,18 +240,16 @@ class Facilities extends CI_Controller {
                 $fclt->descricao	= $post['descricao'];
                 $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
-                $fclt->usuario_id       = $post['hidden_selecionador_administradores'];
-				$fclt->facility_id       = $post['hidden_facility_id'];
+
 				
-                $sql = "update facilities set nome_abreviado = '" . $post['nomeabrev'] . "', nome = '" . $post['nome_completo'] . "', tipo_agendamento = '" . $post['tipo_agendamento'] . "' where id = '" .  $post['hidden_facility_id'] . "' limit 1";
-				echo $sql;
+                
                 if( !$fclt->save() ) { // error on save
 				
                     $data['msg'] = $fclt->error->string;;
                     $data['msg_type'] = 'error';	
 				
                 }else {
-                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!<br>'.$this->uri->segment(3);
                     $data['msg_type'] = 'alert-success';
                 }
         }
@@ -292,7 +277,23 @@ class Facilities extends CI_Controller {
     
     public function excluir(){
         
+            
+        // default view
+        $fclt = new Facility();
+        $fclt->where('id', $this->uri->segment(3))->get();
+        $data['fclt'] = $fclt;
         
+				$fclt->status = STATUS_FACILITIES_EXCLUIDO;
+                if( !$fclt->save() ) { // error on save
+				
+                    $data['msg'] = $fclt->error->string;;
+                    $data['msg_type'] = 'error';	
+				
+                }else {
+                    $data['msg'] = 'Inativa&ccedil;&atilde;o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg_type'] = 'alert-success';
+                }
+			redirect(base_url('facilities/listar',$data));
     }
     
     public function extrato(){

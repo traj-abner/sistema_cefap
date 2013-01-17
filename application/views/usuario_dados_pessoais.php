@@ -1,3 +1,7 @@
+<style type="text/css">
+.form-actions { margin-left:30px; }
+</style>
+
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h1><?php echo $user->username; ?></h1>

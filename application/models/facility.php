@@ -10,7 +10,7 @@ class Facility extends Datamapper {
     public $has_many = array(
         'usuario'      => array(
                 'class'         => 'usuario',
-                'other_field'   => 'fclts'
+                'other_field'   => 'facilities'
          ),
        
         'coordenadores'      => array(

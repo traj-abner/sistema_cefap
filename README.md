@@ -1,5 +1,26 @@
 sistema_cefap
 ================================================================================
+v0.13
+17/01/13 - Abner
+#descrição
+Correções na lista de facilities
+
+#changelog
+Correção na criação e edição de facilities
+Inclusão de opção de excluir facility (superadmin apenas)
+Alteração de queries para padrão DataMapper
+Correção de fluxo de dados  formulario de cadastro de facilities -> action incluir
+
+#known issues
+
+
+
+#todo
+Upload de arquivos
+Salvar relação facility <=> usuário no cadastro da facility
+
+================================================================================
+================================================================================
 v0.12
 16/01/13 - Abner
 #descrição

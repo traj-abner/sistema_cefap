@@ -10,6 +10,7 @@
   .selecionador_segundo {display: block; float: right; margin: -215px 120px 0 0;}
   .selecionador_botoes{display: block;  margin: -150px 5px 80px 415px; width: 100px;}
 </style>
+
 <div id="main_content">	
     <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
     <?php
@@ -38,7 +39,7 @@
     </div>
     
     <?php $attributes = array(
-        "form"  => array('class' => 'form-horizontal', 'id' => 'form_adicionar', 'name' => 'frmfacilities')
+        "form"  => array('class' => 'form-horizontal', 'id' => 'form_adicionar', 'name' => 'frmfacilities','onSubmit' => 'BeforeSubmit()')
     );
 
         echo form_open('facilities/adicionar',$attributes['form']);
@@ -64,7 +65,7 @@
             <div class="control-group">
                 <label for="tipoagendamento" class="control-label">Tipo de Agendamento</label>
                 <div class="controls">
-                    <input type="radio" value="calendario" name="tipo_agendamento">Calendario
+                    <input type="radio" value="calendario" checked="checked" name="tipo_agendamento">Calendario
                     <input type="radio" value="individualizado" name="tipo_agendamento">Individualizado
                 </div>
             </div>
@@ -146,8 +147,8 @@
             <table id="dataTable" width="350px" border="1">
                 <tr>
                     <td><INPUT type="checkbox" name="chk"/></td>
-                    <td> <INPUT type="file" /> </td>
-                    <td><INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" /></td>
+                    <td> <INPUT type="file" name="arquivo" /> </td>
+                    <td><INPUT type="button" value="Excluir" onclick="deleteRow('dataTable')" /></td>
                 </tr>
             </table>
             
@@ -172,39 +173,38 @@
 <!--
 function BeforeSubmit()
 {
-var temp_administradores = "";
-var box_administradores = document.frmfacilities.administradores_2;
-for(i=0;i<box_administradores.length;i++)
-{
-temp_administradores += box_administradores.options[i].value + ",";
-}
-document.frmfacilities.hidden_selecionador_administradores.value = temp_administradores;
-
-var temp_alunos = "";
-var box_alunos = document.frmfacilities.alunos_2;
-for(i=0;i<box_alunos.length;i++)
-{
-temp_alunos += box_alunos.options[i].value + ",";
-}
-document.frmfacilities.hidden_selecionador_alunos.value = temp_alunos;
-
-var temp_pesquisas = "";
-var box_pesquisas = document.frmfacilities.pesquisas_2;
-for(i=0;i<box_pesquisas.length;i++)
-{
-temp_pesquisas += box_pesquisas.options[i].value + ",";
-}
-document.frmfacilities.hidden_selecionador_pesquisas.value = temp_pesquisas;
+	var temp_administradores = "";
+	var box_administradores = document.frmfacilities.administradores_2;
+	for(i=0;i<box_administradores.length;i++)
+	{
+	temp_administradores += box_administradores.options[i].value + ",";
+	}
+	document.frmfacilities.hidden_selecionador_administradores.value = temp_administradores;
+	
+	var temp_alunos = "";
+	var box_alunos = document.frmfacilities.alunos_2;
+	for(i=0;i<box_alunos.length;i++)
+	{
+	temp_alunos += box_alunos.options[i].value + ",";
+	}
+	document.frmfacilities.hidden_selecionador_alunos.value = temp_alunos;
+	
+	var temp_pesquisas = "";
+	var box_pesquisas = document.frmfacilities.pesquisas_2;
+	for(i=0;i<box_pesquisas.length;i++)
+	{
+	temp_pesquisas += box_pesquisas.options[i].value + ",";
+	}
+	document.frmfacilities.hidden_selecionador_pesquisas.value = temp_pesquisas;
 
 }
 
 -->
 </script>
 
-<script language="javascript">
-        function addRow(tableID) {
+<script language="javascript">        function addRow(tableID) {
  
-            var row = '<tr><td><input type="checkbox" name="chk"/></td><td><input type="file" /></td><td><input type="button" value="Delete Row" onclick="' + "deleteRow('dataTable')" + '" /></td></tr>', 
+            var row = '<tr><td><input type="checkbox" name="chk"/></td><td><input type="file" /></td><td><input type="button" value="Excluir" onclick="' + "deleteRow('dataTable')" + '" /></td></tr>', 
         
             $row = $(row), 
             // resort table using the current sort; set to false to prevent resort, otherwise  

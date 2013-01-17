@@ -3,7 +3,8 @@
     $this->load->view('header');  
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
-
+<div id="myModal" class="modal hide fade">
+</div>
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
@@ -105,14 +106,13 @@
         </thead>
         
         <tbody>  
-        	<?php $i=0; ?>
             <?php foreach($fclts as $fclt){ ?>
 
-                <tr class="listar_usuario" id="id-<?php echo $fclt->id?>">
+                <tr class="listar_facilities" id="id-<?php echo $fclt->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
                         <td><?php echo $fclt->nome;?></td>
                         <td><?php echo $fclt->tipo_agendamento;?></td>
-                        <td align="center"><a href="#myModal<?php echo $i; ?>" role="button" class="btn" data-toggle="modal">Visualizar</a></td>
+                        <td align="center"><a href="#myModal<?php echo $fclt->id; ?>" role="button" class="btn" data-toggle="modal">Visualizar</a></td>
                         <td><?php echo $fclt->arquivos;?></td>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
@@ -121,38 +121,53 @@
                                 <option value="ver_detalhes">Ver detalhes</option>
                                 <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>
                                         <option value="ver_extrato">Ver extrato</option>
-                                    <?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN): ?>
+                                    <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>
                                         <option value='<?php echo ("facilities/editar/$fclt->id"); ?>'>Editar</option>
                                         <?php if ($fclt->status == STATUS_FACILITIES_ATIVO):?>
                                             <option value="<?php echo ("facilities/inativar/$fclt->id"); ?>">Inativar</option>
                                         <?php else: ?>
                                             <option value="<?php echo ("facilities/ativar/$fclt->id"); ?>">Ativar</option>
+                                        <?php endif; ?>
+                                        <?php if ($fclt->status != STATUS_FACILITIES_EXCLUIDO && $uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
+                                        	<option value="<?php echo ("facilities/excluir/$fclt->id"); ?>">Excluir</option>
                                         <?php endif;
                                 	endif;
                                 endif; ?>
                             </select>
                         </td>
                 </tr>
-                <?php //@todo ?>
-                <div id="myModal<?php echo $i; ?>" class="modal hide fade">
+                <div id="myModal<?php echo $fclt->id; ?>" style="height:200px; width: 350px; min-height:120px; margin-left:0px; margin-top:70px;" class="modal hide fade">
                     <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     <h3 id="myModalLabel">Lista de Administradores da Facility <?php echo $fclt->nome; ?></h3>
                     </div>
-                    <div class="modal-body">
-                    	<ul><?php echo $coord[$i]; ?></ul>
+                    <div class="modal-body-small">
+                    	<ul>
+							<?php 
+								$cd = new Usuario();
+								$ft = new Facility();
+								$ft->include_related('usuarios','*')->where('id',$fclt->id)->get();
+								$i=0;
+								foreach($ft as $fct)
+								{
+									if ($i == 0 && strlen($fct->usuario_nome) < 1)
+										echo 'Nenhum registro encontrado';
+									echo '<li>'.$fct->usuario_nome.'</li>';
+									$i++;
+								}
+							?>
+                        </ul>
                     </div>
                     <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
                     </div>
                 </div>
-                <?php ?>
-           <?php $i++; } ?>
+                <?php } ?>
         
         </tbody>
     </table>
          
-    
+    <?php echo $page; ?>
     
     
 </div>
@@ -230,7 +245,7 @@
                     break;
 
                     case 'ver_detalhes':      
-                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
                         id = id[1];
                         
                         jQuery.ajax({
@@ -243,7 +258,7 @@
                     break;
                     
                     case 'ver_extrato':
-                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
                         id = id[1];
                         
                         jQuery.ajax({
@@ -256,7 +271,7 @@
                     
                     break;
                     default:
-                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
                         id = id[1];
                         window.location.href = '<?php echo base_url(''); ?>' + option;
                      break;
