@@ -8,38 +8,36 @@ class Facility extends Datamapper {
 	public $has_one = array();
    
     public $has_many = array(
-        'usuario'      => array(
-                'class'         => 'usuario',
-                'other_field'   => 'facilities'
-         ),
-       
-        'coordenadores'      => array(
-                'class'         => 'usuario',           
-                'other_field'   => 'fclts_coordenadas',
-                'join_self_as'	=> 'facility_id',
-                'join_other_as'	=> 'usuario_id',
-                'join_table'	=> 'coordenadores_facilities'
-         ),
-       
-        'logs'      => array(
-                'class'         => 'log',        
-                'other_field'   => 'facility'
-         ),
-
-        'agendamentos'      => array(
-                'class'         => 'agendamento',     
-                'other_field'   => 'facility'
-         ),
-       
-        'formularios'      => array(
-                'class'         => 'formulario',   
-                'other_field'   => 'facilities'
-         ),
-       
-        'periodos'      => array(
-                'class'         => 'perdiodo',
-                'other_field'   => 'facility'
-         )
+		'usuario' => array(
+			'class' => 'usuario',
+			'other_field' => 'facility',
+			'join_self_as' => 'facility',
+			'join_other_as' => 'usuario',
+			'join_table' => 'facilities_usuarios'
+		),
+		'agendamento' => array(
+			'class' => 'agendamento',
+			'other_field' => 'facility',
+		),
+		'log' => array(
+			'class' => 'log',
+			'other_field' => 'facility'
+		),
+		'formulario' => array(
+			'class' => 'formulario',
+			'other_field' => 'facility',
+			'join_self_as' => 'facility',
+			'join_other_as' => 'formulario',
+			'join_table' => 'facilities_formulario'
+		),
+		'periodo' => array(
+			'class' => 'periodo',
+			'other_field' => 'facility'
+		),
+		'agendamento' => array(
+			'class' => 'agendamento',
+			'other_field' => 'facility'
+		)
     );
    
 }

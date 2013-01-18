@@ -113,87 +113,38 @@ class Usuario extends DataMapper {
     // Insert related models that User can have more than one of.
     // @TODO testar e adicionar parâmetros das relações mais complexas, como em 'fclts_coordenadas'
 	public $has_many = array(
-				'fclts'					=> array(
-							'class'			=> 'facility',
-							'other_field'	=> 'usuarios'
-						),
-				'fclts_coordenadas'		=> array(
-							'class'			=> 'facility',
-							'other_field'	=> 'coordenadores',
-							'join_self_as'	=> 'usuario_id',
-							'join_other_as'	=> 'facility_id',
-							'join_table'	=> 'coordenadores_facilities'
-						),
-				'projetos'				=> array(
-							'class'			=> 'projeto',
-							'other_field'	=> 'usuarios'
-						),
-				'projetos_criados'		=> array(
-							'class'			=> 'projeto',
-							'other_field'	=> 'autor'
-						),
-				'boletos'				=> array(
-							'class'			=> 'boleto',
-							'other_field'	=> 'usuario'
-						),
-				'lancamentos'			=> array(
-							'class'			=> 'lancamento',
-							'other_field'	=> 'usuario'
-						),
-				'lancamentos_criados'	=> array(
-							'class'			=> 'lancamento',
-							'other_field'	=> 'autor'
-						),
-				'lancamentos_cancelados'=> array(
-							'class'			=> 'lancamento',
-							'other_field'	=> 'cancelamento_autor'
-						),
-				'formularios'			=> array(
-							'class'			=> 'formulario',
-							'other_field'	=> 'autor'
-						),
-				'respostas'				=> array(
-							'class'			=> 'resposta',
-							'other_field'	=> 'usuario'
-						),
-				'configuracoes' 		=> array(
-							'class'			=> 'configuracao',
-							'other_field'	=> 'autor'
-						),
-				'logs'					=> array(
-							'class'			=> 'log',
-							'other_field'	=> 'usuario'
-						),
-				'msgs_enviadas'			=> array(
-							'class'			=> 'mensagem',
-							'other_field'	=> 'from'
-						),
-				'msgs_recebidas'	=> array(
-							'class'			=> 'mensagem',
-							'other_field'	=> 'to'
-						),
-				'agdms'				=> array(
-							'class'			=> 'agendamento',
-							'other_field'	=> 'usuario'
-						),
-				'agdms_aprovados'	=> array(
-							'class'			=> 'agendamento',
-							'other_field'	=> 'aprovado_por'
-						),
-				'periodos'			=> array(
-							'class'			=> 'periodo',
-							'other_field'	=> 'usuario'
-						),
-				'relatorios'		=> array(
-							'class'			=> 'relatorio',
-							'other_field'	=> 'usuario'
-						),
-				'ajudas'			=> array(
-							'class'			=> 'ajudas',
-							'other_field'	=> 'autor'
-						)
-			);
-
+		'projeto' => array(
+			'class' => 'projeto',
+			'other_field' => 'usuario',
+			'join_self_as' => 'usuario',
+			'join_other_as' => 'projeto',
+			'join_table' => 'projetos_usuarios'
+		),
+		'facility' => array(
+			'class' => 'facility',
+			'other_field' => 'usuario',
+			'join_self_as' => 'usuario',
+			'join_other_as' => 'facility',
+			'join_table' => 'facilities_usuarios'
+		),
+		'log' => array (
+			'class' => 'log',
+			'other_field' => 'usuario',
+		),
+		'agendamento' => array (
+			'class' => 'agendamento',
+			'other_field' => 'usuario'
+		),
+		'respostas' => array (
+			'class' => 'resposta',
+			'other_field' => 'usuario'
+		),
+		'boleto' => array (
+			'class' => 'boleto',
+			'other_field' => 'usuario'
+		)
+	);
+	
 	public function login() {
         // Create a temporary user object
         $u = new Usuario();

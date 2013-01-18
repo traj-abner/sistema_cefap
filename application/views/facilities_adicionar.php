@@ -65,8 +65,8 @@
             <div class="control-group">
                 <label for="tipoagendamento" class="control-label">Tipo de Agendamento</label>
                 <div class="controls">
-                    <input type="radio" value="calendario" checked="checked" name="tipo_agendamento">Calendario
-                    <input type="radio" value="individualizado" name="tipo_agendamento">Individualizado
+                    <input type="radio" value="<?php echo TIPO_AGENDAMENTO_AGENDA; ?>" checked="checked" name="tipo_agendamento">Calendario
+                    <input type="radio" value="<?php echo TIPO_AGENDAMENTO_INDIVIDUALIZADA; ?>" name="tipo_agendamento">Individualizado
                 </div>
             </div>
 

@@ -1,5 +1,26 @@
 sistema_cefap
 ================================================================================
+v0.14
+17/01/13 - Abner
+#descrição
+Correções de interação com Banco de Dados
+
+#changelog
+Correções em usuario.php e facility.php
+Implementado gerenciamento de administradores de facilities
+Adicionado campo de alteração de status em facilities/editar/
+
+#known issues
+
+
+
+#todo
+Upload de arquivos
+Implementar calendário
+
+================================================================================
+================================================================================
+
 v0.13
 17/01/13 - Abner
 #descrição

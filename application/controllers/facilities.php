@@ -148,9 +148,11 @@ class Facilities extends CI_Controller {
         // default view
         $view = 'facilities_adicionar';
 		$check = '';
+		$fclt = new Facility();
         if($this->input->post('submit')){
 
-                $fclt = new Facility();
+                $cd = new Usuario();
+			
                 $post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
                 
                 $fclt->nome_abreviado	= $post['nomeabrev'];
@@ -158,26 +160,19 @@ class Facilities extends CI_Controller {
                 $fclt->descricao	= $post['descricao'];
                 $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
-                $fclt->usuario_id       = $post['hidden_selecionador_administradores'];
-				$usrs = explode(',',$post['hidden_selecionador_administradores']);
-		
-				$cd = new Usuario();
-                $cd->where_in($usrs)->get();
-                if( !$fclt->save_usuarios($cd->all) ) { // error on save --> http://datamapper.wanwizard.eu/pages/save.html
-				
-                    if ( $fclt->valid ) { // validation ok; database error on insert or update
-                            $data['msg'] = MSG_ERRO_BD;
-                            $data['msg_type'] = 'error';
 
-                    } else { // validation error
-                            $data['msg'] = 'Erro ao validar os campos';
-                            $data['msg_type'] = 'error';	
-                    }
+				$usrs = explode(',',$post['hidden_selecionador_administradores']);
+				
+                $cd->where_in('id',$usrs)->get();
+                
+                if( !$fclt->save_usuario($cd->all) ) { 
+				
+                    $data['msg'] = $fclt->error->string;;
+                    $data['msg_type'] = 'error';	
 				
                 }else {
-                $data['msg'] = 'Nova facility ' .$fclt->nome. ' cadastrada com sucesso!';
-                $data['msg_type'] = 'success';
-                $view = 'facilities_adicionar';
+                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg_type'] = 'alert-success';
                 }
         }
 
@@ -193,7 +188,7 @@ class Facilities extends CI_Controller {
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;
         		$fclt->status = STATUS_FACILITIES_INATIVO;
-                if( !$fclt->save() ) { // error on save
+                if( !$fclt->save() ) { 
 				
                     $data['msg'] = $fclt->error->string;;
                     $data['msg_type'] = 'error';	
@@ -214,7 +209,7 @@ class Facilities extends CI_Controller {
         $data['fclt'] = $fclt;
         
 				$fclt->status = STATUS_FACILITIES_ATIVO;
-                if( !$fclt->save() ) { // error on save
+                if( !$fclt->save() ) { 
 				
                     $data['msg'] = $fclt->error->string;;
                     $data['msg_type'] = 'error';	
@@ -232,28 +227,36 @@ class Facilities extends CI_Controller {
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;
         if($this->input->post('submit')){
-
+				$cd = new Usuario();
+				$ft = new Facility();
                 $post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
                 
                 $fclt->nome_abreviado	= $post['nomeabrev'];
                 $fclt->nome             = $post['nome_completo'];
                 $fclt->descricao	= $post['descricao'];
-                $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
-
+				$fclt->status	= $post['status'];
+				$usrs = explode(',',$post['hidden_selecionador_administradores']);
 				
+                $cd->where_in('id',$usrs)->get();
                 
-                if( !$fclt->save() ) { // error on save
+                if( !$fclt->save_usuario($cd->all) ) {
 				
                     $data['msg'] = $fclt->error->string;;
                     $data['msg_type'] = 'error';	
 				
                 }else {
-                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!<br>'.$this->uri->segment(3);
+                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
                     $data['msg_type'] = 'alert-success';
                 }
         }
+		$u_role = new Usuario();
+		$u_role->select('credencial')->where('id', $this->session->userdata('id'))->get();
+            // initialize user role with proper value
+        $data['uRole'] = $u_role->credencial;
+		
         $data['title'] = 'Editar Facilities';
+		
         $this->load->view('facilities_editar', $data);
     }
     

@@ -16,7 +16,7 @@
     if(isset($msg) && isset($msg_type)){ ?>
        <div class="alert <?php echo $msg_type?>" id="alert-success">
            <button type="button" class="close" data-dismiss="alert">×</button>
-           <?php echo $msg; ?>
+           <?php echo $msg; ?> 
        </div> 
     <?php 
 
@@ -38,7 +38,7 @@
     </div>
     
     <?php $attributes = array(
-        "form"  => array('class' => 'form-horizontal', 'id' => 'form_adicionar', 'name' => 'frmfacilities')
+        "form"  => array('class' => 'form-horizontal', 'id' => 'form_adicionar', 'name' => 'frmfacilities','onSubmit' => 'BeforeSubmit()')
     );
 
         echo form_open('facilities/editar/'.$fclt->id,$attributes['form']);
@@ -64,8 +64,18 @@
             <div class="control-group">
                 <label for="tipoagendamento" class="control-label">Tipo de Agendamento</label>
                 <div class="controls">
-                    <input type="radio" value="calendario" checked="checked" name="tipo_agendamento">Calendario
-                    <input type="radio" value="individualizado" name="tipo_agendamento">Individualizado
+                    <input type="radio" value="<?php echo TIPO_AGENDAMENTO_AGENDA; ?>" <?php if($fclt->tipo_agendamento == TIPO_AGENDAMENTO_AGENDA): ?> checked="checked" <?php endif; ?> name="tipo_agendamento">Calendario
+                    <input type="radio" value="<?php echo TIPO_AGENDAMENTO_INDIVIDUALIZADA; ?>" <?php if($fclt->tipo_agendamento == TIPO_AGENDAMENTO_INDIVIDUALIZADA): ?> checked="checked" <?php endif; ?> name="tipo_agendamento">Individualizado
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="status" class="control-label">Status</label>
+                <div class="controls">
+                    <input type="radio" value="<?php echo STATUS_FACILITIES_ATIVO; ?>" <?php if($fclt->status == STATUS_FACILITIES_ATIVO): ?> checked="checked" <?php endif; ?> name="status">Ativo
+                    <input type="radio" value="<?php echo STATUS_FACILITIES_INATIVO; ?>" <?php if($fclt->status == STATUS_FACILITIES_INATIVO): ?> checked="checked" <?php endif; ?> name="status">Inativo
+                    <?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
+                    	<input type="radio" value="<?php echo STATUS_FACILITIES_EXCLUIDO; ?>" <?php if($fclt->status == STATUS_FACILITIES_EXCLUIDO): ?> checked="checked" <?php endif; ?> name="status">Excluido
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -83,19 +93,24 @@
                         <p>Administradores não selecionados</p>
 
                         <select name="administradores_1" id="administradores_1" multiple="" size="10">
-                            
                             <?php 
-                                $user = new Usuario();
-                                
-                                $user->select('id, nome, credencial')->where('credencial', CREDENCIAL_USUARIO_ADMIN)->get();
-                                
-                                foreach ($user as $u){
-                                    echo "<option value='";
-                                    echo "$u->id'";
-                                    echo ">$u->nome</option>";
-                                }
-                            
-                            ?>
+								$cd = new Usuario();
+								$ft = new Facility();
+								$cd->where('credencial',CREDENCIAL_USUARIO_ADMIN)->get();
+								
+								$i=0;
+								foreach($cd as $ncd)
+								{
+									$ft->include_related('usuarios','*')->where('id',$fclt->id)->get();
+									$j = false;
+									foreach($ft as $fct)
+									{
+										if ($fct->usuario_nome == $ncd->nome) $j = true;
+									}
+									if (!$j) echo "<option value='" . $ncd->id . "'>" . $ncd->nome . "</option>";
+									$i++;
+								}
+							?>
                         </select>
                 </div>
                 <div class="selecionador_botoes">
@@ -106,6 +121,18 @@
                 <div class="selecionador_segundo">
                         <p>Administradores selecionados</p>
                         <select name="administradores_2" id="administradores_2" multiple="" size="10">
+                        <?php 
+								$cd = new Usuario();
+								$ft = new Facility();
+								$ft->include_related('usuarios','*')->where('id',$fclt->id)->get();
+								$i=0;
+								foreach($ft as $fct)
+								{
+									if ($fct->usuario_credencial == CREDENCIAL_USUARIO_ADMIN)
+										echo "<option value='" . $fct->usuario_id . "'>" . $fct->usuario_nome . "</option>";
+									$i++;
+								}
+							?>
                         </select>
                 </div>
                 <script type="text/javascript"><!--

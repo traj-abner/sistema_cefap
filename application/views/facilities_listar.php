@@ -50,7 +50,7 @@
     <?php } ?>      
      
 <table class="table">
-    <caption >Lista de Usuários</caption>
+    <caption >Lista de Facilities</caption>
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
@@ -111,7 +111,13 @@
                 <tr class="listar_facilities" id="id-<?php echo $fclt->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
                         <td><?php echo $fclt->nome;?></td>
-                        <td><?php echo $fclt->tipo_agendamento;?></td>
+                        <td><?php 
+							if ($fclt->tipo_agendamento == TIPO_AGENDAMENTO_AGENDA):
+								echo 'Calendario';
+							else:
+								echo 'Individualizado';
+							endif;
+						?></td>
                         <td align="center"><a href="#myModal<?php echo $fclt->id; ?>" role="button" class="btn" data-toggle="modal">Visualizar</a></td>
                         <td><?php echo $fclt->arquivos;?></td>
                         <td>

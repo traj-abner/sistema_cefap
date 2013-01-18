@@ -4,12 +4,7 @@
     #tipo_agendamento {margin: 35px 15px;}
 	#fclt_ver_nome_abreviado { max-width:510px }
 </style>
-<script src="<?php echo base_url(); ?>js/jquery.weekcalendar.js"></script> 
-<script src="<?php echo base_url(); ?>js/calendar.js"></script> 
-<link rel="stylesheet" type="text/css"
-href="<?php echo base_url(); ?>js/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" 
-href="<?php echo base_url(); ?>js/jquery.weekcalendar.css"/>
+ 
 <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <div id="fclt_ver_nome_abreviado"> 
@@ -77,9 +72,9 @@ href="<?php echo base_url(); ?>js/jquery.weekcalendar.css"/>
         </div>
         
         <div class="form-actions">
-        <?php //@todo calendário ?>
+        <?php //@TODO calendário ?>
             <h2><p>Calendário de agendamento</p></h2>
-            <div class="span2"><div id="calendar_wrapper" style="height:500px"></div> </div>    
+                <iframe src="https://www.google.com/calendar/embed?src=r48fg6mnjqjesb3j14rn0ieo9c%40group.calendar.google.com&ctz=America/Sao_Paulo" style="border: 0" width="680" height="600" frameborder="0" scrolling="no"></iframe>
         </div>
         
         <div class="form-actions">
@@ -92,4 +87,3 @@ href="<?php echo base_url(); ?>js/jquery.weekcalendar.css"/>
     <div class="modal-footer">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">Fechar</button>
     </div>
-
