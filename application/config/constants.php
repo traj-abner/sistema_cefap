@@ -90,6 +90,10 @@
 	define("TIPO_CAMPO_UPLOAD", 4);
 	define("TIPO_CAMPO_SELECT", 5);
 	define("TIPO_CAMPO_PASSWORD", 6);
+	
+	define("SIMBOLO_MOEDA","R$");
+	define("SIMBOLO_MOEDA_ISO","BRL");
+	
 
 	define("INSTITUICOES_FOMENTO", serialize(array("Fapesp", "CNPq", "CAPES", "FINEP", "Outros")));
         

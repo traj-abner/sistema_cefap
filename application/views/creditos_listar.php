@@ -1,6 +1,8 @@
 
 <?php 
     $this->load->view('header');  
+	$today = getdate();
+	#@TODO definir nível de acesso
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
 <div id="myModal" class="modal hide fade">
@@ -50,51 +52,75 @@
     <?php } ?>      
      
 <table class="table">
-    <caption >Lista de Facilities</caption>
+    <caption >Lista de Boletos</caption>
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
-                        <th><a href='<?php echo base_url("facilities/listar/nome/$limit/$perpage/ASC"); ?>'>Nome
+                        <th><a href='<?php echo base_url("creditos/listar/nosso_numero/$limit/$perpage/ASC"); ?>'>Nosso Numero
                             <?php 
-                                if(isset($img) && $img == 'nome'){
+                                if(isset($img) && $img == 'nosso_numero'){
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/nome/$limit/$perpage/DESC");
+                                    echo base_url("creditos/listar/nosso_numero/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/nome/$limit/$perpage/ASC");
+                                    echo base_url("creditos/listar/nosso_numero/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/ASC"); ?>'>Agendamento
+                        <th><a href='<?php echo base_url("creditos/listar/valor_total/$limit/$perpage/ASC"); ?>'>Valor
                             <?php 
-                                if(isset($img) && $img == 'tipo_agendamento'){
+                                if(isset($img) && $img == 'valor_total'){
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/DESC");
+                                    echo base_url("creditos/listar/valor_total/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/tipo_agendamento/$limit/$perpage/ASC");
+                                    echo base_url("creditos/listar/valor_total/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href=''>Administradores
-                            
-                            </a>
-                        </th>
-                        <th><a href='<?php echo base_url("facilities/listar/arquivos/$limit/$perpage/ASC"); ?>'>Arquivos
+                        <th><a href='<?php echo base_url("creditos/listar/usuario_nome/$limit/$perpage/ASC"); ?>'>Usuario
                             <?php 
-                                if(isset($img) && $img == 'arquivos'){
+                                if(isset($img) && $img == 'usuario_nome'){
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/arquivos/$limit/$perpage/DESC");
+                                    echo base_url("creditos/listar/usuario_nome/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("facilities/listar/arquivos/$limit/$perpage/ASC");
+                                    echo base_url("creditos/listar/usuario_nome/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
+                            </a>
+                        </th>
+                        <th><a href='<?php echo base_url("creditos/listar/data_vencimento/$limit/$perpage/ASC"); ?>'>Data de Vencimento
+                            <?php 
+                                if(isset($img) && $img == 'data_vencimento'){
+                                    echo '<a href="';
+                                    echo base_url("creditos/listar/data_vencimento/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("creditos/listar/data_vencimento/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
+                            </a>
+                        </th>
+                        <th><a href='<?php echo base_url("creditos/listar/status/$limit/$perpage/ASC"); ?>'>Status
+                            <?php 
+                                if(isset($img) && $img == 'status'){
+                                    echo '<a href="';
+                                    echo base_url("creditos/listar/status/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("creditos/listar/status/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
@@ -106,79 +132,66 @@
         </thead>
         
         <tbody>  
-            <?php foreach($fclts as $fclt){ ?>
+            <?php 
+			$i = 0;
+			foreach($bols as $bol): ?>
 
-                <tr class="listar_facilities" id="id-<?php echo $fclt->id?>">
+                <tr class="listar_facilities" id="id-<?php echo $bol->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td><?php echo $fclt->nome;?></td>
+                        <td><?php echo $bol->nosso_numero;?></td>
+                        <td><?php echo SIMBOLO_MOEDA_ISO . '&nbsp;' . $bol->valor_total?></td>
+                        <td align="center"><?php echo $bol->usuario_nome; ?></td>
+                        <td><?php echo $dvc[$i];?></td>
                         <td><?php 
-							if ($fclt->tipo_agendamento == TIPO_AGENDAMENTO_AGENDA):
-								echo 'Calendario';
-							else:
-								echo 'Individualizado';
-							endif;
-						?></td>
-                        <td align="center"><a href="#myModal<?php echo $fclt->id; ?>" role="button" class="btn" data-toggle="modal">Visualizar</a></td>
-                        <td><?php echo $fclt->arquivos;?></td>
+							switch ($bol->status):
+								case STATUS_BOLETO_EM_ABERTO: echo 'Em Aberto'; break;
+								case STATUS_BOLETO_VENCIDO: echo 'Vencido'; break;
+								case STATUS_BOLETO_PAGO: echo 'Pago'; break;
+								case STATUS_BOLETO_CANCELADO: echo 'Cancelado'; break;
+							endswitch;
+						?>
+                        </td>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
                                 
-                                <option value="ver_detalhes">Ver detalhes</option>
-                                <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>                                      
-									<?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN): ?>
-                                        <option value='<?php echo ("facilities/editar/$fclt->id"); ?>'>Editar</option>
-                                    <?php endif; ?>
-                                    <?php
-                                    $ft = new Facility();
-                                    $ft->include_related('usuarios','*')->where('id', $fclt->id)->where('usuario_id',$uID)->get();
-                                    if ($ft->usuario_id == $uID || $uRole == CREDENCIAL_USUARIO_SUPERADMIN):
-                                    ?>
-                                        <option value="ver_extrato">Ver extrato</option>
-                                        <?php if ($fclt->status == STATUS_FACILITIES_ATIVO):?>
-                                            <option value="<?php echo ("facilities/inativar/$fclt->id"); ?>">Inativar</option>
+                                <option value="ver_detalhes">Ver detalhes</option>                                   
+                                        <option value='<?php echo ("creditos/enviar/$bol->id"); ?>'>Enviar ao Usu&aacute;rio</option>
+                                        <option value=''>Dados do Usu&aacute;rio</option>
+                                        <?php if ($bol->status != STATUS_BOLETO_PAGO):?>
+                                            <option value="<?php echo ("creditos/pago/$bol->id"); ?>">Marcar como Pago</option>
                                         <?php else: ?>
-                                            <option value="<?php echo ("facilities/ativar/$fclt->id"); ?>">Ativar</option>
+                                            <option value="<?php echo ("creditos/pendente/$bol->id"); ?>">Marcar como Pendente</option>
                                         <?php endif; ?>
-                                        <?php if ($fclt->status != STATUS_FACILITIES_EXCLUIDO && $uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
-                                            <option value="<?php echo ("facilities/excluir/$fclt->id"); ?>">Excluir</option>
-                                        <?php endif;
-                                	endif;
-                                endif; ?>
+                                        <?php
+										if($bol->status == STATUS_BOLETO_EM_ABERTO):
+											$d_vc = explode('/',$dvc[$i]);
+											if($today['year'] > $d_vc[2]): 
+											 ?>
+												<option value="<?php echo ("creditos/vencido/$bol->id"); ?>">Marcar como Vencido</option>
+											<?php 
+											else:
+												if($today['month'] >= $d_vc[1] && $today['mday'] > $d_vc[0]):?>
+													<option value="<?php echo ("creditos/vencido/$bol->id"); ?>">Marcar como Vencido</option>
+												<?php endif; 
+											endif; 
+										endif;?>
+                                        <?php if ($bol->status < STATUS_BOLETO_PAGO):?>
+                                            <option value="<?php echo ("creditos/excluir/$bol->id"); ?>">Cancelar Boleto</option>
+                                        <?php endif; ?>
+                                        <?php if ($bol->status == STATUS_BOLETO_PAGO && $uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
+                                            <option value="<?php echo ("creditos/excluir/$fclt->id"); ?>">Cancelar Boleto</option>
+                                        <?php endif; ?>
                             </select>
                         </td>
                 </tr>
-                <div id="myModal<?php echo $fclt->id; ?>" style="height:200px; width: 350px; min-height:120px; margin-left:0px; margin-top:70px;" class="modal hide fade">
-                    <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 id="myModalLabel">Lista de Administradores da Facility <?php echo $fclt->nome; ?></h3>
-                    </div>
-                    <div class="modal-body-small">
-                    	<ul>
-							<?php 
-								$cd = new Usuario();
-								$ft = new Facility();
-								$ft->include_related('usuarios','*')->where('id',$fclt->id)->get();
-								$i=0;
-								foreach($ft as $fct)
-								{
-									if ($i == 0 && strlen($fct->usuario_nome) < 1)
-										echo 'Nenhum registro encontrado';
-									echo '<li>'.$fct->usuario_nome.'</li>';
-									$i++;
-								}
-							?>
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
-                    </div>
-                </div>
-                <?php } ?>
+                
+                <?php $i++;
+				endforeach; ?>
         
         </tbody>
     </table>
-         
+        
     <?php echo $page; ?>
     
     
@@ -213,12 +226,12 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("facilities/listar/id");  ?>' + '/' + option + '/1' ;
+           window.location.href = '<?php echo base_url("creditos/listar/id");  ?>' + '/' + option + '/1' ;
         });
 		jQuery('#gotopage').change(function(){
 		   var qtd = $("#selectQntd option:selected").val();
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("facilities/listar/id");  ?>' + '/' + qtd + '/' + option ;
+           window.location.href = '<?php echo base_url("creditos/listar/id");  ?>' + '/' + qtd + '/' + option ;
         });
 		
 				   
@@ -243,7 +256,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('facilities/mudar_status'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('creditos/mudar_status'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um usuário');
                          return;
@@ -261,7 +274,7 @@
                         id = id[1];
                         
                         jQuery.ajax({
-                            url: "<?php echo base_url("facilities/ver/"); ?>/" + id,
+                            url: "<?php echo base_url("creditos/ver/"); ?>/" + id,
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);
@@ -274,7 +287,7 @@
                         id = id[1];
                         
                         jQuery.ajax({
-                            url: "<?php echo base_url("facilities/extrato/"); ?>/" + id,
+                            url: "<?php echo base_url("creditos/extrato/"); ?>/" + id,
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);

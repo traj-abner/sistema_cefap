@@ -11,11 +11,7 @@
             <h1><?php echo $fclt->nome_abreviado; ?><br /></h1>
         </div>
        
-        
-        <div class="btn-right">
-            <input type="submit" class="btn" name="submit" value="Log de acesso">
-            <input type="button" class="btn" name="cancelar" value="Escrever Mensagem">
-        </div>    
+          
 <br />
         <div class="user_info">
 			<div id="fclt_ver_nome">
@@ -34,8 +30,17 @@
         <div class="form-actions">
             <h2><p>Informações Gerais</p></h2>
             <div class="btn-right">
-                <button type="button" class="btn pull-right" name="submit" onClick="<?php /*base_url("usuarios/editar/$user->id")*/ ?>">Editar</button>
+            <?php
+				$ft = new Facility();
+				$ft->include_related('usuarios','*')->where('id', $fclt->id)->where('usuario_id',$uID)->get();
+				$cd = new Usuario();
+				$cd->where('id',$ft->usuario_id)->get();
+				if ($ft->usuario_id == $uID || $cd->credencial == CREDENCIAL_USUARIO_SUPERADMIN):
+			?>
+                <button type="button" class="btn pull-right" name="submit" onClick="<?php echo base_url("facilities/editar/$fclt->id"); ?>">Editar</button>
+                <?php endif; ?>
             </div>
+            
         </div>
 
         <div class="fclt_info">  

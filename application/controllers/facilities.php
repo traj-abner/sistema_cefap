@@ -22,7 +22,7 @@ class Facilities extends CI_Controller {
     
     public function index(){
         
-        redirect('main');
+        redirect('facilities/listar');
     }
 	  
     public function listar(){
@@ -137,7 +137,7 @@ class Facilities extends CI_Controller {
 				$data['urlarray'] = $urlarray;  
                 $data['page'] =  $links;
          /*END PAGINAÇÃO*/     
-
+		$data['uID'] = $this->session->userdata('id');
         $data['title'] = 'Lista de Facilities';
         $this->load->view('facilities_listar',$data);
     }
@@ -215,7 +215,7 @@ class Facilities extends CI_Controller {
                     $data['msg_type'] = 'error';	
 				
                 }else {
-                    $data['msg'] = 'Inativa&ccedil;&atilde;o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg'] = 'Ativa&ccedil;&atilde;o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
                     $data['msg_type'] = 'alert-success';
                 }
 			redirect(base_url('facilities/listar',$data));
@@ -272,8 +272,9 @@ class Facilities extends CI_Controller {
         $fclt = new Facility();
         $fclt->where('id', $id);
         $fclt->get();
-            
+        $data['uID'] = $this->session->userdata('id'); 
         $data['fclt'] = $fclt;
+		
         
         $this->load->view('facilities_ver', $data);
     }

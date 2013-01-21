@@ -1,7 +1,27 @@
 sistema_cefap
 ================================================================================
+v0.15
+21/01/13 - Abner
+#descrição
+Implementada lista de boletos
+
+#changelog
+Criação da view e controller listar
+Implementadas funções de marcação: em aberto, vencido, cancelado, pago
+Criação de constantes para definição de símbolo de moeda corrente
+
+#known issues
+Há 2 campos com valor. Confirmar qual deve ser exibido na lista
+Confirmar qual tipo de exibição de moeda corrente: ISO4217 ou Local
+
+
+#todo
+ações com marcados
+
+================================================================================
+================================================================================
 v0.14
-17/01/13 - Abner
+18/01/13 - Abner
 #descrição
 Correções de interação com Banco de Dados
 
