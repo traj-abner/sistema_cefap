@@ -10,9 +10,9 @@
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Lista de Facilities</h2>
+    <div class="well"><h2>Lista de Boletos</h2>
         <div class="qntd_usuario_listar">
-            <h3>Usuários por página:</h3>
+            <h3>Boletos por página:</h3>
             <select id="selectQntd" class="input-mini">
                     <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
                     <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
@@ -46,10 +46,6 @@
             <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
             <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
     </ul>
-
-   <?php if($uRole == CREDENCIAL_USUARIO_SUPERADMIN){?>
-         <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='<?php echo base_url("facilities/adicionar");  ?>'" />
-    <?php } ?>      
      
 <table class="table">
     <caption >Lista de Boletos</caption>
@@ -136,11 +132,15 @@
 			$i = 0;
 			foreach($bols as $bol): ?>
 
-                <tr class="listar_facilities" id="id-<?php echo $bol->id?>">
+                <tr class="listar_usuario" id="usuario-<?php echo $bol->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
                         <td><?php echo $bol->nosso_numero;?></td>
-                        <td><?php echo SIMBOLO_MOEDA_ISO . '&nbsp;' . $bol->valor_total?></td>
-                        <td align="center"><?php echo $bol->usuario_nome; ?></td>
+                        <td><?php echo SIMBOLO_MOEDA . '&nbsp;' . number_format($bol->valor_total,2,DS,TS)?></td>
+                        <td><?php 
+						$usr = new Usuario();
+						$usr->where('id',$bol->usuario_id)->get();
+						echo $usr->nome;
+						 ?></td>
                         <td><?php echo $dvc[$i];?></td>
                         <td><?php 
 							switch ($bol->status):
@@ -157,30 +157,30 @@
                                 
                                 <option value="ver_detalhes">Ver detalhes</option>                                   
                                         <option value='<?php echo ("creditos/enviar/$bol->id"); ?>'>Enviar ao Usu&aacute;rio</option>
-                                        <option value=''>Dados do Usu&aacute;rio</option>
+                                        <option value='dados_pessoais' data-toggle="modal">Dados do Usu&aacute;rio</option>
                                         <?php if ($bol->status != STATUS_BOLETO_PAGO):?>
-                                            <option value="<?php echo ("creditos/pago/$bol->id"); ?>">Marcar como Pago</option>
+                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_PAGO); ?>">Marcar como Pago</option>
                                         <?php else: ?>
-                                            <option value="<?php echo ("creditos/pendente/$bol->id"); ?>">Marcar como Pendente</option>
+                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_EM_ABERTO); ?>">Marcar como Pendente</option>
                                         <?php endif; ?>
                                         <?php
 										if($bol->status == STATUS_BOLETO_EM_ABERTO):
 											$d_vc = explode('/',$dvc[$i]);
 											if($today['year'] > $d_vc[2]): 
 											 ?>
-												<option value="<?php echo ("creditos/vencido/$bol->id"); ?>">Marcar como Vencido</option>
+												<option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_VENCIDO); ?>">Marcar como Vencido</option>
 											<?php 
 											else:
 												if($today['month'] >= $d_vc[1] && $today['mday'] > $d_vc[0]):?>
-													<option value="<?php echo ("creditos/vencido/$bol->id"); ?>">Marcar como Vencido</option>
+													<option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_VENCIDO); ?>">Marcar como Vencido</option>
 												<?php endif; 
 											endif; 
 										endif;?>
                                         <?php if ($bol->status < STATUS_BOLETO_PAGO):?>
-                                            <option value="<?php echo ("creditos/excluir/$bol->id"); ?>">Cancelar Boleto</option>
+                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>
                                         <?php endif; ?>
                                         <?php if ($bol->status == STATUS_BOLETO_PAGO && $uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
-                                            <option value="<?php echo ("creditos/excluir/$fclt->id"); ?>">Cancelar Boleto</option>
+                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>
                                         <?php endif; ?>
                             </select>
                         </td>
@@ -191,7 +191,21 @@
         
         </tbody>
     </table>
-        
+    
+     <?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
+    <div class="select">
+        <p>Com marcados:
+            <select class="change_option" id="comMarcados">
+                <option value="selecione">Selecione...</option>
+                <option value="<?php echo STATUS_BOLETO_PAGO; ?>">Marcar como Pago</option>
+                <option value="<?php echo STATUS_BOLETO_EM_ABERTO; ?>">Marcar como Em Aberto</option>
+                <option value="<?php echo STATUS_BOLETO_VENCIDO; ?>">Marcar como Vencido</option>
+                <option value="<?php echo STATUS_BOLETO_CANCELADO; ?>">Marcar como Cancelado</option>
+            </select>
+        </p>
+    </div>
+    <?php endif; ?>
+    
     <?php echo $page; ?>
     
     
@@ -235,7 +249,7 @@
         });
 		
 				   
-        jQuery(".change_option").change(function(){
+         jQuery(".change_option").change(function(){
          
            var option = jQuery(this).val();
            
@@ -256,9 +270,9 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('creditos/mudar_status'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto'); ?>' + '/' + id + '/' + option;
                     }else{
-                         alert('Selecione pelo menos um usuário');
+                         alert('Selecione pelo menos um boleto');
                          return;
                     }
                 }
@@ -269,38 +283,27 @@
                         alert('Selecione outra opção');  
                     break;
 
-                    case 'ver_detalhes':      
-                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
+                    case 'dados_pessoais':      
+                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
                         id = id[1];
                         
                         jQuery.ajax({
-                            url: "<?php echo base_url("creditos/ver/"); ?>/" + id,
+                            url: "<?php echo base_url("usuarios/dados_pessoais/"); ?>/" + id + '/boleto',
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);
                             jQuery("#myModal").modal();
                         });
+						
                     break;
-                    
-                    case 'ver_extrato':
-                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
-                        id = id[1];
-                        
-                        jQuery.ajax({
-                            url: "<?php echo base_url("creditos/extrato/"); ?>/" + id,
-                            dataType: "html"
-                        }).done(function(data){
-                            jQuery("#myModal").html(data);
-                            jQuery("#myModal").modal();
-                        });
-                    
-                    break;
+
                     default:
-                        var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");
+                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
                         id = id[1];
                         window.location.href = '<?php echo base_url(''); ?>' + option;
                      break;
-                }  
+                } 
+				
            }
         });    
     });

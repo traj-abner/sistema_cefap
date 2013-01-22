@@ -509,6 +509,11 @@ class Usuarios extends CI_Controller{
     public function dados_pessoais(){
         
         $id = $this->uri->segment(3);
+		if ($this->uri->segment(4) == "boleto"):
+			$bol = new Boleto();
+			$bol->where('id',$id)->get();
+			$id = $bol->usuario_id;
+		endif;
         
         $user = new Usuario();
         $user->where('id', $id);

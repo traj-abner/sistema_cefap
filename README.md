@@ -1,5 +1,24 @@
 sistema_cefap
 ================================================================================
+v0.16
+22/01/13 - Abner
+#descrição
+Alterações módulo Créditos
+
+#changelog
+Correções na lista de boletos
+Implementadas ações para seleção multipla
+Iniciada lista de creditos->usuario
+
+#known issues
+BUG: ações com marcados
+
+
+#todo
+
+
+================================================================================
+================================================================================
 v0.15
 21/01/13 - Abner
 #descrição

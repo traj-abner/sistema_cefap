@@ -108,10 +108,10 @@ class Creditos extends CI_Controller{
 					$data['buttonArray'] = $buttonArray;
 					$data['page'] =  $links; 
 					/*END PAGINAÇÃO*/   
-					$usr->select('credencial')->where('id', $this->session->userdata('id'));
+					$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
 					// initialize user role with proper value
 					$data['uRole'] = $usr->credencial;
-					$bol->include_related('usuarios','*')->limit($limit, $offset)->get(); 
+					$bol->limit($limit, $offset)->get(); 
 					if(empty($order)):
 						$bol->order_by('id', $exib);
 					else:
@@ -137,66 +137,27 @@ class Creditos extends CI_Controller{
 			$this->load->view('creditos_listar',$data);
         
     }
-	
-	public function pago(){  
-        
-        $bol = new Boleto();
-        $bol->where('id', $this->uri->segment(3))->get();
-        $data['bol'] = $bol;
-        
-				$bol->status = STATUS_BOLETO_PAGO;
-                if( !$bol->save() ) { 
-				
-                    $data['msg'] = $fclt->error->string;;
-                    $data['msg_type'] = 'error';	
-				
-                }else {
-                    $data['msg'] = 'Pagamento do boleto ' .$bol->nosso_numero. ' confirmado com sucesso!';
-                    $data['msg_type'] = 'alert-success';
-                }
-			redirect(base_url('creditos/listar',$data));
-	}
-	
-	public function pendente(){  
-        
-        $bol = new Boleto();
-        $bol->where('id', $this->uri->segment(3))->get();
-        $data['bol'] = $bol;
-        		
-				$bol->status = STATUS_BOLETO_EM_ABERTO;
-                if( !$bol->save() ) { 
-				
-                    $data['msg'] = $fclt->error->string;;
-                    $data['msg_type'] = 'error';	
-				
-                }else {
-                    $data['msg'] = 'Altera&ccedil;&atilde;o do boleto ' .$bol->nosso_numero. ' confirmado com sucesso!';
-                    $data['msg_type'] = 'alert-success';
-                }
-			redirect(base_url('creditos/listar',$data));
-	}
-	
-	public function vencido(){  
-        
-        $bol = new Boleto();
-        $bol->where('id', $this->uri->segment(3))->get();
-        $data['bol'] = $bol;
-        		
-				$bol->status = STATUS_BOLETO_VENCIDO;
-                if( !$bol->save() ) { 
-				
-                    $data['msg'] = $fclt->error->string;;
-                    $data['msg_type'] = 'error';	
-				
-                }else {
-                    $data['msg'] = 'Altera&ccedil;&atilde;o do boleto ' .$bol->nosso_numero. ' confirmado com sucesso!';
-                    $data['msg_type'] = 'alert-success';
-                }
-			redirect(base_url('creditos/listar',$data));
-	}
     
     public function extrato(){
+		$usr = new Usuario();
+		$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
+		// initialize user role with proper value
+		$data['uRole'] = $usr->credencial;
+        $id = $this->uri->segment(3);
+		if ($this->uri->segment(4) == "boleto"):
+			$bol = new Boleto();
+			$bol->where('id',$id)->get();
+			$id = $bol->usuario_id;
+		endif;
         
+        $user = new Usuario();
+        $user->where('id', $id);
+        $user->get();
+		$cpf = substr($user->cpf,0,3).'.'.substr($user->cpf,3,3).'.'.substr($user->cpf,6,3).'-'.substr($user->cpf,9,2);
+        $data['cpf'] = $cpf;
+        $data['user'] = $user;
+        
+        $this->load->view('creditos_extrato', $data);
         
     }
     
@@ -221,8 +182,41 @@ class Creditos extends CI_Controller{
     }
     
     public function mudar_status_boleto(){
-        
-        
+        $bol = new Boleto();
+        $bol->include_related('usuario','*')->where('id', $this->uri->segment(3))->get();
+        $data['bol'] = $bol;
+        		
+				$bol->status = $this->uri->segment(4);
+                if( !$bol->save() ) { 
+				
+                    $data['msg'] = $fclt->error->string;;
+                    $data['msg_type'] = 'error';	
+				
+                }else {
+					$today = getdate();
+					switch ($bol->status):
+								case STATUS_BOLETO_EM_ABERTO: $b_st = 'Em Aberto'; break;
+								case STATUS_BOLETO_VENCIDO: $b_st = 'Vencido'; break;
+								case STATUS_BOLETO_PAGO: $b_st = 'Pago'; break;
+								case STATUS_BOLETO_CANCELADO: $b_st = 'Cancelado'; break;
+							endswitch;
+                    $this->load->library('email');
+				    
+                                
+					$this->email->from(EMAIL_FROM, EMAIL_NAME);
+					$this->email->to($bol->usuario_email);
+					
+					$this->email->subject('Alteração no Boleto '.$bol->nosso_numero);
+					  $this->email->message('Olá, ' .$bol->usuario_nome. '!<br /><br />O status do boleto nº ' . $bol->nosso_numero . ' foi atualizado para "' . $b_st . '" em ' . $today['mday'] . '/' . $today['mon'] . '/' . $today['year'] . ' &agrave;s ' . $today['hours'] . 'h' . $today['minutes'] . '.');
+					
+					$this->email->send();
+					
+                }
+				
+		
+		
+		
+		redirect(base_url('creditos/listar',$data));
     }
     
     public function mudar_status_lancamento(){

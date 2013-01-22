@@ -261,7 +261,7 @@
                                 <option value="<?php echo ("mensagens/escrever"); ?>">Enviar Mensagem</option>
                                 <option value="<?php echo ("relatorios/logdeuso"); ?>">Log de Acesso</option>
                                 <option value="<?php echo ("agendamentos/listar"); ?>">Agendamentos</option>
-                                <option value="<?php echo ("creditos/listar"); ?>">Créditos</option>
+                                <option value='creditos' data-toggle="modal">Créditos</option>
                                 
                                 
                                 <?php if($this->uRole == CREDENCIAL_USUARIO_ADMIN){
@@ -456,6 +456,20 @@
                         
                         jQuery.ajax({
                             url: "<?php echo base_url("usuarios/dados_pessoais/"); ?>/" + id,
+                            dataType: "html"
+                        }).done(function(data){
+                            jQuery("#myModal").html(data);
+                            jQuery("#myModal").modal();
+                        });
+						
+                    break;
+					
+					case 'creditos':      
+                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        id = id[1];
+                        
+                        jQuery.ajax({
+                            url: "<?php echo base_url("creditos/extrato/"); ?>/" + id,
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);

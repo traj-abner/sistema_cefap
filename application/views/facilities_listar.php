@@ -10,7 +10,7 @@
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
     <div class="well"><h2>Lista de Facilities</h2>
         <div class="qntd_usuario_listar">
-            <h3>Usuários por página:</h3>
+            <h3>Facilities por página:</h3>
             <select id="selectQntd" class="input-mini">
                     <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
                     <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>

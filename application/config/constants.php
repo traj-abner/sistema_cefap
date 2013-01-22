@@ -2,6 +2,8 @@
 
 	#DECIMAL SEPARATOR
 	define("DS", ".");
+	#THOUSAND SEPARATOR
+	define("TS",",");
 
 	define("BACKUP_ARQUIVOS_EXCLUIDOS", 0);
 	define("BACKUP_ARQUIVOS_PRESENTES", 1);
@@ -94,7 +96,6 @@
 	define("SIMBOLO_MOEDA","R$");
 	define("SIMBOLO_MOEDA_ISO","BRL");
 	
-
 	define("INSTITUICOES_FOMENTO", serialize(array("Fapesp", "CNPq", "CAPES", "FINEP", "Outros")));
         
         define("EMAIL_FROM", 'thais.dias@trajettoria.com');
