@@ -135,7 +135,7 @@
                 <tr class="listar_usuario" id="usuario-<?php echo $bol->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
                         <td><?php echo $bol->nosso_numero;?></td>
-                        <td><?php echo SIMBOLO_MOEDA . '&nbsp;' . number_format($bol->valor_total,2,DS,TS)?></td>
+                        <td><?php echo SIMBOLO_MOEDA . '&nbsp;' . number_format($bol->valor_total,2,TS,DS)?></td>
                         <td><?php 
 						$usr = new Usuario();
 						$usr->where('id',$bol->usuario_id)->get();

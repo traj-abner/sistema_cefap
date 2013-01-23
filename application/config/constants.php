@@ -46,6 +46,7 @@
 
 	define("STATUS_LANCAMENTO_ATIVO", 0);
 	define("STATUS_LANCAMENTO_INATIVO", 1);
+	define("STATUS_LANCAMENTO_CANCELADO",2);
 
 	define("STATUS_BOLETO_EM_ABERTO", 0);	// antes do vencimento E não pago
 	define("STATUS_BOLETO_VENCIDO", 1);		// depois do vencimento E não pago

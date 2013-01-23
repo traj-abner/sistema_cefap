@@ -302,7 +302,6 @@ class Facilities extends CI_Controller {
     
     public function extrato(){
         
-        $this->load->view('facilities_extrato');
         
     }
     

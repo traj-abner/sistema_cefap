@@ -261,7 +261,7 @@
                                 <option value="<?php echo ("mensagens/escrever"); ?>">Enviar Mensagem</option>
                                 <option value="<?php echo ("relatorios/logdeuso"); ?>">Log de Acesso</option>
                                 <option value="<?php echo ("agendamentos/listar"); ?>">Agendamentos</option>
-                                <option value='creditos' data-toggle="modal">Créditos</option>
+                                <option value='<?php echo ("creditos/extrato/$u->id"); ?>'>Créditos</option>
                                 
                                 
                                 <?php if($this->uRole == CREDENCIAL_USUARIO_ADMIN){

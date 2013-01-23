@@ -1,7 +1,7 @@
 <?php
 class Lancamento extends Datamapper{
     
-    public $model = 'lancamento';
+    public $table = 'lancamentos';
     public $created_field = 'created';
     public $updated_field = 'modified';
     
