@@ -19,7 +19,7 @@
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2><strong class="nome"><?php echo $usr->nome; ?></strong> (Saldo)<br /><strong class="saldo"><?php echo SIMBOLO_MOEDA . '&nbsp;' . number_format($sum,2,TS,DS)?></strong></h2>
+    <div class="well"><h2><strong class="nome"><?php echo $usr->nome; ?></strong> (Saldo)<br /><strong class="saldo"><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($sum,2,TS,DS)?></strong></h2>
         <div class="qntd_usuario_listar">
             <h3>Lan&ccedil;amentos por página:</h3>
             <select id="selectQntd" class="input-mini">
@@ -173,7 +173,7 @@
 							endswitch;
 						endif;	
 						 ?></td>
-                        <td class="lancamento<?php echo $lc->tipo; ?>"><?php if ($lc->tipo == LANCAMENTO_DEBITO) echo '- '; ?><?php echo SIMBOLO_MOEDA . '&nbsp;' . number_format($lc->valor,2,TS,DS)?></td>
+                        <td class="lancamento<?php echo $lc->tipo; ?>"><?php if ($lc->tipo == LANCAMENTO_DEBITO) echo '- '; ?><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($lc->valor,2,TS,DS)?></td>
                         <td><?php 
 						switch ($lc->status):
 								case STATUS_LANCAMENTO_ATIVO: echo 'Ativo'; break;
@@ -228,12 +228,12 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id");  ?>' + '/' + option + '/1' ;
+           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id/modified");  ?>' + '/' + option + '/1' ;
         });
 		jQuery('#gotopage').change(function(){
 		   var qtd = $("#selectQntd option:selected").val();
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id");  ?>' + '/' + qtd + '/' + option ;
+           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id/modified");  ?>' + '/' + qtd + '/' + option ;
         });
 		
 				   

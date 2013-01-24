@@ -8,12 +8,12 @@ class Lancamento extends Datamapper{
     public $has_one = array(
             'usuario'      => array(			// in the code, we will refer to this relation by using the object name 'book'
                     'class'         => 'usuario',			// This relationship is with the model class 'book'
-                    'other_field'   => 'lancamentos'
+                    'other_field'   => 'lancamento'
              ),
         
             'boleto' => array(			// in the code, we will refer to this relation by using the object name 'book'
                     'class' => 'boleto',			// This relationship is with the model class 'book'
-                    'other_field' => 'lancamentos'
+                    'other_field' => 'lancamento'
               ),
                             
             'autor' => array(			// in the code, we will refer to this relation by using the object name 'book'
@@ -25,7 +25,10 @@ class Lancamento extends Datamapper{
                     'class' => 'usuario',			// This relationship is with the model class 'book'
                     'other_field' => 'lancamentos_cancelados'
               ),
-        
+        	'facility' => array(			
+                    'class' => 'facility',			
+                    'other_field' => 'lancamento'
+              ),
         );
     
    public $has_many = array();

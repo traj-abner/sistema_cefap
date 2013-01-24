@@ -1,5 +1,21 @@
 sistema_cefap
 ================================================================================
+v0.18
+24/01/13 - Abner
+#descrição
+Alterações módulo Créditos
+
+#changelog
+Implementada lista de lançamentos para o superadmin, incluindo alterações no status (ativo, inativo, cancelado) e lista de lançamentos cancelados
+
+#known issues
+
+
+#todo
+ações com marcados
+
+================================================================================
+================================================================================
 v0.17
 23/01/13 - Abner
 #descrição

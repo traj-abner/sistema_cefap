@@ -20,7 +20,7 @@ class Creditos extends CI_Controller{
 		endswitch;
 	}
 	
-	
+
    public function __constructor(){
         
         parent::__constructor();
@@ -47,94 +47,100 @@ class Creditos extends CI_Controller{
 			$bol = new Boleto();
 			$usr = new Usuario();
 			
-			$limit = $npage = $paqe = $offset = 1;
-			$total = $bol->count();
-			if ($total > 0 ):
-					$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
-					$limit = $this->uri->segment(4, 5); #limite de resultados por página
-					$npage = $this->uri->segment(5, 0); //número da página 
-					$exib = $this->uri->segment(6,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
-	
-				$offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
-				if($offset < 0):
-					$offset = 0;
-				endif;				
-			 
-			 	 
+			$usr->where('id', $this->session->userdata('id'))->get();
+			if ($usr->credencial == CREDENCIAL_USUARIO_COMUM):
+				header( 'Location: ' . base_url('creditos/extrato/'.$usr->id) ) ;
 			else:
 				
-			endif; 
-			
-			/* PAGINAÇÃO */
-				$pagination = $total / $limit;
-				$page = ceil($pagination);
-				$links = "";
-				if ($npage > $page)
-						{
-							$buttonArray[2] = '#';
-							$buttonArray[3] = '#';
+				$limit = $npage = $paqe = $offset = 1;
+				$total = $bol->count();
+				if ($total > 0 ):
+						$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
+						$limit = $this->uri->segment(4, 5); #limite de resultados por página
+						$npage = $this->uri->segment(5, 0); //número da página 
+						$exib = $this->uri->segment(6,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
+		
+					$offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
+					if($offset < 0):
+						$offset = 0;
+					endif;				
+				 
+					 
+				else:
+					
+				endif; 
+				
+				/* PAGINAÇÃO */
+					$pagination = $total / $limit;
+					$page = ceil($pagination);
+					$links = "";
+					if ($npage > $page)
+							{
+								$buttonArray[2] = '#';
+								$buttonArray[3] = '#';
+							}
+					for($i = 1; $i <= $page; $i++){
+						$order = $this->uri->segment(3, 'id');
+		
+						$url = base_url("creditos/listar/$order/$limit/$i");
+						$links .= "<a href='$url'>$i</a>&nbsp;";   
+						$urlarray[$i-1]=$url;
+									if ($i == 1) 
+									{
+										$buttonArray[0] = $url;
+										$buttonArray[1] = '#';
+									}
+									if ($i >= 1) 
+											if ($i == $npage - 1):
+												$buttonArray[1] = $url;
+											endif;
+									else
+										$buttonArray[1] = '#';
+									if ($i <= $page)
+									{
+											if ($i == $npage): $buttonArray[2] = '#'; endif;
+											if ($i == $npage + 1): $buttonArray[2] = $url; endif;
+									}
+									else
+										$buttonArray[2] = '#';
+									if ($i == $page) 
+									{
+										$buttonArray[3] = $url;
+									}
 						}
-				for($i = 1; $i <= $page; $i++){
-					$order = $this->uri->segment(3, 'id');
-	
-					$url = base_url("creditos/listar/$order/$limit/$i");
-					$links .= "<a href='$url'>$i</a>&nbsp;";   
-					$urlarray[$i-1]=$url;
-								if ($i == 1) 
-								{
-									$buttonArray[0] = $url;
-									$buttonArray[1] = '#';
-								}
-								if ($i >= 1) 
-										if ($i == $npage - 1):
-											$buttonArray[1] = $url;
-										endif;
-								else
-									$buttonArray[1] = '#';
-								if ($i <= $page)
-								{
-										if ($i == $npage): $buttonArray[2] = '#'; endif;
-										if ($i == $npage + 1): $buttonArray[2] = $url; endif;
-								}
-								else
-									$buttonArray[2] = '#';
-								if ($i == $page) 
-								{
-									$buttonArray[3] = $url;
-								}
-					}
-					
-					$data['limit'] = $limit;    
-					$data['buttonArray'] = $buttonArray;
-					$data['page'] =  $links; 
-					/*END PAGINAÇÃO*/   
-					$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
-					// initialize user role with proper value
-					$data['uRole'] = $usr->credencial;
-					$bol->limit($limit, $offset)->get(); 
-					if(empty($order)):
-						$bol->order_by('id', $exib);
-					else:
-						$bol->order_by($order, $exib);
-					endif;
-					$bol->get();
-					$data['img'] = $order;
-					$data['bols'] = $bol; 
-					$data['limit'] = $limit;
-					$data['offset'] = $offset;
-					$data['perpage'] = $npage;
-					$i = 0;
-					foreach($bol as $bl):
-						$dvc = explode('-',$bl->data_vencimento);
-						$d_vc[$i] = $dvc[2] . '/' . $dvc[1] . '/' . $dvc[0];
-						$i++;
-					endforeach;
-					$data['dvc'] = $d_vc;
-					
-			$data['uID'] = $this->session->userdata('id');
-			$data['title'] = 'Lista de Boletos';
-			
-			$this->load->view('creditos_listar',$data);
+						
+						$data['limit'] = $limit;    
+						$data['buttonArray'] = $buttonArray;
+						$data['page'] =  $links; 
+						/*END PAGINAÇÃO*/   
+						$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
+						// initialize user role with proper value
+						$data['uRole'] = $usr->credencial;
+						$bol->limit($limit, $offset)->get(); 
+						if(empty($order)):
+							$bol->order_by('id', $exib);
+						else:
+							$bol->order_by($order, $exib);
+						endif;
+						$bol->get();
+						$data['img'] = $order;
+						$data['bols'] = $bol; 
+						$data['limit'] = $limit;
+						$data['offset'] = $offset;
+						$data['perpage'] = $npage;
+						$i = 0;
+						foreach($bol as $bl):
+							$dvc = explode('-',$bl->data_vencimento);
+							$d_vc[$i] = $dvc[2] . '/' . $dvc[1] . '/' . $dvc[0];
+							$i++;
+						endforeach;
+						$data['dvc'] = $d_vc;
+						
+				$data['uID'] = $this->session->userdata('id');
+				$data['title'] = 'Lista de Boletos';
+				
+				$this->load->view('creditos_listar',$data);
+			endif;
         
     }
     
@@ -251,13 +257,142 @@ class Creditos extends CI_Controller{
         $this->load->view('creditos_extrato', $data);
         
     }
-    
+	
+	public function pdf(){
+		
+
+
+    }
+	
     public function inserir(){
         
         
     }
     
     public function lancamentos(){
+        $lcn = new Lancamento();
+		$usr = new Usuario();
+		$lcl = new Lancamento();
+		
+		for ($i = 0; $i < 4; $i++) $buttonArray[$i] = '#';
+		
+		$limit = $npage = $paqe = $offset = 1;
+		$exib = 'DESC';
+		$order = 'modified';
+		$total = $lcn->count();
+		$data['numrows'] = $total;
+		if ($total > 0 ):
+			if ($this->uri->segment(3) == 'cancelados'):
+				$order = $this->uri->segment(4, NULL); #ordena de acordo com a opção escolhida pelo usuário
+				$limit = $this->uri->segment(5, 5); #limite de resultados por página
+				$npage = $this->uri->segment(6, 0); //número da página 
+				$exib = $this->uri->segment(7,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
+			else:
+				$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
+				$limit = $this->uri->segment(4, 5); #limite de resultados por página
+				$npage = $this->uri->segment(5, 0); //número da página 
+				$exib = $this->uri->segment(6,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
+			endif;
+
+			$offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
+			if($offset < 0):
+				$offset = 0;
+			endif;				
+		 
+			 
+		else:
+			
+		endif; 
+		
+		/* PAGINAÇÃO */
+			$pagination = $total / $limit;
+			$page = ceil($pagination);
+			$links = "";
+			if ($npage > $page)
+					{
+						$buttonArray[2] = '#';
+						$buttonArray[3] = '#';
+					}
+			for($i = 1; $i <= $page; $i++){
+				$order = $this->uri->segment(4, 'id');
+
+				$url = base_url("creditos/lancamentos/$order/$limit/$i");
+				if ($this->uri->segment(3) == 'cancelados') $url = base_url("creditos/lancamentos/cancelados/$order/$limit/$i"); 
+				$links .= "<a href='$url'>$i</a>&nbsp;";   
+				$urlarray[$i-1]=$url;
+							if ($i == 1) 
+							{
+								$buttonArray[0] = $url;
+								$buttonArray[1] = '#';
+							}
+							if ($i >= 1) 
+									if ($i == $npage - 1):
+										$buttonArray[1] = $url;
+									endif;
+							else
+								$buttonArray[1] = '#';
+							if ($i <= $page)
+							{
+									if ($i == $npage): $buttonArray[2] = '#'; endif;
+									if ($i == $npage + 1): $buttonArray[2] = $url; endif;
+							}
+							else
+								$buttonArray[2] = '#';
+							if ($i == $page) 
+							{
+								$buttonArray[3] = $url;
+							}
+				}
+				
+				$data['limit'] = $limit;    
+				$data['buttonArray'] = $buttonArray;
+				$data['page'] =  $links; 
+				/*END PAGINAÇÃO*/   
+				$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
+				// initialize user role with proper value
+				$data['uRole'] = $usr->credencial;
+				$lcn->include_related('boleto')->include_related('usuario');
+				if ($this->uri->segment(3) == 'cancelados'):
+					$lcn->where('status',STATUS_LANCAMENTO_CANCELADO);
+				else:
+					$lcn->where_not_in('status',STATUS_LANCAMENTO_CANCELADO);
+				endif;
+				$lcn->limit($limit, $offset); 
+				if(empty($order)):
+					$lcn->order_by('modified', $exib);
+				else:
+					$lcn->order_by($order, $exib);
+				endif;
+				$lcn->get();
+				$data['uid'] = $this->uri->segment(3);
+				$data['img'] = $order;
+				$data['lcn'] = $lcn; 
+				$data['limit'] = $limit;
+				$data['offset'] = $offset;
+				$data['perpage'] = $npage;
+				$i = 0;
+				$d_vc = '';
+				foreach($lcn as $lc):
+					$dvc = explode(' ',$lc->modified);
+					$dvc_d = explode('-',$dvc[0]);
+					$dvc_h = explode(':',$dvc[1]);
+					$d_vc[$i] = $dvc_d[2] . '/' . $dvc_d[1] . '/' . $dvc_d[0] . ' ' . $dvc_h[0] . ':' . $dvc_h[1];
+					$i++;
+				endforeach;
+				$data['dvc'] = $d_vc;
+				
+		
+		$lcn_sm = new Lancamento();
+		$sum = 0;
+		$lcn_sm->select_sum('valor','soma')->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_CREDITO)->get();
+		$sum += $lcn_sm->soma;
+		$lcn_sm->select_sum('valor','soma')->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_DEBITO)->get();
+		$sum -= $lcn_sm->soma;	
+		$data['sum'] = $sum;	
+		$data['uID'] = $this->session->userdata('id');
+		$data['title'] = 'Lista de Lan&ccedil;amentos';
+        
+        $this->load->view('creditos_lancamentos', $data);
         
         
     }
@@ -325,9 +460,63 @@ class Creditos extends CI_Controller{
     }
     
     public function mudar_status_lancamento(){
-        
+		$lcn = new Lancamento();
+        $lcn->where('id', $this->uri->segment(4))->get();
+        $data['lcn'] = $lcn;      		
+		$lcn->status = $this->uri->segment(3);
+		$today = getdate();
+			$lcn->modified = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+			if( !$lcn->save() ) { 
+			
+				$data['msg'] = $lcn->error->string;;
+				$data['msg_type'] = 'error';	
+			
+			}else {
+			}
+		
+		redirect(base_url('creditos/lancamentos',$data));
         
     }
+	
+	public function cancelar(){
+		  $id = $this->uri->segment(3);
+		if ($this->uri->segment(4) == "boleto"):
+			$bol = new Boleto();
+			$bol->where('id',$id)->get();
+			$id = $bol->usuario_id;
+		endif;
+        
+        $user = new Usuario();
+        $user->where('id', $id);
+        $user->get();
+            
+        $data['user'] = $user;
+        
+        $this->load->view('creditos_cancelar', $data);
+	}
+	
+	public function cancelado(){
+		$lcn = new Lancamento();
+		$lcn->where('id',$this->uri->segment(3))->get();
+		$lcn->status = STATUS_LANCAMENTO_CANCELADO;
+		$lcn->cancelamento_justificativa	 = $_GET['justificativa'];
+		$today = getdate();
+		$bd_today = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+		$lcn->modified = $bd_today;
+		$lcn->cancelamento_datetime = $bd_today;
+		$lcn->cancelamento_autor_id =  $this->session->userdata('id');
+		if( !$lcn->save() ) { 
+			
+			}else {
+			}
+		
+		?>
+        	<script>
+				document.location.href = "<?php echo  base_url('creditos/lancamentos/'); ?>";
+			</script>
+            <?php
+			
+	}
     
     public function remover(){
         

@@ -268,6 +268,7 @@
                             jQuery("#myModal").modal();
                         });
                     break;
+					
                     
                     case 'ver_extrato':
                         var id = jQuery(this).closest("tr.listar_facilities").attr("id").split("-");

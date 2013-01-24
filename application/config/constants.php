@@ -96,6 +96,7 @@
 	
 	define("SIMBOLO_MOEDA","R$");
 	define("SIMBOLO_MOEDA_ISO","BRL");
+	define("SIMBOLO_MOEDA_DEFAULT",SIMBOLO_MOEDA);
 	
 	define("INSTITUICOES_FOMENTO", serialize(array("Fapesp", "CNPq", "CAPES", "FINEP", "Outros")));
         
