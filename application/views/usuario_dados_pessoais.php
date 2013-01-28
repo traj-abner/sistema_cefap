@@ -176,18 +176,25 @@
                 <input type="submit" class="btn" name="lancamentos" value="Lançamentos">
                 <input type="submit" class="btn" name="boletos" value="Boletos">
                 <input type="submit" class="btn" name="inserir_creditos" value="Inserir Créditos">
-                <input type="submit" class="btn" name="ver_extrato" value="Ver Extrato">
+                <input type="submit" class="btn" name="ver_extrato" onclick="window.open='<?php base_url('creditos/extrato/').$user->id; ?>'" value="Ver Extrato">
             </div>    
         </div>
 
         <div class="user_info"> 
             <div class="pull-left">
                 Saldo<br>
-                R$70,00<br>
+                <?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($saldo,2,TS,DS); ?><br>
                 Total de Créditos já Inseridos:<br>
-                R$680,00<br>
+                <?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($soma,2,TS,DS); ?><br>
                 Boleto(s) em aberto:<br>
-                R4$60,00 - venc: 13/11/2012
+                <?php
+				foreach($bol as $bl):
+					echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($bl->valor_total,2,TS,DS) . ' - Vencimento: ';
+					$vnc = explode('-',$bl->data_vencimento);
+					echo $vnc[2].'/'.$vnc[1].'/'.$vnc[0].'<br />';
+				endforeach;
+				?>
+                
             </div>
 
             <div class="pull-right">
@@ -204,21 +211,30 @@
                     </thead>
                     <tfoot></tfoot>
                     <tbody>
+                    <?php foreach ($lcn as $lc): ?>
                         <tr>
-                            <td>R$30,00</td>
-                            <td>C</td>
-                            <td>Boleto 025450000034</td>
+                            <td><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($lc->valor,2,TS,DS); ?></td>
+                            <td><?php
+                            	switch($lc->tipo):
+									case LANCAMENTO_CREDITO: echo 'C'; break;
+									case LANCAMENTO_DEBITO: echo 'D'; break;
+								endswitch;
+							?></td>
+                            <td><?php
+                            if ($lc->tipo == LANCAMENTO_CREDITO):
+								if ($lc->metodo_pagto == METODO_PAGTO_BOLETO):
+									echo 'Boleto N&ordm; ' . $lc->boleto_nosso_numero;
+								else:
+									echo 'N&atilde;o especificado';
+								endif;
+							else:
+								if ($lc->facility_id != 0):
+									echo $lc->facility_nome_abreviado;
+								endif;
+							endif;
+							?></td>
                         </tr>
-                        <tr>
-                            <td>R$15,00</td>
-                            <td>D</td>
-                            <td>Uso de BIOMASS 10/07/2012</td>
-                        </tr>
-                        <tr>
-                            <td>R$140,00</td>
-                            <td>C</td>
-                            <td>Boleto 025450000034</td>
-                        </tr>
+                    <?php endforeach; ?>
                     </tbody>
             </table>
             </div>

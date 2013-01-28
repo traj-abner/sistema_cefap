@@ -333,7 +333,7 @@
                         <td><?php echo $lc->chave;?></td>
                         <td><?php echo $lc->usuario_username;?></td>
                         <td><?php echo $dvc[$i];?></td>
-                        <td class="lancamento<?php echo $lc->tipo; ?>"><?php if ($lc->tipo == LANCAMENTO_DEBITO) echo '- '; ?><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($lc->valor,2,TS,DS)?></td>
+                        <td class="lancamento<?php echo $lc->tipo; ?>"><?php if ($lc->tipo == LANCAMENTO_DEBITO) echo '- '; ?><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($lc->valor,2,TS,DS);?></td>
                         <td><?php 
 							switch ($lc->tipo):
 								case LANCAMENTO_CREDITO: echo 'Cr&eacute;dito'; break;
@@ -358,8 +358,6 @@
                         <td>
                          <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
-                                
-                                <option value="ver_detalhes">Ver detalhes</option>
                                 <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>                                      
                                         <option value="ver_extrato">Ver extrato</option>
                                         <?php if ($lc->status == STATUS_LANCAMENTO_ATIVO):?>
@@ -380,6 +378,19 @@
         
         </tbody>
     </table>
+    
+      <?php if($uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
+    <div class="select">
+        <p>Com marcados:
+            <select class="change_option" id="comMarcados">
+                <option value="selecione">Selecione...</option>
+                <option value="<?php echo STATUS_LANCAMENTO_ATIVO; ?>">Ativar</option>
+                <option value="<?php echo STATUS_LANCAMENTO_INATIVO; ?>">Inativar</option>
+            </select>
+        </p>
+    </div>
+    <?php endif; ?>
+
     
     <?php echo $page; ?>
     <? else: 
@@ -447,7 +458,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('creditos/mundar_status_lancamento_multiplo'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um boleto');
                          return;
@@ -459,7 +470,19 @@
                     case 'selecione':
                         alert('Selecione outra opção');  
                     break;
-
+					
+					case 'ver_extrato':      
+                         var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        id = id[1];
+                        
+                        jQuery.ajax({
+                            url: "<?php echo base_url("creditos/cancelar/"); ?>/" + id ,
+                            dataType: "html"
+                        }).done(function(data){
+                            jQuery("#myModal").html(data);
+                            jQuery("#myModal").modal();
+                        });
+                    break;
 
 					case 'cancelar':      
                          var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");

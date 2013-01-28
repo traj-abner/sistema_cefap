@@ -31,20 +31,12 @@
 				</li>
                 <li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
 					<ul class="main_submenu" id="main_submenu_agendamentos">
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
+						<li><a href="#"></a>Item</li>
 					</ul><!-- end main_submenu_agendamentos -->
 				</li>
 				<li id="mm_facilidades" class="mm_primeiro"><a href="#">Facilidades</a>
 					<ul class="main_submenu" id="main_submenu_facilidades">
 						<li><a href="<?php echo base_url('facilities/listar'); ?>">Listar Facilidades</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
 					</ul><!-- end main_submenu_facilidades -->
 				</li>
                 
@@ -53,11 +45,15 @@
 			<ul id="main_menu_right" class="main_menu">
 				<li id="mm_meusdados" class="mm_primeiro"><a href="#">Pessoal</a>
 						<ul class="main_submenu" id="main_submenu_meusdados">
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
-						<li><a href="#">Testando item de menu</a></li>
+						<li><a href="#">Dados Pessoais</a></li>
+						<li><a href="#">Projetos Cadastrados por Mim</a></li>
+                        <li><a href="#">Novo Projeto de Pesquisa</a></li>
+                        <li><a href="#">Trocar Senha</a></li>
+                        <li><a href="#">Ajuda</a></li>
+                        <li><a href="#">Mensagens Recebidas</a></li>
+                        <li><a href="#">Mensagens Enviadas</a></li>
+                        <li><a href="#">Escrever Mensagem</a></li>
+                        <li><a href="#">Logout</a></li>
 					</ul><!-- end main_submenu_meusdados -->
 				</li>
 			</ul><!-- end main_menu_right -->

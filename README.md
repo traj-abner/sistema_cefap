@@ -1,5 +1,24 @@
 sistema_cefap
 ================================================================================
+v0.19
+28/01/13 - Abner
+#descrição
+Alterações módulo Créditos/Início módulo Mensagens
+
+#changelog
+Implementação de ações com marcados (créditos)
+Lista de lançamentos ao visualizar dados do usuário
+Criado formulario e ação de envio de mensagem
+
+#known issues
+não enviando email para todos os destinatarios
+
+#todo
+
+
+================================================================================
+================================================================================
+
 v0.18
 24/01/13 - Abner
 #descrição

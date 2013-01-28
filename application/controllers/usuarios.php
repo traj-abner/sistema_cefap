@@ -518,8 +518,21 @@ class Usuarios extends CI_Controller{
         $user = new Usuario();
         $user->where('id', $id);
         $user->get();
-            
+		$lcn = new Lancamento();
+		$lcn->include_related('boleto')->include_related('facility')->where('usuario_id',$id)->where('status',STATUS_LANCAMENTO_ATIVO)->order_by('modified','DESC')->limit('5')->get();
+		$data['lcn'] = $lcn;
         $data['user'] = $user;
+		
+		$lc = new Lancamento();
+		$lc->select_sum('valor','soma')->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_CREDITO)->get();
+		$soma = $lc->soma;
+		$lc->select_sum('valor','soma')->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_DEBITO)->get();
+		$data['soma'] = $soma;	
+		$data['saldo'] = $soma - $lc->soma;
+		
+		$bl = new Boleto();
+		$bl->where('usuario_id',$id)->where('status',STATUS_BOLETO_EM_ABERTO)->limit('4')->get();
+		$data['bol'] = $bl;
         
         $this->load->view('usuario_dados_pessoais', $data);
     }

@@ -270,7 +270,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto_multiplo'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um boleto');
                          return;

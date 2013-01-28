@@ -314,7 +314,13 @@ class Creditos extends CI_Controller{
 						$buttonArray[3] = '#';
 					}
 			for($i = 1; $i <= $page; $i++){
-				$order = $this->uri->segment(4, 'id');
+				
+				
+				if ($this->uri->segment(3) == 'cancelados'):
+					$order = $this->uri->segment(4, 'modified');
+				else:
+					$order = $this->uri->segment(3, 'modified');
+				endif;
 
 				$url = base_url("creditos/lancamentos/$order/$limit/$i");
 				if ($this->uri->segment(3) == 'cancelados') $url = base_url("creditos/lancamentos/cancelados/$order/$limit/$i"); 
@@ -459,6 +465,25 @@ class Creditos extends CI_Controller{
 		redirect(base_url('creditos/listar',$data));
     }
     
+	public function mudar_status_boleto_multiplo(){
+		$ids = $this->uri->segment(3);
+            $id = explode('_', $ids);
+            
+            $option = $this->uri->segment(4);
+            $erros = 0;
+            
+            $bol = new Boleto();
+           !($bol->where_in('id',$id)->update('status', $option)) ? $erros++ : NULL;
+            if($erros > 0){
+                $data['msg'] = 'Erro ao atualizar dados';
+                $data['msg_type'] = 'alert-error';
+            }else{
+                $data['msg'] = 'Dados atualizados com sucesso!';
+                $data['msg_type'] = 'alert-success';
+            };
+            redirect(base_url('creditos/listar',$data));
+	}
+	
     public function mudar_status_lancamento(){
 		$lcn = new Lancamento();
         $lcn->where('id', $this->uri->segment(4))->get();
@@ -477,6 +502,25 @@ class Creditos extends CI_Controller{
 		redirect(base_url('creditos/lancamentos',$data));
         
     }
+	
+	public function mundar_status_lancamento_multiplo() {
+		    $ids = $this->uri->segment(3);
+            $id = explode('_', $ids);
+            
+            $option = $this->uri->segment(4);
+            $erros = 0;
+            
+            $lcn = new Lancamento();
+           !($lcn->where_in('id',$id)->update('status', $option)) ? $erros++ : NULL;
+            if($erros > 0){
+                $data['msg'] = 'Erro ao atualizar dados';
+                $data['msg_type'] = 'alert-error';
+            }else{
+                $data['msg'] = 'Dados atualizados com sucesso!';
+                $data['msg_type'] = 'alert-success';
+            };
+            redirect(base_url('creditos/lancamentos',$data));
+	}
 	
 	public function cancelar(){
 		  $id = $this->uri->segment(3);
