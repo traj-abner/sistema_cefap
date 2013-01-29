@@ -258,7 +258,7 @@
 
                                 <option value='dados_pessoais' data-toggle="modal">Dados Pessoais</option>
                                 <option value='<?php echo ("usuarios/editar/$u->id");?>'>Editar Dados</option>
-                                <option value="<?php echo ("mensagens/escrever"); ?>">Enviar Mensagem</option>
+                                <option value="<?php echo ("mensagens/escrever/to/$u->id"); ?>">Enviar Mensagem</option>
                                 <option value="<?php echo ("relatorios/logdeuso"); ?>">Log de Acesso</option>
                                 <option value="<?php echo ("agendamentos/listar"); ?>">Agendamentos</option>
                                 <option value='<?php echo ("creditos/extrato/$u->id"); ?>'>Créditos</option>
@@ -357,7 +357,7 @@
                     echo ("usuarios/mudar_status/$u->id/$excluido"); 
                     echo '">Excluir</option>';                  
                 }?>
-                <option value="<?php echo base_url("mensagens/escrever"); ?>">Enviar Mensagem</option>
+                <option value="mensagem">Enviar Mensagem</option>
             </select>
         </p>
     </div>
@@ -436,8 +436,11 @@
                              userIds[index] = id;
                          });
                          id = userIds.join('_');
-
-                         window.location.href = '<?php echo base_url('usuarios/mudar_status'); ?>' + '/' + id + '/' + option;
+						if (option == 'mensagem'){
+                         window.location.href = '<?php echo base_url('mensagens/escrever/to/'); ?>' + '/' + id;}
+						else {
+							window.location.href = '<?php echo base_url('usuarios/mudar_status'); ?>' + '/' + id + '/' + option;
+						}
                     }else{
                          alert('Selecione pelo menos um usuário');
                          return;

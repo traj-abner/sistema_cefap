@@ -6,6 +6,7 @@
 	#@TODO definir nível de acesso
 	$usr = new Usuario();
 	$usr->where('id',$usr_id)->get();
+	
 ?>
 <style type="text/css">
 .message_to{
@@ -80,12 +81,30 @@
         echo form_open('mensagens/enviar',$attributes['form']);
     ?>
   <form action="<?php echo base_url('mensagens/enviar'); ?>" method="post">
-  		<strong class="message_to">Assunto</strong> <input type="text" name="assunto" style="width:840px;" /><br />
+  		<strong class="message_to">Assunto</strong> <input type="text" name="assunto" style="width:840px;" <?php
+		 if ($reply) echo 'value="RE: '.$ms->assunto.'"';
+		 if ($forward) echo 'value="FW: '.$ms->assunto.'"';
+		 ?> /><br />
+        <input type="hidden" name="reply" value="<?php if ($reply) echo 'true'; else echo 'false'; ?>" />
         <textarea id="elm1" name="elm1" rows="13" cols="100" style="width: 100%">
-		&lt;p&gt;This is the first paragraph.&lt;/p&gt;
-		&lt;p&gt;This is the second paragraph.&lt;/p&gt;
-		&lt;p&gt;This is the third paragraph.&lt;/p&gt;
+			<?php if ($reply || $forward): ?>
+				<br /><br /><hr />
+                
+                <b>De:</b> <?php echo $sender->nome; ?><br />
+                <b>Para:</b> <?php echo $receiver; ?><br />
+                
+                <b>Assunto:</b> <?php echo $ms->assunto; ?><br />
+                <b>Enviado em:</b> <?php
+				$dvc = explode(' ',$ms->data_envio);
+				$dvc_d = explode('-',$dvc[0]);
+				$dvc_h = explode(':',$dvc[1]);
+				echo $dvc_d[2] . '/' . $dvc_d[1] . '/' . $dvc_d[0] . ' ' . $dvc_h[0] . ':' . $dvc_h[1];
+
+				?><br /><br />
+				<?php echo $ms->conteudo; ?>
+			<?php endif; ?>
 	</textarea>
+    <?php if (!$reply): ?>
 <div><strong class="message_to">Para:</strong><br /><em class="message_to_sub">(Segure a tecla Ctrl para selecionar mais de um)</em></div> 
 <select name="to[]" multiple="multiple" size="4">
             <?php foreach ($ur as $u):?>
@@ -103,6 +122,13 @@
                 value="<?php echo $u->id; ?>"><?php echo $u->nome; ?></option>
             <?php endforeach; ?>
         </select>
+        <?php else: ?>
+        	<div><strong class="message_to">Selecione a Opção de Reposta:</strong><br /><em class="message_to_sub"></em></div> 
+        	<select name="to" size="2">
+            	<option selected="selected" value="<?php echo $sender->id; ?>">Responder</option>
+                <option value="<?php echo $to; ?>">Responder para Todos</option>
+            </select>
+        <?php endif; ?>
         <div class="qntd_usuario_listar">
             <input type="submit" class="btn btn-primary" style="margin-top:20px;" />
         </div>

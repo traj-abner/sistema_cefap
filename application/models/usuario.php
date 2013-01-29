@@ -106,7 +106,7 @@ class Usuario extends DataMapper {
     			'conta' => array(
     						'class' 		=> 'conta',
     						'other_field'	=> 'usuario'
-    					)
+    					),
     			
     		);
     
@@ -120,12 +120,9 @@ class Usuario extends DataMapper {
 			'join_other_as' => 'projeto',
 			'join_table' => 'projetos_usuarios'
 		),
-		'mensagem_recebida' => array(
+		'mensagem' => array(
 			'class' => 'mensagem',
 			'other_field' => 'usuario',
-			'join_self_as' => 'usuario',
-			'join_other_as' => 'mensagem',
-			'join_table' => 'mensagens_usuarios'
 		),
 		'facility' => array(
 			'class' => 'facility',
@@ -138,10 +135,7 @@ class Usuario extends DataMapper {
 			'class' => 'log',
 			'other_field' => 'usuario',
 		),
-		'mensagem' => array (
-			'class' => 'mensagem',
-			'other_field' => 'from_id',
-		),
+		
 		'agendamento' => array (
 			'class' => 'agendamento',
 			'other_field' => 'usuario'

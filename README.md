@@ -1,5 +1,25 @@
 sistema_cefap
 ================================================================================
+v0.20
+29/01/13 - Abner
+#descrição
+Módulo Mensagens
+
+#changelog
+Implementação de lista
+Implementação de escrita (enviar/encaminha)
+Correção no envio de emails
+Funções de marcação (Lido/Não Lido/Excluido)
+
+#known issues
+Não listando apenas relacionados
+
+#todo
+View mensagens_enviadas
+
+================================================================================
+================================================================================
+
 v0.19
 28/01/13 - Abner
 #descrição
