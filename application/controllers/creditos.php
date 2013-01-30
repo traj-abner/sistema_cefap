@@ -403,10 +403,6 @@ class Creditos extends CI_Controller{
         
     }
     
-    public function imprimir_boleto(){
-        
-        
-    }
     
     public function enviar_boleto(){
         
@@ -560,6 +556,27 @@ class Creditos extends CI_Controller{
 			</script>
             <?php
 			
+	}
+	
+	public function imprimir_boleto()
+	{
+		$data['uID'] = $this->session->userdata('id');
+		$conf = new Configuracao();
+		$bol = new Boleto();
+		$bol->where('chave',$this->uri->segment(3))->get();
+		$data['bol'] = $bol;
+		$data['config'] = $conf->get();
+		
+		$usr = new Usuario();
+		$data['usr'] = $usr->get_by_id($bol->usuario_id);
+		
+		$dt = explode('-',$bol->data_vencimento);
+		$data['data_vencimento'] = $dt[2].'/'.$dt[1].'/'.$dt[0];
+		$dt = explode(' ',$bol->data_emissao);
+		$dt = explode('-',$dt[0]);
+		$data['data_emissao'] = $dt[2].'/'.$dt[1].'/'.$dt[0];
+		
+		$this->load->view('creditos_imprimir_boleto', $data);
 	}
     
     public function remover(){

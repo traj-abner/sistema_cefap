@@ -9,9 +9,24 @@ class Mensagens extends CI_Controller{
     }
     
     public function index(){
-        
+        header( 'Location: '.base_url('mensagens/recebidas') ) ;
         
     }
+	
+	private function keygen($length=32)
+	{
+		$key = '';
+		list($usec, $sec) = explode(' ', microtime());
+		mt_srand((float) $sec + ((float) $usec * 100000));
+		
+		$inputs = array_merge(range('z','a'),range(0,9),range('A','Z'));
+	
+		for($i=0; $i<$length; $i++)
+		{
+			$key .= $inputs{mt_rand(0,61)};
+		}
+		return $key;
+	}
         
     public function escrever(){
         if ($this->uri->segment(3) != 'to') $directed = false;
@@ -34,41 +49,28 @@ class Mensagens extends CI_Controller{
 		endif;
 		
 		if ($directed) $data['to'] = explode('_',$this->uri->segment(4));
-		if ($reply):
+		if ($reply or $forward):
 			$msg = new Mensagem();
-			$msg->where('id',$this->uri->segment(4))->get();
+			$msg->where('keygen',$this->uri->segment(4))->where('to_id',$this->session->userdata('id'))->get();
 			$data['ms'] = $msg;
 			$ur = new Usuario();
-			$ur->include_related('mensagem','*')->where('mensagem_id',$this->uri->segment(4))->get();
+			$m_rec = new Mensagem();
+			$m_rec->where('keygen',$this->uri->segment(4))->get();
 			$i=0;
-			foreach($ur as $us):
-				$to[$i] = $us->id;
-				$receiver[$i] = $us->nome;
+			foreach($m_rec as $m):
+				$ur->get_by_id($m->to_id);
+				$receiver[$i] = $ur->nome;
+				$to[$i]=$m->to_id;
+				$from = $m->from_id;
 				$i++;
 			endforeach;
+			$to[$i] = $from;
 			$data['receiver'] = implode(', ',$receiver);
-			$to[$i]=$msg->from_id;
+			$to = array_unique($to);
 			$data['to'] = implode('_',$to);
 			$ur->where('id',$msg->from_id)->get();
 			$data['sender'] = $ur;
 		endif;	
-		if ($forward):
-			$msg = new Mensagem();
-			$msg->where('id',$this->uri->segment(4))->get();
-			$data['ms'] = $msg;
-			$ur = new Usuario();
-			$ur->include_related('mensagem','*')->where('mensagem_id',$this->uri->segment(4))->get();
-			$i=0;
-			foreach($ur as $us):
-				$to[$i] = $us->id;
-				$receiver[$i] = $us->nome;
-				$i++;
-			endforeach;
-			$data['receiver'] = implode(', ',$receiver);
-			$to[$i]=$msg->from_id;
-			$ur->where('id',$msg->from_id)->get();
-			$data['sender'] = $ur;
-		endif;
 				
 		$usr = new Usuario();
 		$usr->where('status',STATUS_USUARIO_ATIVO)->order_by('nome')->get();
@@ -81,14 +83,16 @@ class Mensagens extends CI_Controller{
 	public function enviar(){
 		$today = getdate();
 		$bd_today = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+		$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$code = "";
+		$length = 32;
+		for($i = 0; $i < $length; $i++)
+		{
+		$key = rand(0, strlen($options) - 1);
+		$code .= $options[$key];
+		}
 		
-		$msg = new Mensagem();
-		$msg->from_id = $this->session->userdata('id');
-		$msg->conteudo = $_POST['elm1'];
-		$msg->assunto = $_POST['assunto'];
-		$msg->data_envio = $bd_today;
-		$msg->cont_leituras = '0';
-		$msg->status = STATUS_MSG_NAO_LIDA;
+		
 		
 		$i = 0;
 		if ($_POST['reply'] == 'false'):
@@ -104,36 +108,49 @@ class Mensagens extends CI_Controller{
 		$to->where_in('id',$they)->get();
 		$data['to'] = $to;
 		
-		if( !$msg->save_usuario($to->all) ):
-			//error
-		else:
-			$from = new Usuario();
-			$from->where('id',$this->session->userdata('id'))->get();
-			$this->load->library('email');
+		$mail_u = new Usuario();
+		$from = new Usuario();
+		$from->get_by_id($this->session->userdata('id'));
+		
+		foreach($they as $recipient):
+			$msg = new Mensagem();
+			$msg->from_id = $this->session->userdata('id');
+			$msg->to_id = $recipient;
+			$msg->conteudo = $_POST['elm1'];
+			$msg->assunto = $_POST['assunto'];
+			$msg->data_envio = $bd_today;
+			$msg->cont_leituras = '0';
+			$msg->status = STATUS_MSG_NAO_LIDA;
+			$msg->keygen = $code;
+			$msg->save();
 			
+			$this->load->library('email');
+			$mail_u->get_by_id($recipient);
 						
 			$this->email->from(EMAIL_FROM, EMAIL_NAME);
-			$recipients = '';
-			foreach ($to as $rec) $recipients .= $rec->email . ','; 
-			$this->email->to($recipients);
+			$this->email->to($mail_u->email);
 			
 			$this->email->subject($_POST['assunto']);
-			  $this->email->message('<b>Enviado por:</b> '.$from->nome.'<br><b>Assunto:</b> ' . $_POST['assunto'] . '<br><br>'.$_POST['elm1']);
+			 $this->email->message('<b>Enviado por:</b> '.$from->nome.'<br><b>Assunto:</b> ' . $_POST['assunto'] . '<br><br>'.$_POST['elm1']);
 			
 			$this->email->send();
-		endif;
+		endforeach;
 		
 		header( 'Location: '.base_url('mensagens/escrever/sent') ) ;
 
 	}
     
     public function ler(){
+		
 		$today = getdate();
 		$db_date = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
         $msg = new Mensagem();
-		$msg->where('id',$this->uri->segment(3))->get();
+		
+		$msg->where('keygen',$this->uri->segment(3))->where('to_id',$this->session->userdata('id'))->get();
 		$data['ms'] = $msg;
-		$msg->data_ultima_leitura = $db_date;
+		
+		$msg->data_ultima_leitura = CURRENT_DB_DATETIME;
+		
 		$msg->cont_leituras = $msg->cont_leituras + 1;
 		if ($msg->status == STATUS_MSG_NAO_LIDA) $msg->status = STATUS_MSG_LIDA;
 		
@@ -144,10 +161,12 @@ class Mensagens extends CI_Controller{
 		$data['sender'] = $usr;
 		
 		$ur = new Usuario();
-		$ur->include_related('mensagem','*')->where('mensagem_id',$this->uri->segment(3))->get();
+		$m_rec = new Mensagem();
+		$m_rec->where('keygen',$this->uri->segment(3))->get();
 		$i=0;
-		foreach($ur as $us):
-			$receiver[$i] = $us->nome;
+		foreach($m_rec as $m):
+			$ur->get_by_id($m->to_id);
+			$receiver[$i] = $ur->nome;
 			$i++;
 		endforeach;
 		$data['receiver'] = implode(', ',$receiver);
@@ -167,10 +186,10 @@ class Mensagens extends CI_Controller{
 		#@TODO: acertar relacionamento
 		$msg = new Mensagem();
 		$usr = new Usuario();
-		$usr->where('id', $this->session->userdata('id'))->get();
-		
-		$msg->include_related('usuario')->where('usuario_id',$usr->id)->where_not_in('status',STATUS_MSG_EXCLUIDA);
-		
+		$usr->get_by_id($this->session->userdata('id'));
+
+		$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
+		$msg->where('to_id',$this->session->userdata('id'));
 		
 			
 		$limit = $npage = $paqe = $offset = 1;
@@ -237,24 +256,23 @@ class Mensagens extends CI_Controller{
 				$data['buttonArray'] = $buttonArray;
 				$data['page'] =  $links; 
 				/*END PAGINAÇÃO*/   
-				$usr->select('*')->where('id', $this->session->userdata('id'))->get();
 				// initialize user role with proper value
 				$data['uRole'] = $usr->credencial;
-				$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
-				$msg->include_join_fields();
-				$msg->$usr->where_join_field('mensagem','usuario_id',$usr->id);
 				$msg->limit($limit, $offset); 
 				if(empty($order)):
 					$msg->order_by('data_envio', $exib);
 				else:
 					$msg->order_by($order, $exib);
 				endif;
+				$msg->where('to_id',$this->session->userdata('id'));
+				$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
 				$msg->get();
 				$data['img'] = $order;
 				$data['msg'] = $msg; 
 				$data['limit'] = $limit;
 				$data['offset'] = $offset;
 				$data['perpage'] = $npage;
+				$d_vc = '';
 				$i = 0;
 				foreach($msg as $m):
 					$dvc = explode(' ',$m->data_envio);
@@ -263,8 +281,8 @@ class Mensagens extends CI_Controller{
 					$d_vc[$i] = $dvc_d[2] . '/' . $dvc_d[1] . '/' . $dvc_d[0] . ' ' . $dvc_h[0] . ':' . $dvc_h[1];
 					$i++;
 				endforeach;
-				$data['dvc'] = $d_vc;
-				
+				$i = 0;
+				$data['dvc'] = $d_vc;	
 		$data['uID'] = $this->session->userdata('id');
 		$data['title'] = 'Mensagens Recebidas';
 		
@@ -280,11 +298,12 @@ class Mensagens extends CI_Controller{
     
 	
     public function mudar_status(){
-        $today = getdate();
 		$msg = new Mensagem();
-		$msg->where('id',$this->uri->segment(4))->get();
+		$usr = new Usuario();
+		$usr->get_by_id($this->session->userdata('id'));
+		$msg->where('keygen',$this->uri->segment(4))->where('to_id',$usr->id)->get();
         $msg->status = $this->uri->segment(3);
-		$msg->data_ultima_leitura = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+		$msg->data_ultima_leitura = CURRENT_DB_DATETIME;
 		$msg->save();
 		
 		header( 'Location: '.base_url('mensagens/recebidas/') ) ;

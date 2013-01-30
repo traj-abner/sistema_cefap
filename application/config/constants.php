@@ -149,3 +149,23 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
+
+function dbDateTime()
+{
+	 $today = getdate();
+	 return $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+}
+function dbDate()
+{
+	 $today = getdate();
+	 return $today['year'].'-'.$today['mon'].'-'.$today['mday'];
+}
+function dbTime()
+{
+	 $today = getdate();
+	 return $today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+}
+
+define('CURRENT_DB_DATETIME',dbDateTime());
+define('CURRENT_DB_DATE',dbDateTime());
+define('CURRENT_DB_TIME',dbDateTime());

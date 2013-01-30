@@ -77,7 +77,7 @@
 	var r = confirm("Deseja realmente excluir essa mensagem?");
 	if (r==true)
 	  {
-	  		window.location.href = '<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_EXCLUIDA.'/'.$ms->id); ?>';
+	  		window.location.href = '<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_EXCLUIDA.'/'.$ms->keygen); ?>';
 	  }
 	else
 	  {
@@ -105,12 +105,12 @@
  <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
     <div class="well">
     	<div class="btn-group">
-          <button class="btn btn-success" onclick="document.location='<?php echo base_url('mensagens/escrever/responder/'.$ms->id); ?>'">Responder</button>
-          <button class="btn btn-success" onclick="document.location='<?php echo base_url('mensagens/escrever/encaminhar/'.$ms->id); ?>'">Encaminhar</button>
+          <button class="btn btn-success" onclick="document.location='<?php echo base_url('mensagens/escrever/responder/'.$ms->keygen); ?>'">Responder</button>
+          <button class="btn btn-success" onclick="document.location='<?php echo base_url('mensagens/escrever/encaminhar/'.$ms->keygen); ?>'">Encaminhar</button>
         </div>   
         <div class="btn-group">
-          <button class="btn" onclick="document.location='<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_LIDA.'/'.$ms->id); ?>'">Marcar como Lida</button>
-          <button class="btn" onclick="document.location='<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_NAO_LIDA.'/'.$ms->id); ?>'">Marcar como Não Lida</button>
+          <button class="btn" onclick="document.location='<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_LIDA.'/'.$ms->keygen); ?>'">Marcar como Lida</button>
+          <button class="btn" onclick="document.location='<?php echo base_url('mensagens/mudar_status/'.STATUS_MSG_NAO_LIDA.'/'.$ms->keygen); ?>'">Marcar como Não Lida</button>
         </div>  
         <div class="btn-group">
           <button class="btn btn-danger" onclick="confirmDeletion()">Excluir</button>

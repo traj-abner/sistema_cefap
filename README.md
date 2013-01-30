@@ -1,5 +1,24 @@
 sistema_cefap
 ================================================================================
+v0.21
+30/01/13 - Abner
+#descrição
+Módulo Mensagens | Módulo Creditos
+
+#changelog
+Alteração na integração com o BD (Mensagens)
+Implementação de renderização de Boleto
+
+#known issues
+Não listando apenas relacionados
+
+#todo
+View mensagens_enviadas
+creditos_inserir
+
+================================================================================
+================================================================================
+
 v0.20
 29/01/13 - Abner
 #descrição

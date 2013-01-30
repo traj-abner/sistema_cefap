@@ -123,14 +123,14 @@
 
                 <tr class="listar_usuario" id="usuario-<?php echo $m->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?>> <a href="<?php echo base_url('mensagens/ler/'.$m->id); ?>"><?php echo $dvc[$i];?></a></td>
-                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->id); ?>"><?php $ur->where('id',$m->from_id)->get(); echo $ur->nome;?></a></td>
-                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->id); ?>"><?php echo $m->assunto;?></a></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?>> <a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php echo $dvc[$i];?></a></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php $ur->where('id',$m->from_id)->get(); echo $ur->nome;?></a></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php echo $m->assunto;?></a></td>
                         <td><select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
-                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_LIDA.'/'. $m->id; ?>">Marcar como Lida</option>
-                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_NAO_LIDA.'/'.$m->id; ?>">Marcar como Não Lida</option>
-                                <option value="mensagens/escrever/responder/<?php echo $m->id; ?>">Responder</option>
+                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_LIDA.'/'. $m->keygen; ?>">Marcar como Lida</option>
+                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_NAO_LIDA.'/'.$m->keygen; ?>">Marcar como Não Lida</option>
+                                <option value="mensagens/escrever/responder/<?php echo $m->keygen; ?>">Responder</option>
                             </select></td>
                 </tr>
                 
