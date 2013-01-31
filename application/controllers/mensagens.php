@@ -264,11 +264,20 @@ class Mensagens extends CI_Controller{
 				else:
 					$msg->order_by($order, $exib);
 				endif;
-				$msg->where('to_id',$this->session->userdata('id'));
-				$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
+				$m = new Mensagem();
+				$m->where_not_in('status',STATUS_MSG_EXCLUIDA);
+				$m->where('to_id',$this->session->userdata('id'));
+				if(empty($order)):
+					$m->order_by('data_envio', $exib);
+				else:
+					$m->order_by($order, $exib);
+				endif;
+				$m->limit($limit, $offset); 
+				$m->get();
+				
 				$msg->get();
 				$data['img'] = $order;
-				$data['msg'] = $msg; 
+				$data['msg'] = $m; 
 				$data['limit'] = $limit;
 				$data['offset'] = $offset;
 				$data['perpage'] = $npage;
@@ -292,7 +301,121 @@ class Mensagens extends CI_Controller{
     }
     
     public function enviadas(){
-        
+        #@TODO: acertar relacionamento
+		$msg = new Mensagem();
+		$usr = new Usuario();
+		$usr->get_by_id($this->session->userdata('id'));
+
+		$msg->where('from_id',$this->session->userdata('id'));
+		$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
+		
+		$limit = $npage = $paqe = $offset = 1;
+		$exib = 'DESC';
+		$total = $msg->count();
+		$data['numrows'] = $total;
+		if ($total > 0 ):
+				$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
+				$limit = $this->uri->segment(4, 5); #limite de resultados por página
+				$npage = $this->uri->segment(5, 0); //número da página 
+				$exib = $this->uri->segment(6,'DESC'); //segmento que vai passar o valor de CRES ou DECRES.
+
+			$offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
+			if($offset < 0):
+				$offset = 0;
+			endif;				
+		 
+			 
+		else:
+			
+		endif; 
+		
+		/* PAGINAÇÃO */
+			$pagination = $total / $limit;
+			$page = ceil($pagination); 
+			if ($page < 1) $page = 1;
+			$links = "";
+			if ($npage > $page)
+					{
+						$buttonArray[2] = '#';
+						$buttonArray[3] = '#';
+					}
+			for($i = 1; $i <= $page; $i++){
+				$order = $this->uri->segment(3, 'data_envio');
+
+				$url = base_url("mensagens/enviadas/$order/$limit/$i");
+				$links .= "<a href='$url'>$i</a>&nbsp;";   
+				$urlarray[$i-1]=$url;
+							if ($i == 1) 
+							{
+								$buttonArray[0] = $url;
+								$buttonArray[1] = '#';
+							}
+							if ($i >= 1) 
+									if ($i == $npage - 1):
+										$buttonArray[1] = $url;
+									endif;
+							else
+								$buttonArray[1] = '#';
+							if ($i <= $page)
+							{
+									if ($i == $npage): $buttonArray[2] = '#'; endif;
+									if ($i == $npage + 1): $buttonArray[2] = $url; endif;
+							}
+							else
+								$buttonArray[2] = '#';
+							if ($i == $page) 
+							{
+								$buttonArray[3] = $url;
+							}
+				}
+				
+				$data['limit'] = $limit;    
+				$data['buttonArray'] = $buttonArray;
+				$data['page'] =  $links; 
+				/*END PAGINAÇÃO*/   
+				// initialize user role with proper value
+				$m = new Mensagem();
+				$m->where_not_in('status',STATUS_MSG_EXCLUIDA);
+				$m->where('from_id',$this->session->userdata('id'));
+				$data['uRole'] = $usr->credencial;
+				$msg->limit($limit, $offset); 
+				if(empty($order)):
+					$msg->order_by('data_envio', $exib);
+				else:
+					$msg->order_by($order, $exib);
+				endif;
+				
+				if(empty($order)):
+					$m->order_by('data_envio', $exib);
+				else:
+					$m->order_by($order, $exib);
+				endif;
+				$m->limit($limit, $offset); 
+				$m->get();
+				$msg->where('from_id',$this->session->userdata('id'));
+				
+				$msg->where_not_in('status',STATUS_MSG_EXCLUIDA);
+				$msg->get();
+				$data['img'] = $order;
+				$data['msg'] = $m; 
+				$data['limit'] = $limit;
+				$data['offset'] = $offset;
+				$data['perpage'] = $npage;
+				$d_vc = '';
+				$i = 0;
+				foreach($msg as $m):
+					$dvc = explode(' ',$m->data_envio);
+					$dvc_d = explode('-',$dvc[0]);
+					$dvc_h = explode(':',$dvc[1]);
+					$d_vc[$i] = $dvc_d[2] . '/' . $dvc_d[1] . '/' . $dvc_d[0] . ' ' . $dvc_h[0] . ':' . $dvc_h[1];
+					$i++;
+				endforeach;
+				$i = 0;
+				$data['dvc'] = $d_vc;	
+		$data['uID'] = $this->session->userdata('id');
+		$data['title'] = 'Mensagens Enviadas';
+		
+		$this->load->view('mensagens_enviadas',$data);
         
     }
     
@@ -308,6 +431,22 @@ class Mensagens extends CI_Controller{
 		
 		header( 'Location: '.base_url('mensagens/recebidas/') ) ;
     }
+	
+	public function mudar_status_multiplos() {
+		$ids = $this->uri->segment(3);
+		$id = explode('_', $ids);
+		$msg = new Mensagem();
+		foreach ($id as $m):
+			$msg->get_by_id($m);
+			$msg->status = $this->uri->segment(4);
+			$msg->data_ultima_leitura = CURRENT_DB_DATETIME;
+			$msg->save();
+		endforeach;
+		
+		$data = '';
+		
+		redirect(base_url('mensagens/recebidas',$data));
+	}
     
     public function __destruct(){
         

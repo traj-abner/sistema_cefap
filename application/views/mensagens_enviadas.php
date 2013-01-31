@@ -6,12 +6,18 @@
 	#@TODO definir nível de acesso
 	$usr = new Usuario();
 	$usr->where('id',$usr_id)->get();
+	
 ?>
 <style type="text/css">
-	.saldo { color:#093; }
-	.nome { color:#999; }
-	.lancamento0 { color:#000; }
-	.lancamento1 { color:#C00; }
+	.unread { font-weight:bold; }
+	.unread a { font-style:normal }
+	.unread a:link { color:#333; }
+	.unread a:visited { color:#333; }
+	.unread a:hover { font-style:italic; color:#666; }
+	.msg-link a { font-style:normal }
+	.msg-link a:link { color:#333; }
+	.msg-link a:visited { color:#333; }
+	.msg-link a:hover { font-style:italic; color:#666; }
 </style>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
 <div id="myModal" class="modal hide fade">
@@ -19,7 +25,7 @@
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2><strong class="nome"><?php echo $usr->nome; ?></strong> (Saldo)<br /><strong class="saldo"><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($sum,2,TS,DS)?></strong></h2>
+    <div class="well"><h2>Mensagens Recebidas</h2>
         <div class="qntd_usuario_listar">
             <h3>Lan&ccedil;amentos por página:</h3>
             <select id="selectQntd" class="input-mini">
@@ -61,88 +67,49 @@
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
-                        <th><a href='<?php echo base_url("creditos/extrato/$usr_id/modified/$limit/$perpage/DESC"); ?>'>Data
+                        <th><a href='<?php echo base_url("mensagens/enviadas/data_envio/$limit/$perpage/DESC"); ?>'>Recebido em
                             <?php 
-                                if(isset($img) && $img == 'modified'){
+                                if(isset($img) && $img == 'data_envio'){
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/modified/$limit/$perpage/ASC");
+                                    echo base_url("mensagens/enviadas/data_envio/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/modified/$limit/$perpage/DESC");
+                                    echo base_url("mensagens/enviadas/data_envio/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/extrato/$usr_id/tipo/$limit/$perpage/ASC"); ?>'>Tipo de Lançamento
+                        <th><a href='<?php echo base_url("mensagens/enviadas/from_id/$limit/$perpage/ASC"); ?>'>Enviado por
                             <?php 
-                                if(isset($img) && $img == 'tipo'){
+                                if(isset($img) && $img == 'from_id'){
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/tipo/$limit/$perpage/DESC");
+                                    echo base_url("mensagens/enviadas/from_id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/tipo/$limit/$perpage/ASC");
+                                    echo base_url("mensagens/enviadas/from_id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/extrato/$usr_id/metodo_pagto/$limit/$perpage/ASC"); ?>'>Metodo de Pagamento
+                        <th><a href='<?php echo base_url("mensagens/enviadas/assunto/$limit/$perpage/ASC"); ?>'>Assunto
                             <?php 
-                                if(isset($img) && $img == 'metodo_pagto'){
+                                if(isset($img) && $img == 'assunto'){
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/metodo_pagto/$limit/$perpage/DESC");
+                                    echo base_url("mensagens/enviadas/assunto/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/metodo_pagto/$limit/$perpage/ASC");
+                                    echo base_url("mensagens/enviadas/assunto/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/extrato/$usr_id/valor/$limit/$perpage/ASC"); ?>'>Valor
-                            <?php 
-                                if(isset($img) && $img == 'valor'){
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/valor/$limit/$perpage/DESC");
-                                    echo '"<i class="icon-chevron-down"></i>';
-                                    
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/valor/$limit/$perpage/ASC");
-                                    echo '"<i class="icon-chevron-up"></i>';
-                                } 
-                            ?>
-                            </a>
-                        </th>
-                        <th><a href='<?php echo base_url("creditos/extrato/$usr_id/status/$limit/$perpage/ASC"); ?>'>Status
-                            <?php 
-                                if(isset($img) && $img == 'status'){
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/status/$limit/$perpage/DESC");
-                                    echo '"<i class="icon-chevron-down"></i>';
-                                    
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/status/$limit/$perpage/ASC");
-                                    echo '"<i class="icon-chevron-up"></i>';
-                                } 
-                            ?>
-                            </a>
-                        </th>
-                         <th><a href='<?php echo base_url("creditos/extrato/$usr_id/obs/$limit/$perpage/ASC"); ?>'>Obs
-                            <?php 
-                                if(isset($img) && $img == 'obs'){
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/obs/$limit/$perpage/DESC");
-                                    echo '"<i class="icon-chevron-down"></i>';
-                                    
-                                    echo '<a href="';
-                                    echo base_url("creditos/extrato/$usr_id/obs/$limit/$perpage/ASC");
-                                    echo '"<i class="icon-chevron-up"></i>';
-                                } 
-                            ?>
+                        <th><a href=''>Opções
                             </a>
                         </th>
                 </tr>
@@ -151,37 +118,20 @@
         <tbody>  
             <?php 
 			$i = 0;
-			foreach($lcn as $lc): ?>
+			$ur = new Usuario();
+			foreach($msg as $m): ?>
 
-                <tr class="listar_usuario" id="usuario-<?php echo $lc->id?>">
+                <tr class="listar_usuario" id="usuario-<?php echo $m->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td><?php echo $dvc[$i];?></td>
-                        <td><?php 
-							switch ($lc->tipo):
-								case LANCAMENTO_CREDITO: echo 'Cr&eacute;dito'; break;
-								case LANCAMENTO_DEBITO: echo 'D&eacute;bito'; break;
-							endswitch;
-						?></td>
-                        <td><?php 
-						if (strlen($lc->metodo_pagto) > 0):
-							switch ($lc->metodo_pagto):
-								case METODO_PAGTO_BOLETO: echo 'Boleto'; 
-									break;
-								case METODO_PAGTO_DINHEIRO: echo 'Dinheiro'; break;
-								case NULL: echo ''; break;
-							endswitch;
-						endif;	
-						 ?></td>
-                        <td class="lancamento<?php echo $lc->tipo; ?>"><?php if ($lc->tipo == LANCAMENTO_DEBITO) echo '- '; ?><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($lc->valor,2,TS,DS)?></td>
-                        <td><?php 
-						switch ($lc->status):
-								case STATUS_LANCAMENTO_ATIVO: echo 'Ativo'; break;
-								case STATUS_LANCAMENTO_INATIVO: echo 'Inativo'; break;
-								case STATUS_LANCAMENTO_CANCELADO: echo 'Cancelado'; break;
-							endswitch;
-						 ?>
-                        </td>
-                        <td><?php echo $lc->obs;?></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?>> <a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php echo $dvc[$i];?></a></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php $ur->where('id',$m->from_id)->get(); echo $ur->nome;?></a></td>
+                        <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php echo $m->assunto;?></a></td>
+                        <td><select class="input-medium change_option" id="select_emlinha">
+                                <option value="selecione">Selecione...</option>
+                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_LIDA.'/'. $m->keygen; ?>">Marcar como Lida</option>
+                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_NAO_LIDA.'/'.$m->keygen; ?>">Marcar como Não Lida</option>
+                                <option value="mensagens/escrever/responder/<?php echo $m->keygen; ?>">Responder</option>
+                            </select></td>
                 </tr>
                 
                 
@@ -190,10 +140,19 @@
         
         </tbody>
     </table>
-    
+    <div class="select">
+        <p>Com marcados:
+            <select class="change_option" id="comMarcados">
+                <option value="selecione">Selecione...</option>
+                <option value="<?php echo STATUS_MSG_LIDA; ?>">Marcar como Lida</option>
+                <option value="<?php echo STATUS_MSG_NAO_LIDA; ?>">Marcar como Nao Lida</option>
+                <option value="<?php echo STATUS_MSG_EXCLUIDA; ?>">Excluir</option>
+            </select>
+        </p>
+    </div>
     <?php echo $page; ?>
     <? else: 
-	echo 'Nenhum registro encontrado';
+	echo 'Nenhuma mensagem recebida';
 	endif; ?>
     
 </div>
@@ -227,12 +186,12 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id/modified");  ?>' + '/' + option + '/1' ;
+           window.location.href = '<?php echo base_url("mensagens/enviadas/data_envio");  ?>' + '/' + option + '/1' ;
         });
 		jQuery('#gotopage').change(function(){
 		   var qtd = $("#selectQntd option:selected").val();
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/extrato/$usr_id/modified");  ?>' + '/' + qtd + '/' + option ;
+           window.location.href = '<?php echo base_url("mensagens/enviadas/data_envio");  ?>' + '/' + qtd + '/' + option ;
         });
 		
 				   
@@ -257,7 +216,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('mensagens/mudar_status_multiplos'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um boleto');
                          return;

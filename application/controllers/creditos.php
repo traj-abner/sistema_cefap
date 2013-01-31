@@ -46,11 +46,11 @@ class Creditos extends CI_Controller{
     public function listar(){
 			$bol = new Boleto();
 			$usr = new Usuario();
-			
+			$bol->where_not_in('status',STATUS_BOLETO_CANCELADO);
 			$usr->where('id', $this->session->userdata('id'))->get();
-			if ($usr->credencial == CREDENCIAL_USUARIO_COMUM):
-				header( 'Location: ' . base_url('creditos/extrato/'.$usr->id) ) ;
-			else:
+			if ($usr->credencial < CREDENCIAL_USUARIO_ADMIN):
+				$bol->where('usuario_id',$usr->id);
+			endif;
 				
 				$limit = $npage = $paqe = $offset = 1;
 				$total = $bol->count();
@@ -140,7 +140,7 @@ class Creditos extends CI_Controller{
 				$data['title'] = 'Lista de Boletos';
 				
 				$this->load->view('creditos_listar',$data);
-			endif;
+			
         
     }
     
@@ -265,7 +265,106 @@ class Creditos extends CI_Controller{
     }
 	
     public function inserir(){
-        
+        $usr = new Usuario();
+		$usr->get_by_id($this->session->userdata('id'));
+		$data['uRole'] = $usr->credencial;
+		$data['msg'] = '';
+		$usr->where('status',STATUS_USUARIO_ATIVO)->order_by('nome')->get();
+		$data['ur'] = $usr;
+		if ($this->uri->segment(3) == 'st2'):
+			$stage = 2;
+		else:
+			if ($this->uri->segment(3) == 'st3'):
+				$stage = 3;
+			else:
+				$stage = 1;
+			endif;
+		endif;
+		if ($data['uRole'] < CREDENCIAL_USUARIO_SUPERADMIN):
+			$stage = 2;
+			$data['to'] = $this->session->userdata('id');
+			$data['select_user'] = false;
+		else:
+			$data['select_user'] = true;
+		endif;
+		
+		if (isset($_POST['valor'])):
+			$stage = 3;
+		endif;
+		
+		
+		if ($stage == 1):
+			if ($this->uri->segment(3) != ''):
+				$data['directed'] = true;
+				$stage = 2;
+				$data['to'] = $this->uri->segment(3);
+			else:
+				$data['directed'] = false;
+			endif;
+		endif;
+		
+		if ($stage == 2):
+			$conf = new Configuracao();
+			$conf->where('param','creditos_taxa_boleto')->get();
+			$data['taxa_boleto'] = SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($conf->valor,2,TS,DS);
+		endif;
+		
+		if ($stage == 3):
+			if ($data['uRole'] < CREDENCIAL_USUARIO_SUPERADMIN):
+				$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				$code = "";
+				$length = 32;
+				for($i = 0; $i < $length; $i++):
+					$key = rand(0, strlen($options) - 1);
+					$code .= $options[$key];
+				endfor;
+				
+				$config = new Configuracao();
+				$config->where('param','creditos_prazo')->get();
+				$days_to_go = $config->valor;
+				$config->where('param','creditos_taxa_boleto')->get();
+				$tax = $config->valor;
+				$config->where('param','creditos_projeto_fusp')->get();
+				$codigo_projeto = $config->valor();
+				
+				$received_value = str_replace(',','.',$_POST['valor']);
+				
+				$bol = new Boleto();
+				$lcn = new Lancamento();
+				$bol->chave = $code;
+				$bol->data_emissao = CURRENT_DB_DATETIME;
+				$bol->data_vencimento = date('Y-m-d',strtotime(CURRENT_DB_DATE. ' + ' . $days_to_go . ' days'));
+				$bol->valor_creditos = $received_value;
+				$bol->taxa = $tax;
+				$bol->valor_total = $tax + $received_value;
+				$bol->status = STATUS_BOLETO_EM_ABERTO;
+				$bol->usuario_id = $this->session->userdata('id');
+				$bol->obs = $_POST['obs'];
+				$bol->save();
+				
+				$bol->where('chave',$code)->get();
+				$lcn->usuario_id = $bol->usuario_id;
+				$lcn->facility_id = 0;
+				$lcn->chave = $code;
+				$lcn->valor = $bol->valor_creditos;
+				$lcn->autor_id = $this->session->userdata('id');
+				$lcn->created = CURRENT_DB_DATETIME;
+				$lcn->modified = CURRENT_DB_DATETIME;
+				$lcn->status = STATUS_LANCAMENTO_INATIVO;
+				$lcn->metodo_pagto = METODO_PAGTO_BOLETO;
+				$lcn->boleto_id = $bol->id;
+				$lcn->save();	
+				
+				$data['code'] = $code;	
+				$data['msg'] = 'Lançamento gerado com sucesso.';
+				$data['alert_class'] = 'alert alert-success';
+			endif;
+		endif;
+		
+		$data['title'] = 'Inserir Créditos';
+		$data['stage'] = $stage;
+		
+		$this->load->view('creditos_inserir', $data);
         
     }
     
@@ -477,6 +576,7 @@ class Creditos extends CI_Controller{
                 $data['msg'] = 'Dados atualizados com sucesso!';
                 $data['msg_type'] = 'alert-success';
             };
+			
             redirect(base_url('creditos/listar',$data));
 	}
 	
@@ -567,6 +667,20 @@ class Creditos extends CI_Controller{
 		$data['bol'] = $bol;
 		$data['config'] = $conf->get();
 		
+		foreach($conf as $config):
+			switch ($config->param):
+				case 'creditos_codigo_cedente': $data['nosso_numero'] = $config->valor; break;
+				case 'creditos_agencia': $data['agencia'] = $config->valor; break;
+				case 'creditos_conta': $data['cc'] = $config->valor; break;
+				case 'creditos_cedente_nome': $data['cedente_nome'] = $config->valor; break;
+				case 'creditos_cedente_cnpj': $data['cedente_cnpj'] = $config->valor; break;
+				case 'creditos_cedente_endereco_linha1': $data['cedente_endereco1'] = $config->valor; break;
+				case 'creditos_cedente_endereco_linha2': $data['cedente_endereco2'] = $config->valor; break;
+				case 'creditos_demonstrativo1': $data['demonstrativo1'] = $config->valor; break;
+				case 'creditos_projeto_fusp': $data['codigo_projeto'] = $config->valor; break;
+			endswitch;
+		endforeach;
+		
 		$usr = new Usuario();
 		$data['usr'] = $usr->get_by_id($bol->usuario_id);
 		
@@ -588,5 +702,6 @@ class Creditos extends CI_Controller{
         
         //parent::__destruct();
     }
+	
 }
 ?>

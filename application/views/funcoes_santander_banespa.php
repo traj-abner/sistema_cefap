@@ -46,7 +46,7 @@ $nnum = formata_numero($dadosboleto["nosso_numero"],7,0);
 //dv do nosso número
 $dv_nosso_numero = modulo_11($nnum,9,0);
 // nosso número (com dvs) são 13 digitos
-$nossonumero = "02561".$nnum.$dv_nosso_numero;
+$nossonumero = $codigo_projeto.$nnum.$dv_nosso_numero;
 
 $dadosboleto["numero_documento"] = "02561".$nnum;
 

@@ -36,24 +36,13 @@
 //$data_venc = date("d/m/Y", time() + ($dias_de_prazo_para_pagamento * 86400));  // Prazo de X dias OU informe data: "13/04/2006"; 
 //$valor_cobrado = "2950,00"; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
 
-foreach($config as $conf):
-	switch ($conf->param):
-		case 'creditos_codigo_cedente': $nosso_numero = $conf->valor; break;
-		case 'creditos_agencia': $agencia = $conf->valor; break;
-		case 'creditos_conta': $cc = $conf->valor; break;
-		case 'creditos_cedente_nome': $cedente_nome = $conf->valor; break;
-		case 'creditos_cedente_cnpj': $cedente_cnpj = $conf->valor; break;
-		case 'creditos_cedente_endereco_linha1': $cedente_endereco1 = $conf->valor; break;
-		case 'creditos_cedente_endereco_linha2': $cedente_endereco2 = $conf->valor; break;
-		case 'creditos_demonstrativo1': $demonstrativo1 = $conf->valor; break;
-	endswitch;
-endforeach;
+
 
 // DADOS DO BOLETO PARA O SEU CLIENTE
 $dias_de_prazo_para_pagamento = 5;
 $taxa_boleto = 2.95;
 
-$dadosboleto["nosso_numero"] = str_pad($bol->id, 7, '0', STR_PAD_LEFT);;  // Nosso numero sem o DV - REGRA: Máximo de 7 caracteres!
+$dadosboleto["nosso_numero"] = str_pad($bol->id, 7, '0', STR_PAD_LEFT); // Nosso numero sem o DV - REGRA: Máximo de 7 caracteres!
 $dadosboleto["numero_documento"] = "";	// Num do pedido ou nosso numero
 $dadosboleto["data_vencimento"] = $data_vencimento; // Data de Vencimento do Boleto - REGRA: Formato DD/MM/AAAA
 $dadosboleto["data_documento"] = $data_emissao; // Data de emissão do Boleto
@@ -87,6 +76,7 @@ $dadosboleto["especie_doc"] = "";
 
 // DADOS PERSONALIZADOS - SANTANDER BANESPA
 $dadosboleto["codigo_cliente"] = $cc; // Código do Cliente (PSK) (Somente 7 digitos)
+$dadosboleto["codigo_projeto"] = $codigo_projeto; // Código do Cliente (PSK) (Somente 7 digitos)
 $dadosboleto["ponto_venda"] = $agencia; // Ponto de Venda = Agencia
 $dadosboleto["carteira"] = "102";  // Cobrança Simples - SEM Registro
 $dadosboleto["carteira_descricao"] = "COBRANÇA SIMPLES - CSR";  // Descrição da Carteira

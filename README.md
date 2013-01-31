@@ -1,5 +1,23 @@
 sistema_cefap
 ================================================================================
+v0.22
+31/01/13 - Abner
+#descrição
+Módulo Mensagens | Módulo Creditos
+
+#changelog
+Implementação de lista de enviados
+Implementação de Inserção de Créditos
+
+#known issues
+Não listando apenas relacionados
+
+#todo
+Inserção direta por Superadmins
+
+================================================================================
+================================================================================
+
 v0.21
 30/01/13 - Abner
 #descrição

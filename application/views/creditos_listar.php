@@ -122,19 +122,23 @@
                             ?>
                             </a>
                         </th>
-                        
-                        <th>Opções</th>
+                        <?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
+                        <th>Opções</th><?php endif; ?>
                 </tr>
         </thead>
         
         <tbody>  
             <?php 
+			$config = new Configuracao();
+			$config->where('param','creditos_projeto_fusp')->get();
+			
+			
 			$i = 0;
 			foreach($bols as $bol): ?>
 
                 <tr class="listar_usuario" id="usuario-<?php echo $bol->id?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td><?php echo $bol->nosso_numero;?></td>
+                        <td><?php echo $config->valor.str_pad($bol->id, 7, '0', STR_PAD_LEFT);?></td>
                         <td><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($bol->valor_total,2,TS,DS)?></td>
                         <td><?php 
 						$usr = new Usuario();
@@ -150,7 +154,7 @@
 								case STATUS_BOLETO_CANCELADO: echo 'Cancelado'; break;
 							endswitch;
 						?>
-                        </td>
+                        </td><?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
@@ -183,7 +187,7 @@
                                             <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>
                                         <?php endif; ?>
                             </select>
-                        </td>
+                        </td><?php endif; ?>
                 </tr>
                 
                 <?php $i++;

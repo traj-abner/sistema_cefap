@@ -81,29 +81,29 @@
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("mensagens/recebidas/tipo/$limit/$perpage/ASC"); ?>'>Enviado por
+                        <th><a href='<?php echo base_url("mensagens/recebidas/from_id/$limit/$perpage/ASC"); ?>'>Enviado por
                             <?php 
-                                if(isset($img) && $img == 'tipo'){
+                                if(isset($img) && $img == 'from_id'){
                                     echo '<a href="';
-                                    echo base_url("mensagens/recebidas/tipo/$limit/$perpage/DESC");
+                                    echo base_url("mensagens/recebidas/from_id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("mensagens/recebidas/tipo/$limit/$perpage/ASC");
+                                    echo base_url("mensagens/recebidas/from_id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("mensagens/recebidas/metodo_pagto/$limit/$perpage/ASC"); ?>'>Assunto
+                        <th><a href='<?php echo base_url("mensagens/recebidas/assunto/$limit/$perpage/ASC"); ?>'>Assunto
                             <?php 
-                                if(isset($img) && $img == 'metodo_pagto'){
+                                if(isset($img) && $img == 'assunto'){
                                     echo '<a href="';
-                                    echo base_url("mensagens/recebidas/metodo_pagto/$limit/$perpage/DESC");
+                                    echo base_url("mensagens/recebidas/assunto/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("mensagens/recebidas/metodo_pagto/$limit/$perpage/ASC");
+                                    echo base_url("mensagens/recebidas/assunto/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
@@ -128,8 +128,6 @@
                         <td <?php if ($m->status == STATUS_MSG_NAO_LIDA): echo 'class="unread"'; else: echo 'class="msg-link"'; endif; ?> ><a href="<?php echo base_url('mensagens/ler/'.$m->keygen); ?>"><?php echo $m->assunto;?></a></td>
                         <td><select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
-                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_LIDA.'/'. $m->keygen; ?>">Marcar como Lida</option>
-                                <option value="mensagens/mudar_status/<?php echo STATUS_MSG_NAO_LIDA.'/'.$m->keygen; ?>">Marcar como Não Lida</option>
                                 <option value="mensagens/escrever/responder/<?php echo $m->keygen; ?>">Responder</option>
                             </select></td>
                 </tr>
@@ -140,7 +138,14 @@
         
         </tbody>
     </table>
-    
+    <div class="select">
+        <p>Com marcados:
+            <select class="change_option" id="comMarcados">
+                <option value="selecione">Selecione...</option>
+                <option value="<?php echo STATUS_MSG_EXCLUIDA; ?>">Excluir</option>
+            </select>
+        </p>
+    </div>
     <?php echo $page; ?>
     <? else: 
 	echo 'Nenhuma mensagem recebida';
@@ -207,7 +212,7 @@
                          });
                          id = userIds.join('_');
 
-                         window.location.href = '<?php echo base_url('mensagens/mudar_status'); ?>' + '/' + id + '/' + option;
+                         window.location.href = '<?php echo base_url('mensagens/mudar_status_multiplos'); ?>' + '/' + id + '/' + option;
                     }else{
                          alert('Selecione pelo menos um boleto');
                          return;
