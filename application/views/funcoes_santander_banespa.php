@@ -48,7 +48,7 @@ $dv_nosso_numero = modulo_11($nnum,9,0);
 // nosso número (com dvs) são 13 digitos
 $nossonumero = $codigo_projeto.$nnum.$dv_nosso_numero;
 
-$dadosboleto["numero_documento"] = "02561".$nnum;
+$nossonumero = '02561'.$nnum.$dv_nosso_numero;
 
 $vencimento = $dadosboleto["data_vencimento"];
 
@@ -163,10 +163,10 @@ $altura = 50 ;
 
 
 //Guarda inicial
-?><img src=imagens/p.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
-src=imagens/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
-src=imagens/p.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
-src=imagens/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
+?><img src=<?php echo base_url(); ?>images/boleto/p.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
+/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
+src=<?php echo base_url(); ?>images/boleto/p.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
+src=<?php echo base_url(); ?>images/boleto/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
 <?php
 $texto = $valor ;
 if((strlen($texto) % 2) <> 0){
@@ -185,7 +185,7 @@ while (strlen($texto) > 0) {
       $f1 = $largo ;
     }
 ?>
-    src=imagens/p.png width=<?php echo $f1?> height=<?php echo $altura?> border=0><img 
+    src=<?php echo base_url(); ?>images/boleto/p.png width=<?php echo $f1?> height=<?php echo $altura?> border=0><img 
 <?php
     if (substr($f,$i,1) == "0") {
       $f2 = $fino ;
@@ -193,16 +193,16 @@ while (strlen($texto) > 0) {
       $f2 = $largo ;
     }
 ?>
-    src=imagens/b.png width=<?php echo $f2?> height=<?php echo $altura?> border=0><img 
+    src=<?php echo base_url(); ?>images/boleto/b.png width=<?php echo $f2?> height=<?php echo $altura?> border=0><img 
 <?php
   }
 }
 
 // Draw guarda final
 ?>
-src=imagens/p.png width=<?php echo $largo?> height=<?php echo $altura?> border=0><img 
-src=imagens/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
-src=imagens/p.png width=<?php echo 1?> height=<?php echo $altura?> border=0> 
+src=<?php echo base_url(); ?>images/boleto/p.png width=<?php echo $largo?> height=<?php echo $altura?> border=0><img 
+src=<?php echo base_url(); ?>images/boleto/b.png width=<?php echo $fino?> height=<?php echo $altura?> border=0><img 
+src=<?php echo base_url(); ?>images/boleto/p.png width=<?php echo 1?> height=<?php echo $altura?> border=0> 
   <?php
 } //Fim da função
 

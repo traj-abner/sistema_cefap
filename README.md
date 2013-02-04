@@ -1,5 +1,23 @@
 sistema_cefap
 ================================================================================
+v0.23
+04/02/13 - Abner
+#descrição
+Módulo Projetos
+
+#changelog
+Implementados controllers e views para criação e edição; controller para exclusão
+Correções de Bugs Módulo Créditos
+
+#known issues
+Não subindo arquivo na edição
+
+#todo
+
+
+================================================================================
+================================================================================
+
 v0.22
 31/01/13 - Abner
 #descrição

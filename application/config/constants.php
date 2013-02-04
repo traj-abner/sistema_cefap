@@ -106,6 +106,7 @@
 	define("SIMBOLO_MOEDA_DEFAULT",SIMBOLO_MOEDA);
 	
 	define("INSTITUICOES_FOMENTO", serialize(array("Fapesp", "CNPq", "CAPES", "FINEP", "Outros")));
+
         
         define("EMAIL_FROM", 'thais.dias@trajettoria.com');
         define("EMAIL_NAME",'Thais');
@@ -153,17 +154,18 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 function dbDateTime()
 {
 	 $today = getdate();
-	 return $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+	 return $today['year'].'-'.str_pad($today['mon'], 2, '0', STR_PAD_LEFT).'-'.str_pad($today['mday'], 2, '0', STR_PAD_LEFT).' '.str_pad($today['hours'], 2, '0', STR_PAD_LEFT).':'.str_pad($today['minutes'], 2, '0', STR_PAD_LEFT).':'.str_pad($today['seconds'], 2, '0', STR_PAD_LEFT);
 }
 function dbDate()
 {
 	 $today = getdate();
-	 return $today['year'].'-'.$today['mon'].'-'.$today['mday'];
+	 return $today['year'].'-'.str_pad($today['mon'], 2, '0', STR_PAD_LEFT).'-'.str_pad($today['mday'], 2, '0', STR_PAD_LEFT);
 }
 function dbTime()
 {
 	 $today = getdate();
-	 return $today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+	 
+	 return str_pad($today['hours'], 2, '0', STR_PAD_LEFT).':'.str_pad($today['minutes'], 2, '0', STR_PAD_LEFT).':'.str_pad($today['seconds'], 2, '0', STR_PAD_LEFT);
 }
 
 define('CURRENT_DB_DATETIME',dbDateTime());

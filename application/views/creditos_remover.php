@@ -79,7 +79,7 @@ table td{
 <?php	endif;
 ?>
  <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Adicionar Créditos</h2>
+    <div class="well"><h2>Remover Créditos</h2>
       
     </div>
     
@@ -90,11 +90,11 @@ table td{
         "form"  => array('class' => 'form-horizontal', 'id' => 'usuarios_creditos', 'name' => 'frmusuarios')
     );
 
-        echo form_open('creditos/inserir',$attributes['form']);
+        echo form_open('creditos/remover',$attributes['form']);
     ?>
   		
     
-    <div><strong class="message_to">Inserir Créditos para:</strong><br /><em class="message_to_sub">(Segure a tecla Ctrl para selecionar mais de um)</em></div> 
+    <div><strong class="message_to">Remover Créditos de:</strong><br /><em class="message_to_sub">(Segure a tecla Ctrl para selecionar mais de um)</em></div> 
     <select name="to[]" multiple="multiple" size="10">
                 <?php foreach ($ur as $u):?>
                     <option 
@@ -122,7 +122,7 @@ table td{
         "form"  => array('class' => 'form-horizontal', 'id' => 'usuarios_creditos', 'name' => 'frmusuarios')
     );
 
-        echo form_open('creditos/inserir',$attributes['form']);
+        echo form_open('creditos/remover',$attributes['form']);
     ?>
   		
 		<table>

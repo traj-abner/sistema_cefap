@@ -80,7 +80,8 @@ class Creditos extends CI_Controller{
 								$buttonArray[3] = '#';
 							}
 					for($i = 1; $i <= $page; $i++){
-						$order = $this->uri->segment(3, 'id');
+						$order = $this->uri->segment(3, 'data_emissao');
+						$exib = 'DESC';
 		
 						$url = base_url("creditos/listar/$order/$limit/$i");
 						$links .= "<a href='$url'>$i</a>&nbsp;";   
@@ -260,8 +261,8 @@ class Creditos extends CI_Controller{
 	
 	public function pdf(){
 		
-
-
+		$data['msg'] = '';
+		$this->load->view('creditos_pdf', $data);
     }
 	
     public function inserir(){
@@ -292,6 +293,17 @@ class Creditos extends CI_Controller{
 			$stage = 3;
 		endif;
 		
+		$conf = new Configuracao();
+		$conf->get();
+		foreach($conf as $config):
+			switch ($config->param):
+				case 'creditos_taxa_boleto': $tax = number_format($config->valor,2,TS,DS); break;
+				case 'creditos_prazo': $days_to_go = $config->valor; break;
+				case 'creditos_projeto_fusp': $codigo_projeto = $config->valor; break;
+			endswitch;
+		endforeach;
+		
+		if (isset($_POST['to'])) $stage = 2;
 		
 		if ($stage == 1):
 			if ($this->uri->segment(3) != ''):
@@ -304,29 +316,22 @@ class Creditos extends CI_Controller{
 		endif;
 		
 		if ($stage == 2):
-			$conf = new Configuracao();
-			$conf->where('param','creditos_taxa_boleto')->get();
-			$data['taxa_boleto'] = SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($conf->valor,2,TS,DS);
+			if ($data['uRole'] == CREDENCIAL_USUARIO_SUPERADMIN):
+				$data['to'] = implode('_',$_POST['to']) or die;
+			endif;
+			$data['taxa_boleto'] = $tax;
 		endif;
 		
 		if ($stage == 3):
+			$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			$code = "";
+			$length = 32;
+			for($i = 0; $i < $length; $i++):
+				$key = rand(0, strlen($options) - 1);
+				$code .= $options[$key];
+			endfor;
 			if ($data['uRole'] < CREDENCIAL_USUARIO_SUPERADMIN):
-				$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-				$code = "";
-				$length = 32;
-				for($i = 0; $i < $length; $i++):
-					$key = rand(0, strlen($options) - 1);
-					$code .= $options[$key];
-				endfor;
-				
-				$config = new Configuracao();
-				$config->where('param','creditos_prazo')->get();
-				$days_to_go = $config->valor;
-				$config->where('param','creditos_taxa_boleto')->get();
-				$tax = $config->valor;
-				$config->where('param','creditos_projeto_fusp')->get();
-				$codigo_projeto = $config->valor();
-				
+					
 				$received_value = str_replace(',','.',$_POST['valor']);
 				
 				$bol = new Boleto();
@@ -352,16 +357,38 @@ class Creditos extends CI_Controller{
 				$lcn->modified = CURRENT_DB_DATETIME;
 				$lcn->status = STATUS_LANCAMENTO_INATIVO;
 				$lcn->metodo_pagto = METODO_PAGTO_BOLETO;
+				$lcn->tipo = LANCAMENTO_CREDITO;
+				$lcn->lancamento_direto = LANCAMENTO_DIRETO_NAO;
 				$lcn->boleto_id = $bol->id;
 				$lcn->save();	
 				
 				$data['code'] = $code;	
 				$data['msg'] = 'Lançamento gerado com sucesso.';
 				$data['alert_class'] = 'alert alert-success';
+			else:
+				$to = explode('_',$_POST['receivers']);
+				$received_value = str_replace(',','.',$_POST['valor']);
+				foreach ($to as $rec):
+					$lcn = new Lancamento();
+					$lcn->usuario_id = $rec;
+					$lcn->facility_id = 0;
+					$lcn->chave = $code;
+					$lcn->valor = $received_value;
+					$lcn->autor_id = $this->session->userdata('id');
+					$lcn->created = CURRENT_DB_DATETIME;
+					$lcn->modified = CURRENT_DB_DATETIME;
+					$lcn->status = STATUS_LANCAMENTO_ATIVO;
+					$lcn->tipo = LANCAMENTO_CREDITO;
+					$lcn->lancamento_direto = LANCAMENTO_DIRETO_SIM;
+					$lcn->metodo_pagto = METODO_PAGTO_DINHEIRO;
+					$lcn->obs = $_POST['obs'];
+					$lcn->save();
+					header( 'Location: '.base_url('creditos/lancamentos') ) ;
+				endforeach;
 			endif;
 		endif;
 		
-		$data['title'] = 'Inserir Créditos';
+		$data['title'] = 'Inserir Cr&eacute;ditos';
 		$data['stage'] = $stage;
 		
 		$this->load->view('creditos_inserir', $data);
@@ -385,12 +412,12 @@ class Creditos extends CI_Controller{
 				$order = $this->uri->segment(4, NULL); #ordena de acordo com a opção escolhida pelo usuário
 				$limit = $this->uri->segment(5, 5); #limite de resultados por página
 				$npage = $this->uri->segment(6, 0); //número da página 
-				$exib = $this->uri->segment(7,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
+				$exib = $this->uri->segment(7,'DESC'); //segmento que vai passar o valor de CRES ou DECRES.
 			else:
 				$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
 				$limit = $this->uri->segment(4, 5); #limite de resultados por página
 				$npage = $this->uri->segment(5, 0); //número da página 
-				$exib = $this->uri->segment(6,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
+				$exib = $this->uri->segment(6,'DESC'); //segmento que vai passar o valor de CRES ou DECRES.
 			endif;
 
 			$offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
@@ -527,18 +554,34 @@ class Creditos extends CI_Controller{
 						case STATUS_BOLETO_PAGO: $b_st = 'Pago'; break;
 						case STATUS_BOLETO_CANCELADO: $b_st = 'Cancelado'; break;
 					endswitch;
-					$lcn->where('boleto_id', $this->uri->segment(3))->get();
-			if ($this->uri->segment(4) == STATUS_BOLETO_PAGO):
+					
+			$lcn->where('boleto_id', $this->uri->segment(3))->get();
+			$option = $this->uri->segment(4);
+	
+			$lcn = new Lancamento();
+			$lcn->where('boleto_id',$bol->id)->get();
+			if ($option == STATUS_BOLETO_PAGO):
 				$lcn->status = STATUS_LANCAMENTO_ATIVO;
-			else:
+			endif;
+			if ($option == STATUS_BOLETO_EM_ABERTO):
 				$lcn->status = STATUS_LANCAMENTO_INATIVO;
 			endif;
-			$today = getdate();
-			$lcn->modified = $today['year'].'-'.$today['mon'].'-'.$today['mday'].' '.$today['hours'].':'.$today['minutes'].':'.$today['seconds'];
+			if ($option == STATUS_BOLETO_VENCIDO or $option == STATUS_BOLETO_CANCELADO):
+				$lcn->status = STATUS_LANCAMENTO_CANCELADO;
+				$lcn->cancelamento_autor_id = $this->session->userdata('id');
+				$lcn->cancelamento_datetime = CURRENT_DB_DATETIME;
+				if ($option == STATUS_BOLETO_VENCIDO):
+					$lcn->cancelamento_justificativa = 'Boleto Vencido';
+				else:
+					$lcn->cancelamento_justificativa = 'Boleto Cancelado';
+				endif;
+			endif;
+			$lcn->modified = CURRENT_DB_DATETIME;
 			if( !$lcn->save() ) { 
 			
 				$data['msg'] = $lcn->error->string;;
-				$data['msg_type'] = 'error';	
+				$data['msg_type'] = 'error';
+					
 			
 			}else {
 			}
@@ -575,6 +618,33 @@ class Creditos extends CI_Controller{
             }else{
                 $data['msg'] = 'Dados atualizados com sucesso!';
                 $data['msg_type'] = 'alert-success';
+				
+				foreach ($id as $b):
+					$bl = new Boleto();
+					$lcn = new Lancamento();
+					$bl->get_by_id($b);
+					$lcn->where('boleto_id',$b)->get();
+					if ($option == STATUS_BOLETO_PAGO):
+						$lcn->status = STATUS_LANCAMENTO_ATIVO;
+					endif;
+					if ($option == STATUS_BOLETO_EM_ABERTO):
+						$lcn->status = STATUS_LANCAMENTO_INATIVO;
+					endif;
+					if ($option == STATUS_BOLETO_VENCIDO or $option == STATUS_BOLETO_CANCELADO):
+						$lcn->status = STATUS_LANCAMENTO_CANCELADO;
+						$lcn->cancelamento_autor_id = $this->session->userdata('id');
+						$lcn->cancelamento_datetime = CURRENT_DB_DATETIME;
+						if ($option == STATUS_BOLETO_VENCIDO):
+							$lcn->cancelamento_justificativa = 'Boleto Vencido';
+						else:
+							$lcn->cancelamento_justificativa = 'Boleto Cancelado';
+						endif;
+					endif;
+					$lcn->modified = CURRENT_DB_DATETIME;
+					$lcn->save();
+					
+					
+				endforeach;
             };
 			
             redirect(base_url('creditos/listar',$data));
@@ -694,7 +764,94 @@ class Creditos extends CI_Controller{
 	}
     
     public function remover(){
-        
+        $usr = new Usuario();
+		$usr->get_by_id($this->session->userdata('id'));
+		$data['uRole'] = $usr->credencial;
+		$data['msg'] = '';
+		$usr->where('status',STATUS_USUARIO_ATIVO)->order_by('nome')->get();
+		$data['ur'] = $usr;
+		if ($this->uri->segment(3) == 'st2'):
+			$stage = 2;
+		else:
+			if ($this->uri->segment(3) == 'st3'):
+				$stage = 3;
+			else:
+				$stage = 1;
+			endif;
+		endif;
+		if ($data['uRole'] < CREDENCIAL_USUARIO_SUPERADMIN):
+			header( 'Location: '.base_url('creditos/lancamentos') ) ;
+		else:
+			$data['select_user'] = true;
+		endif;
+		
+		if (isset($_POST['valor'])):
+			$stage = 3;
+		endif;
+		
+		$conf = new Configuracao();
+		$conf->get();
+		foreach($conf as $config):
+			switch ($config->param):
+				case 'creditos_taxa_boleto': $tax = SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($config->valor,2,TS,DS);; break;
+				case 'creditos_prazo': $days_to_go = $config->valor; break;
+				case 'creditos_projeto_fusp': $codigo_projeto = $config->valor; break;
+			endswitch;
+		endforeach;
+		
+		if (isset($_POST['to'])) $stage = 2;
+		
+		if ($stage == 1):
+			if ($this->uri->segment(3) != ''):
+				$data['directed'] = true;
+				$stage = 2;
+				$data['to'] = $this->uri->segment(3);
+			else:
+				$data['directed'] = false;
+			endif;
+		endif;
+		
+		if ($stage == 2):
+			if ($data['uRole'] == CREDENCIAL_USUARIO_SUPERADMIN):
+				$data['to'] = implode('_',$_POST['to']) or die;
+			endif;
+			$data['taxa_boleto'] = $tax;
+		endif;
+		
+		if ($stage == 3):
+			$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			$code = "";
+			$length = 32;
+			for($i = 0; $i < $length; $i++):
+				$key = rand(0, strlen($options) - 1);
+				$code .= $options[$key];
+			endfor;
+	
+			$to = explode('_',$_POST['receivers']);
+			$received_value = str_replace(',','.',$_POST['valor']);
+			foreach ($to as $rec):
+				$lcn = new Lancamento();
+				$lcn->usuario_id = $rec;
+				$lcn->facility_id = 0;
+				$lcn->chave = $code;
+				$lcn->valor = $received_value;
+				$lcn->autor_id = $this->session->userdata('id');
+				$lcn->created = CURRENT_DB_DATETIME;
+				$lcn->modified = CURRENT_DB_DATETIME;
+				$lcn->status = STATUS_LANCAMENTO_ATIVO;
+				$lcn->tipo = LANCAMENTO_DEBITO;
+				$lcn->lancamento_direto = LANCAMENTO_DIRETO_SIM;
+				$lcn->metodo_pagto = METODO_PAGTO_DINHEIRO;
+				$lcn->obs = $_POST['obs'];
+				$lcn->save();
+				header( 'Location: '.base_url('creditos/lancamentos') ) ;
+			endforeach;
+		endif;
+		
+		$data['title'] = 'Remover Créditos';
+		$data['stage'] = $stage;
+		
+		$this->load->view('creditos_remover', $data);
         
     }
     

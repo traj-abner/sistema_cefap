@@ -133,7 +133,7 @@
 			$config->where('param','creditos_projeto_fusp')->get();
 			
 			
-			$i = 0;
+			$i = 0; 
 			foreach($bols as $bol): ?>
 
                 <tr class="listar_usuario" id="usuario-<?php echo $bol->id?>">
@@ -154,7 +154,7 @@
 								case STATUS_BOLETO_CANCELADO: echo 'Cancelado'; break;
 							endswitch;
 						?>
-                        </td><?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
+                        </td><?php  if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
@@ -167,18 +167,12 @@
                                         <?php else: ?>
                                             <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_EM_ABERTO); ?>">Marcar como Pendente</option>
                                         <?php endif; ?>
-                                        <?php
+                                        <?php 
 										if($bol->status == STATUS_BOLETO_EM_ABERTO):
-											$d_vc = explode('/',$dvc[$i]);
-											if($today['year'] > $d_vc[2]): 
+											if(strtotime($bol->data_vencimento) < strtotime(CURRENT_DB_DATE)): 
 											 ?>
 												<option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_VENCIDO); ?>">Marcar como Vencido</option>
-											<?php 
-											else:
-												if($today['month'] >= $d_vc[1] && $today['mday'] > $d_vc[0]):?>
-													<option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_VENCIDO); ?>">Marcar como Vencido</option>
-												<?php endif; 
-											endif; 
+											<?php endif; 
 										endif;?>
                                         <?php if ($bol->status < STATUS_BOLETO_PAGO):?>
                                             <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>

@@ -75,7 +75,7 @@ $dadosboleto["especie_doc"] = "";
 
 
 // DADOS PERSONALIZADOS - SANTANDER BANESPA
-$dadosboleto["codigo_cliente"] = $cc; // Código do Cliente (PSK) (Somente 7 digitos)
+$dadosboleto["codigo_cliente"] = '3909220'; // Código do Cliente (PSK) (Somente 7 digitos)
 $dadosboleto["codigo_projeto"] = $codigo_projeto; // Código do Cliente (PSK) (Somente 7 digitos)
 $dadosboleto["ponto_venda"] = $agencia; // Ponto de Venda = Agencia
 $dadosboleto["carteira"] = "102";  // Cobrança Simples - SEM Registro
