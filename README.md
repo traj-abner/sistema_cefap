@@ -1,5 +1,23 @@
 sistema_cefap
 ================================================================================
+v0.24
+05/02/13 - Abner
+#descrição
+Módulo Projetos | Módulo Créditos
+
+#changelog
+Implementados controllers e views para lista e dados do projeto.
+Implementada função para geração de extrato em PDF
+
+#known issues
+arquivo pdf com erro em codificação (dompdf)
+
+#todo
+
+
+================================================================================
+================================================================================
+
 v0.23
 04/02/13 - Abner
 #descrição

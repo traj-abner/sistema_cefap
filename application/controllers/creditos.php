@@ -260,8 +260,26 @@ class Creditos extends CI_Controller{
     }
 	
 	public function pdf(){
+		$usr = new Usuario();
+		$usr->get_by_id($this->uri->segment(3));
+		$data['usr'] = $usr;
+		$lcn = new Lancamento();
+		  $lcn->include_related('boletos')->where('usuario_id',$usr->id)->order_by('modified','ASC')->get();
+		$data['lcn'] = $lcn;
 		
-		$data['msg'] = '';
+		$config = new Configuracao();
+		$config->where('param','creditos_projeto_fusp')->get();
+		$data['config'] = $config;
+		
+		$lcn_sm = new Lancamento();
+		$lcn_sm->select_sum('valor','soma')->where('usuario_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_CREDITO)->get();
+		$data['credit'] = $lcn_sm->soma;
+		
+		$lcn_sm->select_sum('valor','soma')->where('usuario_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_DEBITO)->get();
+		$data['debit'] = $lcn_sm->soma;
+		
+		$data['cashout'] = $data['credit'] - $data['debit'];
+		
 		$this->load->view('creditos_pdf', $data);
     }
 	
