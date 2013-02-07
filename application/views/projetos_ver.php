@@ -128,7 +128,7 @@ table td {
         </tr>
         
         <tr>
-        	<td class="title center" colspan="3"><a class="btn btn-info" href="<?php echo base_url('uploads/'.$proj->arquivos); ?>" target="_blank"><i class="icon-file icon-white"></i>Baixar Arquivos do Projeto de Pesquisa</a></td>
+        	<td class="title center" colspan="3"><a class="btn btn-info" href="<?php echo base_url('uploads/'.$proj->arquivos); ?>" target="_blank"><i class="icon-download icon-white"></i>Baixar Arquivos do Projeto de Pesquisa</a></td>
         </tr>
         
     </table>

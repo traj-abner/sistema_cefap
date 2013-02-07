@@ -359,7 +359,7 @@
                          <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
                                 <?php if ($uRole >= CREDENCIAL_USUARIO_ADMIN): ?>                                      
-                                        <option value="ver_extrato">Ver extrato</option>
+                                        <option value="<?php echo 'creditos/extrato/'.$lc->usuario_id; ?>">Ver extrato</option>
                                         <?php if ($lc->status == STATUS_LANCAMENTO_ATIVO):?>
                                             <option value="<?php echo ("creditos/mudar_status_lancamento/".STATUS_LANCAMENTO_INATIVO."/$lc->id"); ?>">Inativar</option>
                                         <?php else: ?>
@@ -471,18 +471,6 @@
                         alert('Selecione outra opção');  
                     break;
 					
-					case 'ver_extrato':      
-                         var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
-                        id = id[1];
-                        
-                        jQuery.ajax({
-                            url: "<?php echo base_url("creditos/cancelar/"); ?>/" + id ,
-                            dataType: "html"
-                        }).done(function(data){
-                            jQuery("#myModal").html(data);
-                            jQuery("#myModal").modal();
-                        });
-                    break;
 
 					case 'cancelar':      
                          var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");

@@ -1,16 +1,15 @@
 sistema_cefap
 ================================================================================
-v0.24
-05/02/13 - Abner
+v0.25
+07/02/13 - Abner
 #descrição
-Módulo Projetos | Módulo Créditos
+Módulo Agendamento
 
 #changelog
-Implementados controllers e views para lista e dados do projeto.
-Implementada função para geração de extrato em PDF
+Implementados controllers e views para criação, aprovação e listagem de agendamentos
 
 #known issues
-arquivo pdf com erro em codificação (dompdf)
+
 
 #todo
 

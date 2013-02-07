@@ -2,6 +2,7 @@
 class Agendamento extends Datamapper{
     
     public $model = 'agendamento';
+	public $table = 'agendamentos';
     public $created_field = 'created';
     public $updated_field = 'modified';
     
@@ -23,7 +24,7 @@ class Agendamento extends Datamapper{
         
         'facility'      => array(			// in the code, we will refer to this relation by using the object name 'book'
                 'class'         => 'facility',			// This relationship is with the model class 'book'
-                'other_field'   => 'agendamentos'
+                'other_field'   => 'agendamento'
          )
     );
     

@@ -3,14 +3,14 @@ require_once("dompdf_config.inc.php");
 
 $html = '
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt">
+
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     
     <style type="text/css">
 		table {
-			width:172mm;
+			width:188mm;
 			font-family:Arial, Helvetica, sans-serif;
 			font-size:12px;
 			border-collapse:collapse;
@@ -215,8 +215,15 @@ $html = '
 
 ';
 $today = getdate();
-echo $html;
+//echo $html;
+$temp = "
+<body>TESTE</body>
+
+
+";
+//echo $temp;
 $dompdf = new DOMPDF();
+//$dompdf->load_html($html);
 $dompdf->load_html($html);
 $dompdf->render();
 $dompdf->stream("extratoUI".$usr->id."at".$today['mday'].$today['mon'].$today['year']."_".$today['hours'].$today['minutes'].$today['seconds'].".pdf");

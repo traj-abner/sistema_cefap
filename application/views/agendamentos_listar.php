@@ -9,9 +9,10 @@
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Lista de Usu&aacute;rios</h2>
+    <div class="well">
+        <h2>Lista de Agendamentos</h2>
         <div class="qntd_usuario_listar">
-            <h3>Usuários por página:</h3>
+            <h3>Agendamentos por página:</h3>
             <select id="selectQntd" class="input-mini">
                     <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
                     <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
@@ -49,93 +50,107 @@
             <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
             <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
     </ul>
-    <?php if($uRole == CREDENCIAL_USUARIO_SUPERADMIN){?>
-         <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='../usuarios/adicionar'" />
-    <?php } ?>      
+    
+          
+         	<a href="../agendamentos/criar" class="btn btn-primary" id="btn-right-listar">Adicionar</a>
 <table class="table">
     <caption >Lista de Usuários</caption>
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
-                        <th><a href='<?php echo base_url("projetos/listar/id/$limit/$perpage/DESC"); ?>'>ID
+                        <th><a href='<?php echo base_url("agendamentos/listar/id/$limit/$perpage/DESC"); ?>'>ID
                             <?php 
                                 if(isset($img) && $img == 'id'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/id/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/id/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("projetos/listar/titulo/$limit/$perpage/DESC"); ?>'>Tituto
+                        <th><a href='<?php echo base_url("agendamentos/listar/usuario_id/$limit/$perpage/DESC"); ?>'>Usuário
                             <?php 
-                                if(isset($img) && $img == 'titulo'){
+                                if(isset($img) && $img == 'usuario_id'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/titulo/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/usuario_id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/titulo/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/usuario_id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>                  
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("projetos/listar/responsavel/$limit/$perpage/DESC"); ?>'>Responsavel
+                        <th><a href='<?php echo base_url("agendamentos/listar/facility_id/$limit/$perpage/DESC"); ?>'>Facility
                             <?php 
-                                if(isset($img) && $img == 'email'){
+                                if(isset($img) && $img == 'facility_id'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/email/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/facility_id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/email/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/facility_id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("projetos/listar/instituicao/$limit/$perpage/DESC"); ?>'>Instituição
+                        <th><a href='<?php echo base_url("agendamentos/listar/projeto_id/$limit/$perpage/DESC"); ?>'>Projeto
                             <?php 
-                                if(isset($img) && $img == 'instituicao'){
+                                if(isset($img) && $img == 'projeto_id'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/instituicao/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/projeto_id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/instituicao/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/projeto_id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("projetos/listar/departamento/$limit/$perpage/DESC"); ?>'>Departamento
+                        <th><a href='<?php echo base_url("agendamentos/listar/periodo_inicial/$limit/$perpage/DESC"); ?>'>Periodo Solicitado
                             <?php 
-                                if(isset($img) && $img == 'credencial'){
+                                if(isset($img) && $img == 'periodo_inicial'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/credencial/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/periodo_inicial/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                       
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/credencial/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/periodo_inicial/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("projetos/listar/status/$limit/$perpage/DESC"); ?>'>Status
+                        <th><a href='<?php echo base_url("agendamentos/listar/periodo_inicial_marcado/$limit/$perpage/DESC"); ?>'>Periodo Agendado
+                            <?php 
+                                if(isset($img) && $img == 'periodo_inicial_marcado'){
+                                    echo '<a href="';
+                                    echo base_url("agendamentos/listar/periodo_inicial_marcado/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                      
+                                    echo '<a href="';
+                                    echo base_url("agendamentos/listar/periodo_inicial_marcado/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>
+                            </a>
+                        </th>
+                        <th><a href='<?php echo base_url("agendamentos/listar/status/$limit/$perpage/DESC"); ?>'>Status
                             <?php 
                                 if(isset($img) && $img == 'status'){
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/status/$limit/$perpage/DESC");
+                                    echo base_url("agendamentos/listar/status/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("projetos/listar/status/$limit/$perpage/ASC");
+                                    echo base_url("agendamentos/listar/status/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
@@ -146,22 +161,36 @@
         </thead>
         
         <tbody>
-        <?php foreach($proj as $p){ ?>
+        <?php 
+		$us = new Usuario();
+		$ft = new Facility();
+		$pj = new Projeto();
+		foreach($agn as $ag){ ?>
 
-                <tr class="listar_usuario" id="usuario-<?php echo $p->id; ?>">
+                <tr class="listar_usuario" id="usuario-<?php echo $ag->id; ?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td><?php echo $p->id;?></td>
-                        <td><?php echo $p->titulo; ?></td>
-                        <td><?php echo $p->responsavel; ?></td>
-                        <td><?php echo $p->instituicao; ?></td>
-                        <td> <?php echo $p->departamento; ?>
+                        <td><?php echo $ag->id;?></td>
+                        <td><?php $us->get_by_id($ag->usuario_id); echo $us->nome; ?></td>
+                        <td><?php $ft->get_by_id($ag->facility_id); echo $ft->nome; ?></td>
+                        <td><?php $pj->get_by_id($ag->projeto_id); echo $pj->titulo; ?></td>
+                        <td><?php echo date('d/m/Y H:i',strtotime($ag->periodo_inicial)).' a '.date('H:i',strtotime($ag->periodo_final)); ?></td>
+                        <td> <?php if ($ag->periodo_inicial_marcado == '0000-00-00 00:00:00'):
+										echo '';
+									else:
+										//echo $ag->periodo_inicial_marcado;
+										echo date('d/m/Y H:i',strtotime($ag->periodo_inicial_marcado)).' a '.date('H:i',strtotime($ag->periodo_final_marcado));
+									endif;
+						 ?>
                         </td>
                        
                         <td> <?php
-							switch ($p->status):
-								case STATUS_PROJETO_ATIVO: echo 'Ativo'; break;
-								case STATUS_PROJETO_INATIVO: echo 'Inativo'; break;
-								case STATUS_PROJETO_EXCLUIDO: echo 'Excluido'; break;
+							switch ($ag->status):
+								case AGENDAMENTO_STATUS_SOLICITADO: echo 'Solicitado'; break;
+								case AGENDAMENTO_STATUS_APROVADO: echo 'Aprovado'; break;
+								case AGENDAMENTO_STATUS_NEGADO: echo 'Negado'; break;
+								case AGENDAMENTO_STATUS_FALTOU: echo 'Faltou'; break;
+								case AGENDAMENTO_STATUS_COMPARECEU: echo 'Compareceu'; break;
+								case AGENDAMENTO_STATUS_CANCELADO: echo 'Cancelado'; break;
 							endswitch;
 						?>
                         </td>
@@ -169,10 +198,14 @@
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
                                 <option value='dados_pessoais' data-toggle="modal">Ver Detalhes</option>
-                                <?php if ($uRole == STATUS_CREDENCIAL_SUPERADMIN or $p->created_by == $this->session->userdata('id')): ?>
-                                <option value='<?php echo ("projetos/editar/".$p->id);?>'>Editar Dados</option>
-									<?php if ($p->status == STATUS_PROJETO_INATIVO): ?><option value="<?php echo ("projetos/status/".STATUS_PROJETO_ATIVO.'/'.$p->id); ?>">Ativar</option>
-                                    <?php else: ?><option value="<?php echo ("projetos/status/".STATUS_PROJETO_INATIVO.'/'.$p->id); ?>">Inativar</option> <?php endif; ?>
+                                <?php
+									if ($uRole >= CREDENCIAL_USUARIO_ADMIN):
+										 $cn = $ft->where_related_usuario('id',$this->session->userdata('id'))->where('id',$ag->facility_id)->count();
+										
+										if ($cn > 0 or $uRole == CREDENCIAL_USUARIO_SUPERADMIN):
+								 ?>
+                                <option value='<?php echo ("agendamentos/editar/".$ag->id);?>'>Editar</option>
+                                	<?php endif; ?>
                                 <?php endif; ?>
                                </optgroup>
                             </select>
@@ -226,13 +259,13 @@
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("projetos/listar/id");  ?>' + '/' + option + '/1' ;
+           window.location.href = '<?php echo base_url("agendamentos/listar/id");  ?>' + '/' + option + '/1' ;
         });
    		
 		jQuery('#gotopage').change(function(){
 		   var qtd = $("#selectQntd option:selected").val();
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("projetos/listar/id");  ?>' + '/' + qtd + '/' + option ;
+           window.location.href = '<?php echo base_url("agendamentos/listar/id");  ?>' + '/' + qtd + '/' + option ;
         });
    
    

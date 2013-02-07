@@ -58,10 +58,10 @@ class Projetos extends CI_Controller{
 			}                    
 			
 			
-			if ($usr->credencial < CREDENCIAL_USUARIO_SUPERADMIN):
+			if ($usr->credencial == CREDENCIAL_USUARIO_SUPERADMIN):
 				$proj->limit($limit, $offset);
 			else:
-				$proj->where_not_in('status',STATUS_PROJETO_CANCELADO)->limit($limit, $offset);
+				$proj->where_not_in('status',STATUS_PROJETO_EXCLUIDO)->limit($limit, $offset);
 			endif;
 			
 			//ordena de acordo com a opção que o usuário escolher    
