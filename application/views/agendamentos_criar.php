@@ -196,6 +196,20 @@ table td {
         echo form_open_multipart('agendamentos/novo',$attributes['form']);
     ?>
     	<table>
+    		<?php 
+    			if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):
+    		?>
+    			<tr>
+    				<td class="right title">Usuário</td>
+    				<td class="left" colspan="2">
+    					<select style="width:500px;" name="usuario">
+	                    	<?php foreach ($us as $ur): ?>
+	                			<option value="<?php echo $ur->id; ?>"><?php echo $ur->nome . ' ' . $ur->sobrenome; ?></option>
+	                        <?php endforeach; ?>
+                    	</select>
+    				</td>
+    			</tr>
+    		<?php endif; ?>
         	<tr>
             	<td class="right title">Facility</td>
                 <td class="left" colspan="2">

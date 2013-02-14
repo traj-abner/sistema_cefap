@@ -1,5 +1,24 @@
 sistema_cefap
 ================================================================================
+v0.26
+13/02/13 - Abner
+#descrição
+Módulo Agendamento | Módulo Facilities
+
+#changelog
+Correções de Bugs na aprovação de Agendamentos
+Implementadas edição e visualização do agendamento
+Implementados extratos html e pdf das facilities
+
+#known issues
+
+
+#todo
+
+
+================================================================================
+================================================================================
+
 v0.25
 07/02/13 - Abner
 #descrição

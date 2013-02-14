@@ -29,15 +29,15 @@ class Facilities extends CI_Controller {
         
         //COMUM: apenas facilities com o status "ATIVO";
         //ADMINISTRADOR: apenas com status "ATIVO" e "INATIVO";
-        //SUPERADMINISTRADOR: são mostradas também as facilities com o status "EXCLUÍDO", permitindo que sejam ativadas novamente. Mostrar botão "adicionar" no topo da página;
-        //A opção de reativar uma facility inativa só é mostrada se o usuário logado estiver associado à facility como um de seus gestores (esta opção é configurável para cada facility).
+        //SUPERADMINISTRADOR: sÃ£o mostradas tambÃ©m as facilities com o status "EXCLUÃ�DO", permitindo que sejam ativadas novamente. Mostrar botÃ£o "adicionar" no topo da pÃ¡gina;
+        //A opÃ§Ã£o de reativar uma facility inativa sÃ³ Ã© mostrada se o usuÃ¡rio logado estiver associado Ã  facility como um de seus gestores (esta opÃ§Ã£o Ã© configurÃ¡vel para cada facility).
         
         $total = $this->db->count_all("facilities");
 
         if ($total > 0 ){
-            $order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
-            $limit = $this->uri->segment(4, 5); #limite de resultados por página
-            $npage = $this->uri->segment(5, 0); //número da página 
+            $order = $this->uri->segment(3, NULL); #ordena de acordo com a opÃ§Ã£o escolhida pelo usuÃ¡rio
+            $limit = $this->uri->segment(4, 5); #limite de resultados por pÃ¡gina
+            $npage = $this->uri->segment(5, 0); //nÃºmero da pÃ¡gina 
             $exib = $this->uri->segment(6,'CRESC'); //segmento que vai passar o valor de CRES ou DECRES.
 
 
@@ -46,7 +46,7 @@ class Facilities extends CI_Controller {
             }
 
 
-            $offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a página que o usuário clicar
+            $offset = ($npage - 1) * $limit; //calcula o offset para exibir os resultados de acordo com a pÃ¡gina que o usuÃ¡rio clicar
             if($offset < 0){
                 $offset = 0;
             }                    
@@ -62,14 +62,14 @@ class Facilities extends CI_Controller {
                 case CREDENCIAL_USUARIO_SUPERADMIN :
                     $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->limit($limit, $offset);
                 break;
-                //usuário com a credencial de admin não poderá ver a lista de usuários excluídos.
+                //usuÃ¡rio com a credencial de admin nÃ£o poderÃ¡ ver a lista de usuÃ¡rios excluÃ­dos.
                 case CREDENCIAL_USUARIO_ADMIN :
                     $fclt->select('id, nome, tipo_agendamento,  arquivos, status')->limit($limit, $offset)->where_not_in('status', STATUS_FACILITIES_EXCLUIDO)->limit($limit, $offset); 
                 break;
 				
 				
                 }
-            //ordena de acordo com a opção que o usuário escolher    
+            //ordena de acordo com a opÃ§Ã£o que o usuÃ¡rio escolher    
             if(empty($order)){
                 $fclt->order_by('id', $exib);
 
@@ -91,11 +91,11 @@ class Facilities extends CI_Controller {
             $data['perpage'] = $npage;
 
         }else{
-            $data['msg'] = '<strong>Nenhum usuário encontrado.</strong>';
+            $data['msg'] = '<strong>Nenhum usuÃ¡rio encontrado.</strong>';
             $data['msg_type'] = 'alert-block';
         }     
 
-        /* PAGINAÇÃO */
+        /* PAGINAÃ‡ÃƒO */
             $pagination = $total / $limit;
             $page = ceil($pagination);
             $links = "";
@@ -136,7 +136,7 @@ class Facilities extends CI_Controller {
 				$data['buttonArray'] = $buttonArray;
 				$data['urlarray'] = $urlarray;  
                 $data['page'] =  $links;
-         /*END PAGINAÇÃO*/     
+         /*END PAGINAÃ‡ÃƒO*/     
 		$data['uID'] = $this->session->userdata('id');
         $data['title'] = 'Lista de Facilities';
         $this->load->view('facilities_listar',$data);
@@ -158,7 +158,7 @@ class Facilities extends CI_Controller {
                 $fclt->nome_abreviado	= $post['nomeabrev'];
                 $fclt->nome             = $post['nome_completo'];
                 $fclt->descricao	= $post['descricao'];
-                $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrão para novas facilities
+                $fclt->status		= STATUS_FACILITIES_ATIVO;		# status padrÃ£o para novas facilities
                 $fclt->tipo_agendamento	= $post['tipo_agendamento'];		# @TODO use case datas de agendamento (TIPO_AGENDAMENTO_AGENDA) - implementar google calendar ou similar
 
 				$usrs = explode(',',$post['hidden_selecionador_administradores']);
@@ -171,7 +171,7 @@ class Facilities extends CI_Controller {
                     $data['msg_type'] = 'error';	
 				
                 }else {
-                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg'] = 'Nova alteraÃ§Ã£o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
                     $data['msg_type'] = 'alert-success';
                 }
         }
@@ -246,7 +246,7 @@ class Facilities extends CI_Controller {
                     $data['msg_type'] = 'error';	
 				
                 }else {
-                    $data['msg'] = 'Nova alteração da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
+                    $data['msg'] = 'Nova alteraÃ§Ã£o da facility ' .$fclt->nome_abreviado. ' efetuada  com sucesso!';
                     $data['msg_type'] = 'alert-success';
                 }
         }
@@ -301,12 +301,86 @@ class Facilities extends CI_Controller {
     }
     
     public function extrato(){
-        
+    	$usr = new Usuario();
+    	$usr->get_by_id($this->session->userdata('id'));
+    	$data['usr'] = $usr;
+    	
+    	$data['msg'] = '';
+    	$data['title'] = 'Extrato de Utilização de Facility';
+    	
+    	$agn = new Agendamento();
+    	$data['agn'] = $agn;
+    	
+    	$fcl = new Facility();
+    	$fcl->include_related('usuarios')->get_by_id($this->uri->segment(3));
+    	$data['fcl'] = $fcl;
+    	
+    	$i=0;
+    	foreach ($fcl as $fl):
+    		$admins[$i] = $fl->usuario_nome . ' ' . $fl->usuario_sobrenome;
+    		$i++;
+    	endforeach;
+    	$admin = implode(', ',$admins);
+    	$data['admins'] = $admin;
+    	
+    	$lcn = new Lancamento();
+    	$lcn->include_related('usuarios')->where('facility_id',$fcl->id)->order_by('modified','ASC')->get();
+    	$data['lcn'] = $lcn;
+    	
+    	
+    	$lcn_sm = new Lancamento();
+    	$lcn_sm->select_sum('valor','soma')->where('facility_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_DEBITO)->get();
+    	$data['credit'] = $lcn_sm->soma;
+    	
+    	$lcn_sm->select_sum('valor','soma')->where('facility_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_CREDITO)->get();
+    	$data['debit'] = $lcn_sm->soma;
+    	
+    	$data['cashout'] = $data['credit'] - $data['debit'];
+    	
+    	
+    	$this->load->view('facilities_extrato', $data);
         
     }
     
     public function extrato_pdf(){
-        
+    	$usr = new Usuario();
+    	$usr->get_by_id($this->session->userdata('id'));
+    	$data['usr'] = $usr;
+    	 
+    	$data['msg'] = '';
+    	$data['title'] = 'Extrato de Utilização de Facility';
+    	 
+    	$agn = new Agendamento();
+    	$data['agn'] = $agn;
+    	 
+    	$fcl = new Facility();
+    	$fcl->include_related('usuarios')->get_by_id($this->uri->segment(3));
+    	$data['fcl'] = $fcl;
+    	 
+    	$i=0;
+    	foreach ($fcl as $fl):
+    	$admins[$i] = $fl->usuario_nome . ' ' . $fl->usuario_sobrenome;
+    	$i++;
+    	endforeach;
+    	$admin = implode(', ',$admins);
+    	$data['admins'] = $admin;
+    	 
+    	$lcn = new Lancamento();
+    	$lcn->include_related('usuarios')->where('facility_id',$fcl->id)->order_by('modified','ASC')->get();
+    	$data['lcn'] = $lcn;
+    	 
+    	 
+    	$lcn_sm = new Lancamento();
+    	$lcn_sm->select_sum('valor','soma')->where('facility_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_DEBITO)->get();
+    	$data['credit'] = $lcn_sm->soma;
+    	 
+    	$lcn_sm->select_sum('valor','soma')->where('facility_id',$this->uri->segment(3))->where('status',STATUS_LANCAMENTO_ATIVO)->where('tipo',LANCAMENTO_CREDITO)->get();
+    	$data['debit'] = $lcn_sm->soma;
+    	 
+    	$data['cashout'] = $data['credit'] - $data['debit'];
+    	 
+    	 
+    	$this->load->view('facilities_extrato_pdf', $data);
         
     }
     

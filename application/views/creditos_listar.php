@@ -160,7 +160,7 @@
                                 <option value="selecione">Selecione...</option>
                                 
                                 <option value="ver_detalhes">Ver detalhes</option>                                   
-                                        <option value='<?php echo ("creditos/enviar/$bol->id"); ?>'>Enviar ao Usu&aacute;rio</option>
+                                        <option value='<?php echo ("creditos/enviar_boleto/$bol->id"); ?>'>Enviar ao Usu&aacute;rio</option>
                                         <option value='dados_pessoais' data-toggle="modal">Dados do Usu&aacute;rio</option>
                                         <?php if ($bol->status != STATUS_BOLETO_PAGO):?>
                                             <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_PAGO); ?>">Marcar como Pago</option>

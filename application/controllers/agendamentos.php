@@ -20,12 +20,13 @@ class Agendamentos extends CI_Controller{
 		$ur = new Usuario();
 		$usr->get_by_id($this->session->userdata('id'));
 		$ur = $usr;
-		if ($ur->credencial < CREDENCIAL_USUARIO_ADMIN):
-			redirect('main');
-		endif;
 		
-		$total = $agn->count();
-
+		if ($ur->credencial == CREDENCIAL_USUARIO_COMUM)
+			$agn->where('usuario_id',$this->session->userdata('id'));
+		$total = $agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->count();
+		
+		if ($total == 0)
+			error_reporting(0);
 		if ($total > 0 ){
 			$order = $this->uri->segment(3, NULL); #ordena de acordo com a opção escolhida pelo usuário
 			$limit = $this->uri->segment(4, 5); #limite de resultados por página
@@ -38,8 +39,11 @@ class Agendamentos extends CI_Controller{
 			if($offset < 0){
 				$offset = 0;
 			}                    
-			
-			$agn->limit($limit, $offset);
+			if ($ur->credencial == CREDENCIAL_USUARIO_COMUM):
+				$agn->where('usuario_id',$this->session->userdata('id'))->limit($limit, $offset);
+			else:
+				$agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->limit($limit, $offset);
+			endif;
 			
 			//ordena de acordo com a opção que o usuário escolher    
 			if(empty($order)){
@@ -48,7 +52,6 @@ class Agendamentos extends CI_Controller{
 			}else{
 				$agn->order_by($order, $exib);
 			}
-			
 			$agn->get();
 
 			$data['img'] = $order;
@@ -56,9 +59,10 @@ class Agendamentos extends CI_Controller{
 			$data['limit'] = $limit;
 			$data['offset'] = $offset;
 			$data['perpage'] = $npage;
+			$data['msg_type'] = 'alert';
 		
 		}else{
-			$data['msg'] = '<strong>Nenhum projeto encontrado.</strong>';
+			$data['msg'] = '<strong>Nenhum agendamento encontrado.</strong>';
 			$data['msg_type'] = 'alert-block';
 		}     
 		/* PAGINAÇÃO */
@@ -123,6 +127,14 @@ class Agendamentos extends CI_Controller{
 		$agn_all->include_related('facilities')->include_related('usuario')->include_related('projeto')->where('status',-1)->get();
 		$data['agn'] = $agn_all;
 		
+		$usr = new Usuario();
+		$usr->get_by_id($this->session->userdata('id'));
+		$data['uRole'] = $usr->credencial;
+		
+		$all_usr = new Usuario();
+		$all_usr->order_by('nome')->get();
+		$data['us'] = $all_usr;
+		
 		$flc = new Facility();
 		$data['fcl'] = $flc->where('status',STATUS_FACILITIES_ATIVO)->order_by('nome')->get();
 		$proj = new Projeto();
@@ -138,32 +150,151 @@ class Agendamentos extends CI_Controller{
     }
 	
 	public function novo(){
+		$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		$code = "";
+		$length = 32;
+		for($i = 0; $i < $length; $i++):
+			$key = rand(0, strlen($options) - 1);
+			$code .= $options[$key];
+		endfor;
 		$agn = new Agendamento();
 		$usr = new Usuario();
 		$fcl = new Facility();
 		$prj = new Projeto();
 		
-		$agn->usuario_id = $this->session->userdata('id');
+		$usr->get_by_id($this->session->userdata('id'));
+		
+		if ($usr->credencial == CREDENCIAL_USUARIO_SUPERADMIN):
+			$agn->usuario_id = $_POST['usuario'];
+		else:
+			$agn->usuario_id = $this->session->userdata('id');
+		endif;
 		$agn->facility_id = $_POST['facility'];
 		$agn->projeto_id = $_POST['projeto'];
 		$agn->status = AGENDAMENTO_STATUS_SOLICITADO;
 		$agn->periodo_inicial = $_POST['dateField'].' '.$_POST['hinicio'].':'.$_POST['minicio'].':00';
 		$agn->periodo_final = $_POST['dateField'].' '.$_POST['hfim'].':'.$_POST['mfim'].':59';
 		$agn->status_pagto = STATUS_PAGTO_NAO_PAGO;
+		$agn->chave = $code;
 		$agn->save();
+		$data = '';
 		redirect(base_url('agendamentos/listar/',$data));
 		
 	}
     
     public function ver(){
-        
+    	$usr = new Usuario(); #current user
+    	$usr->get_by_id($this->session->userdata('id'));
+    	$data['uRole'] = $usr->credencial;
+    	
+    	$ag = new Agendamento();
+    	$ag->get_by_id($this->uri->segment(3));
+    	$data['ag'] = $ag;
+    	$ur = new Usuario();
+    	$ur->get_by_id($ag->usuario_id);
+    	$data['ur'] = $ur;
+    	
+    	
+    	$flc = new Facility();
+    	$data['fcl'] = $flc->where('id',$ag->facility_id)->get();
+    	$flc_all = new Facility();
+    	$data['fcl_all'] = $flc_all->order_by('nome')->get();
+    	
+    	
+    	$proj = new Projeto();
+    	$data['proj'] = $proj->where('id',$ag->projeto_id)->get();
+    	$proj_all = new Projeto();
+    	$data['proj_all'] = $proj_all->order_by('titulo')->get();
+    	
+    	$data['msg'] = '';
+    	$data['title'] = 'Editar Agendamento';
+    	$isadmin = $flc->include_related('usuario')->where('id',$ag->facility_id)->where_related_usuario('id',$this->session->userdata('id'))->count();
+    	
+    	switch($usr->credencial):
+    	case CREDENCIAL_USUARIO_COMUM:
+    		if ($ag->usuario_id != $this->session->userdata('id')):
+    		redirect('main');
+    	else:
+    	$data['adminRights'] = true;
+    	$data['canApprove'] = false;
+    	endif;
+    	break;
+    	case CREDENCIAL_USUARIO_ADMIN:
+    		if ($isadmin == 1):
+    		$data['adminRights'] = true;
+    		$data['canApprove'] = true;
+    		else:
+    		$data['adminRights'] = false;
+    		endif;
+    		break;
+    	case CREDENCIAL_USUARIO_SUPERADMIN: $data['adminRights'] = true; $data['canApprove'] = true; break;
+    	endswitch;
+    	$this->load->view('agendamentos_ver',$data);
         
     }
 	
-	public function editar(){}
+	public function editar(){
+		$usr = new Usuario(); #current user
+		$usr->get_by_id($this->session->userdata('id'));
+		$data['uRole'] = $usr->credencial;
+		
+		$ag = new Agendamento();
+		$ag->get_by_id($this->uri->segment(3));
+		$data['ag'] = $ag;
+		$ur = new Usuario();
+		$ur->get_by_id($ag->usuario_id);
+		$data['ur'] = $ur;
+		
+		$ur_all = new Usuario();
+		$ur_all->order_by('nome')->get();
+		$data['ur_all'] = $ur_all;
+		
+		$agn_all = new Agendamento();
+		$agn_all->include_related('facilities')->include_related('usuario')->include_related('projeto')->where('facility_id',$ag->facility_id)->get();
+		$data['agn'] = $agn_all;
+		
+		$flc = new Facility();
+		$data['fcl'] = $flc->where('id',$ag->facility_id)->get();
+		$flc_all = new Facility();
+		$data['fcl_all'] = $flc_all->order_by('nome')->get();
+		
+		
+		$proj = new Projeto();
+		$data['proj'] = $proj->where('id',$ag->projeto_id)->get();
+		$proj_all = new Projeto();
+		$data['proj_all'] = $proj_all->order_by('titulo')->get();
+		
+		$data['msg'] = '';
+		$data['title'] = 'Editar Agendamento';
+		$isadmin = $flc->include_related('usuario')->where('id',$ag->facility_id)->where_related_usuario('id',$this->session->userdata('id'))->count();
+		
+		switch($usr->credencial):
+		case CREDENCIAL_USUARIO_COMUM: 
+			if ($ag->usuario_id != $this->session->userdata('id')):
+				redirect('main'); 
+			else:
+				$data['adminRights'] = true;
+				$data['canApprove'] = false;
+			endif;
+		break;
+		case CREDENCIAL_USUARIO_ADMIN:
+			if ($isadmin == 1):
+				$data['adminRights'] = true;
+				$data['canApprove'] = true;
+			else:
+				$data['adminRights'] = false;
+			endif;
+			break;
+		case CREDENCIAL_USUARIO_SUPERADMIN: $data['adminRights'] = true; $data['canApprove'] = true; break;
+		endswitch;
+		$this->load->view('agendamentos_editar',$data);
+		
+	}
     
     public function aprovar(){
-       
+        $usr = new Usuario(); #current user
+        $usr->get_by_id($this->session->userdata('id'));
+        $data['uRole'] = $usr->credencial;
 		
 		$ag = new Agendamento();
 		$ag->get_by_id($this->uri->segment(3));
@@ -178,12 +309,26 @@ class Agendamentos extends CI_Controller{
 		
 		$flc = new Facility();
 		$data['fcl'] = $flc->where('id',$ag->facility_id)->get();
+		
+		
 		$proj = new Projeto();
 		$data['proj'] = $proj->where('id',$ag->projeto_id)->get();
 		
 		$data['msg'] = '';
 		$data['title'] = 'Aprovar Agendamento';
+		$isadmin = $flc->include_related('usuario')->where('id',$ag->facility_id)->where_related_usuario('id',$this->session->userdata('id'))->count();
 		
+		switch($usr->credencial):
+			case CREDENCIAL_USUARIO_COMUM: redirect('main'); break;
+			case CREDENCIAL_USUARIO_ADMIN:
+				if ($isadmin == 1):
+					$data['adminRights'] = true;
+				else:
+					$data['adminRights'] = false;
+				endif;
+				break;
+			case CREDENCIAL_USUARIO_SUPERADMIN: $data['adminRights'] = true;
+		endswitch;
 		$this->load->view('agendamentos_aprovar',$data);
         
     }
@@ -194,6 +339,9 @@ class Agendamentos extends CI_Controller{
     }
     
     public function salvar(){
+    	$cur = new Usuario(); #current user
+    	$cur->get_by_id($this->session->userdata('id'));
+    	
 		$options = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$code = "";
 		$length = 32;
@@ -209,21 +357,40 @@ class Agendamentos extends CI_Controller{
 		
 		$lcn = new Lancamento();
 		
-		$agn->status = $_POST['status'];
-		$agn->status_pagto = $_POST['pagto'];
 		
-		if ($_POST['how'] == 'change'):
+		
+		if ($_POST['how'] == 'change' and $cur->credencial > CREDENCIAL_USUARIO_COMUM):
 			$agn->periodo_inicial_marcado = $_POST['dateField'].' '.$_POST['hinicio'].':'.$_POST['minicio'].':00';
 			$agn->periodo_final_marcado = $_POST['dateField'].' '.$_POST['hfim'].':'.$_POST['mfim'].':59';
 		else:
-			$agn->periodo_inicial_marcado = $agn->periodo_inicial;
-			$agn->periodo_final_marcado = $agn->periodo_final;
+			if ($cur->credencial > CREDENCIAL_USUARIO_COMUM):
+				$agn->periodo_inicial_marcado = $agn->periodo_inicial;
+				$agn->periodo_final_marcado = $agn->periodo_final;
+			else:
+				$agn->periodo_inicial = $_POST['dateField'].' '.$_POST['hinicio'].':'.$_POST['minicio'].':00';
+				$agn->periodo_final = $_POST['dateField'].' '.$_POST['hfim'].':'.$_POST['mfim'].':59';
+			endif;
+		endif;
+		if (isset($_POST['facility'])):
+			$agn->facility_id = $_POST['facility'];
+			$agn->projeto_id = $_POST['projeto'];
 		endif;
 		
-		$received_value = str_replace(',','.',$_POST['valor']);
-		$agn->valor_total = $received_value;
+		if ($cur->credencial == CREDENCIAL_USUARIO_SUPERADMIN):
+			if (isset($_POST['usuario'])):
+				$agn->usuario_id = $_POST['usuario'];
+			endif;
+		endif;
 		
-		$agn->aprovado_por_id = $this->session->userdata('id');
+		
+		if ($cur->credencial > CREDENCIAL_USUARIO_COMUM):
+			$agn->status = $_POST['status'];
+			$agn->status_pagto = $_POST['pagto'];
+			$received_value = str_replace(',','.',$_POST['valor']);
+			$agn->valor_total = $received_value;
+			
+			$agn->aprovado_por_id = $this->session->userdata('id');
+		endif;
 		if ($agn->chave == ''):
 			$agn->chave = $code;
 		else:
@@ -231,28 +398,37 @@ class Agendamentos extends CI_Controller{
 		endif;
 		$agn->save();
 		
-		$lcn->usuario_id = $agn->usuario_id;
-		$lcn->facility_id = $agn->facility_id;
-		$lcn->chave = $code;
-		$lcn->valor = $received_value;
-		$lcn->autor_id = $this->session->userdata('id');
-		$lcn->modified = CURRENT_DB_DATETIME;
-		$lcn->status = STATUS_LANCAMENTO_ATIVO;
-		$lcn->tipo = LANCAMENTO_DEBITO;
-		$lcn->lancamento_direto = LANCAMENTO_DIRETO_SIM;
-		$lcn->metodo_pagto = METODO_PAGTO_DINHEIRO;
-		$lcn->obs = 'Agendamento da Facility '. $fcl->nome;
-		$lcn->save();
+		if ($cur->credencial > CREDENCIAL_USUARIO_COMUM):
+			$lcn->usuario_id = $agn->usuario_id;
+			$lcn->facility_id = $agn->facility_id;
+			$lcn->chave = $agn->chave;
+			$lcn->valor = $received_value;
+			$lcn->autor_id = $this->session->userdata('id');
+			$lcn->modified = CURRENT_DB_DATETIME;
+			$lcn->status = STATUS_LANCAMENTO_ATIVO;
+			$lcn->tipo = LANCAMENTO_DEBITO;
+			$lcn->lancamento_direto = LANCAMENTO_DIRETO_SIM;
+			$lcn->metodo_pagto = METODO_PAGTO_DINHEIRO;
+			$lcn->obs = 'Agendamento da Facility '. $fcl->nome;
+			$lcn->save();
+		endif;
 		
 		$data = '';
 				
-		redirect(base_url('agendamentos/aprovar/'.$this->uri->segment(3),$data));
+		redirect(base_url('agendamentos/listar/',$data));
         
     }
 	
     
     public function excluir(){
+        $agn = new Agendamento();
+        $agn->get_by_id($this->uri->segment(3)) or die;
+        $agn->status = AGENDAMENTO_STATUS_EXCLUIDO;
+        $agn->aprovado_por_id = $this->session->userdata('id');
         
+        $agn->save();
+        $data = '';
+        redirect(base_url('agendamentos/listar/',$data));
         
     }
     

@@ -214,20 +214,43 @@ table td {
     	<table>
         	<tr>
             	<td class="right title">Usuário</td>
-                <td class="left" colspan="6"><?php echo $ur->nome . ' ' . $ur->sobrenome; ?> </td>
+                <td class="left" colspan="6">
+                <?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
+                	<select style="width:500px;" name="usuario">
+	                    	<?php foreach ($ur_all as $ur_1): ?>
+	                			<option <?php if ($ag->usuario_id == $ur_1->id): echo 'selected="selected"'; endif;?> value="<?php echo $ur_1->id; ?>"><?php echo $ur_1->nome . ' ' . $ur_1->sobrenome; ?></option>
+	                        <?php endforeach; ?>
+                    	</select>
+                <?php else: ?>
+                	<?php echo $ur->nome . ' ' . $ur->sobrenome; ?> 
+                <?php endif;?>
+                </td>
             </tr>
         	<tr>
             	<td class="right title">Facility</td>
-                <td class="left" colspan="6"> <?php echo $fcl->nome; ?></td>
+                <td class="left" colspan="6"> 
+                	<select style="width:500px;" name="facility">
+	                    	<?php foreach ($fcl_all as $ur_1): ?>
+	                			<option <?php if ($ag->facility_id == $ur_1->id): echo 'selected="selected"'; endif;?> value="<?php echo $ur_1->id; ?>"><?php echo $ur_1->nome . ' ' . $ur_1->sobrenome; ?></option>
+	                        <?php endforeach; ?>
+                    	</select>
+                </td>
             </tr>
             <tr>
             	<td class="right title">Projeto de Pesquisa</td>
-                <td class="left" colspan="6"> <?php echo $proj->titulo; ?> </td>
+                <td class="left" colspan="6"> 
+                	<select style="width:500px;" name="projeto">
+	                    	<?php foreach ($proj_all as $ur_1): ?>
+	                			<option <?php if ($ag->projeto_id == $ur_1->id): echo 'selected="selected"'; endif;?> value="<?php echo $ur_1->id; ?>"><?php echo $ur_1->titulo . ' ' . $ur_1->sobrenome; ?></option>
+	                        <?php endforeach; ?>
+                    	</select>
+                </td>
             </tr>
             <tr>
             	<td class="right title">Data Requisitada</td>
                 <td class="left" colspan="6"> <?php echo date('d/m/Y H:i',strtotime($ag->periodo_inicial)).' a '.date('H:i',strtotime($ag->periodo_final)); ?> </td>
             </tr>
+            <?php if ($canApprove):?>
             <tr>
             	<td class="right title">Valor do Agendamento</td>
                 <td class="left" colspan="6"><?php echo SIMBOLO_MOEDA_DEFAULT; ?> <input type="text" style="width:120px;" name="valor" value="<?php echo number_format($ag->valor_total,2,TS,DS); ?>" /> </td>
@@ -273,6 +296,7 @@ table td {
                 <td class="left" colspan="2"><input type="radio" name="how" id="how1" checked="checked" value="keep" />Manter Data Requisitada</td>
                 <td class="left" colspan="2"><input type="radio" name="how" id="how2" value="change" />Usar data Selecionada</td>
             </tr>
+            <?php endif;?>
         </table>
         <table class="tablepad">
         	<tr>

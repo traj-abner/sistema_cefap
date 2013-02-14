@@ -1,5 +1,5 @@
 <?php
-//require_once("dompdf_config.inc.php");
+require_once("dompdf_config.inc.php");
 $today = getdate();
 $html = '
 
@@ -109,18 +109,6 @@ $html = '
 </head>
 
 <body>
-<div style="width: 188mm">
-Usuario: ' . $usr->username . '
-<br>
-Data/Hora do Documento: ';
-$html .= $today['mday'] . '/' . $today['mon'] . '/' . $today['year'] . ' ' . $today['hours'] . ':' . $today['minutes'];
-
-$html .='<br>
-<input type="button" value="Gerar Vers&atilde;o em PDF" onclick="document.location=\''.base_url('facilities/extrato_pdf/'.$fcl->id).'\'" />
-
-<hr>
-</div>
-<br>
 <table>
 	<tr>
     	<td colspan="12" class="thick" id="header">Extrato da Facility - Sistema CEFAP</td>
@@ -214,10 +202,8 @@ $html .='<br>
 
 ';
 
-echo $html;
-
-/*$dompdf = new DOMPDF();
+$dompdf = new DOMPDF();
 $dompdf->load_html($html);
 $dompdf->render();
-$dompdf->stream("extratoUI".$usr->id."at".$today['mday'].$today['mon'].$today['year']."_".$today['hours'].$today['minutes'].$today['seconds'].".pdf");*/
+$dompdf->stream("extratoUI".$usr->id."at".$today['mday'].$today['mon'].$today['year']."_".$today['hours'].$today['minutes'].$today['seconds'].".pdf");
 ?>

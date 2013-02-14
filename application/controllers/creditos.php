@@ -549,7 +549,19 @@ class Creditos extends CI_Controller{
     
     
     public function enviar_boleto(){
-        
+    	$bol = new Boleto();
+    	$bol->include_related('usuario')->get_by_id($this->uri->segment(3));
+    	$this->load->library('email');
+    		
+    	
+    	$this->email->from(EMAIL_FROM, EMAIL_NAME);
+    	$this->email->to($bol->usuario_email);
+    		
+    	$this->email->subject('Impressão do Boleto '.$bol->nosso_numero);
+    	$this->email->message('Olá, ' .$bol->usuario_nome. '!<br /><br />Clique <a href="'.base_url('creditos/imprimir_boleto/'.$bol->chave).'">aqui</a> para imprimir o boleto');
+    		
+    	$this->email->send();
+    	redirect(base_url('creditos/listar/'));
         
     }
     

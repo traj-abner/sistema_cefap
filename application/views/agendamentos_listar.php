@@ -2,8 +2,8 @@
 <?php 
     $this->load->view('header');  
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
-<div id="myModal" class="modal hide fade">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style-small.css"/>
+<div id="myModal" class="modal hide fade" style="margin-top:0px;">
 </div>
 
 
@@ -27,7 +27,7 @@
     <?php
     if(isset($msg) && isset($msg_type)){ ?>
        <div class="alert <?php echo $msg_type?>" id="alert-success">
-           <button type="button" class="close" data-dismiss="alert">×</button>
+           <button type="button" class="close" data-dismiss="alert">*</button>
            <?php echo $msg; ?>
        </div> 
     <?php 
@@ -36,6 +36,8 @@
         echo ('');
 
     }
+    
+    if ($msg_type != 'alert-block'):
 
      ?> 
     
@@ -202,11 +204,15 @@
 									if ($uRole >= CREDENCIAL_USUARIO_ADMIN):
 										 $cn = $ft->where_related_usuario('id',$this->session->userdata('id'))->where('id',$ag->facility_id)->count();
 										
-										if ($cn > 0 or $uRole == CREDENCIAL_USUARIO_SUPERADMIN):
+										if ($cn > 0 or $uRole == CREDENCIAL_USUARIO_SUPERADMIN ):
+											if ($ag->status == AGENDAMENTO_STATUS_SOLICITADO or $ag->status == AGENDAMENTO_STATUS_NEGADO):
 								 ?>
-                                <option value='<?php echo ("agendamentos/editar/".$ag->id);?>'>Editar</option>
+                                <option value='<?php echo ("agendamentos/aprovar/".$ag->id);?>'>Aprovar</option>
+                                		<?php endif;?>
+                                		<option value='<?php echo ("agendamentos/editar/".$ag->id);?>'>Editar</option>
                                 	<?php endif; ?>
                                 <?php endif; ?>
+								<?php if ($ag->usuario_id == $this->session->userdata('id') and $uRole == CREDENCIAL_USUARIO_COMUM):?><option value='<?php echo ("agendamentos/editar/".$ag->id);?>'>Editar</option><?php endif;?>                               
                                </optgroup>
                             </select>
                         </td>
@@ -311,7 +317,7 @@
                         id = id[1];
                         
                         jQuery.ajax({
-                            url: "<?php echo base_url("projetos/ver/"); ?>/" + id,
+                            url: "<?php echo base_url("agendamentos/ver/"); ?>/" + id,
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);
@@ -347,3 +353,4 @@
     
     
 </script>
+<?php endif;?>
