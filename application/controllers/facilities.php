@@ -222,7 +222,10 @@ class Facilities extends CI_Controller {
     }
     //@todo
     public function editar(){
-        
+        $agn_all = new Agendamento();
+		$agn_all->include_related('facilities')->include_related('usuario')->include_related('projeto')->where('facility_id',$this->uri->segment(3))->get();
+		$data['agn'] = $agn_all;
+		
         $fclt = new Facility();
         $fclt->where('id', $this->uri->segment(3))->get();
         $data['fclt'] = $fclt;

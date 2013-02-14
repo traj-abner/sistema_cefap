@@ -12,6 +12,15 @@ class Main extends CI_Controller {
                 $data['msg_type'] = 'success';
 
                 $u = $this->session->userdata('credencial');
+				
+				$msg = new Mensagem();
+				$data['n_mensagens'] = $msg->where('to_id',$this->session->userdata('id'))->limit(2)->count();
+				if ($data['n_mensagens'] > 0):
+				$msg->where('to_id',$this->session->userdata('id'))->limit(2)->get();
+				$data['received_messages'] = $msg;
+				endif;
+				
+				
                 
                 $view = 'dashboard';
 
@@ -20,6 +29,9 @@ class Main extends CI_Controller {
                 $view = 'inicial';
 
             }
+			
+			
+			
             
             $this->load->view($view,$data);
 	}

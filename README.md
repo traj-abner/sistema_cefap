@@ -1,5 +1,24 @@
 sistema_cefap
 ================================================================================
+v0.27
+14/02/13 - Abner
+#descrição
+Header
+
+#changelog
+Correções de Bugs em agendamentos_editar, facilities, facilities_editar, agendamentos, creditos, creditos_listar, projetos.
+Criação de views agendamentos_calendario, projetos_listar_meus.
+Implementação do menu.
+
+#known issues
+
+
+#todo
+
+
+================================================================================
+================================================================================
+
 v0.26
 13/02/13 - Abner
 #descrição

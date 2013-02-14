@@ -102,15 +102,28 @@
     
     <div class="middle-down-left" id="middle-down">
         <h1>Mensagens recebidas</h1><br>
-        <div>
-            <p>A ultima vez que você efetuou o login no sistema foi em:<br><br>
-                <a href=''>mais...</a>
+        <div style="text-align:left;">
+        	<?php 
+			if ($n_mensagens > 0):
+			$um = new Usuario();
+			
+			foreach ($received_messages as $rm): ?>
+            <p><strong>Enviado por</strong>: 
+            <?php $um->get_by_id($rm->from_id);
+			echo $um->nome;
+			?>
+            <br><strong>Em</strong>: <?php echo date('d/m/Y H:i',strtotime($rm->data_envio)); ?>
+            <br><strong>Assunto</strong>: <?php echo date('d/m/Y H:i',strtotime($rm->Assunto)); ?><br>
+                <a href="<?php echo base_url('mensagens/ler/'.$rm->keygen);?>">Ler...</a>
             </p>
             <br>
-            
-            <p>A ultima vez que você efetuou o login no sistema foi em:<br><br>
-                <a href=''>mais...</a>
-            </p>
+            <?php endforeach; 
+			else:?>
+				<p style="text-align:center">
+                	Nenhuma Mensagem Encontrada
+                </p>
+			<?php endif;
+			?>
         </div>
     </div>
     

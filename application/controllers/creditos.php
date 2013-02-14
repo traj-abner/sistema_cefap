@@ -117,7 +117,7 @@ class Creditos extends CI_Controller{
 						$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
 						// initialize user role with proper value
 						$data['uRole'] = $usr->credencial;
-						$bol->limit($limit, $offset)->get(); 
+						$bol->where('usuario_id',$this->session->userdata('id'))->limit($limit, $offset);
 						if(empty($order)):
 							$bol->order_by('id', $exib);
 						else:
@@ -417,13 +417,24 @@ class Creditos extends CI_Controller{
         $lcn = new Lancamento();
 		$usr = new Usuario();
 		$lcl = new Lancamento();
+		$fcl = new Facility();
+		
+		$usr->get_by_id($this->session->userdata('id'));
+		if ($usr->credencial == CREDENCIAL_USUARIO_COMUM):
+			$total = $lcn->where('usuario_id',$this->session->userdata('id'))->count();
+		elseif ($usr->credencial == CREDENCIAL_USUARIO_ADMIN):
+			$fcl->include_related('usuario')->where_related_usuario('id',$this->session->userdata('id'))->get();
+			$total = $lcn->where('usuario_id',$this->session->userdata('id'))->where_in('facility_id',$fcl)->count();
+		else:
+			$total = $lcn->count();
+		endif;
 		
 		for ($i = 0; $i < 4; $i++) $buttonArray[$i] = '#';
 		
 		$limit = $npage = $paqe = $offset = 1;
 		$exib = 'DESC';
 		$order = 'modified';
-		$total = $lcn->count();
+		
 		$data['numrows'] = $total;
 		if ($total > 0 ):
 			if ($this->uri->segment(3) == 'cancelados'):
@@ -506,6 +517,12 @@ class Creditos extends CI_Controller{
 					$lcn->where('status',STATUS_LANCAMENTO_CANCELADO);
 				else:
 					$lcn->where_not_in('status',STATUS_LANCAMENTO_CANCELADO);
+				endif;
+				if ($usr->credencial == CREDENCIAL_USUARIO_COMUM):
+					$total = $lcn->where('usuario_id',$this->session->userdata('id'));
+				elseif ($usr->credencial == CREDENCIAL_USUARIO_ADMIN):
+					$fcl->include_related('usuario')->where_related_usuario('id',$this->session->userdata('id'))->get();
+					$total = $lcn->where('usuario_id',$this->session->userdata('id'))->where_in('facility_id',$fcl);
 				endif;
 				$lcn->limit($limit, $offset); 
 				if(empty($order)):

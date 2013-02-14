@@ -164,11 +164,15 @@ table td {
 				else:
 					$end = date("Y-m-d", strtotime($ag->periodo_final_marcado)) . 'T' . date("H:i:s",strtotime($ag->periodo_final_marcado)).'Z';
 				endif;
+				if ($ag->status == AGENDAMENTO_STATUS_SOLICITADO) $color = '#0000ff';
+				if ($ag->status == AGENDAMENTO_STATUS_APROVADO or $ag->status == AGENDAMENTO_STATUS_COMPARECEU) $color = '#00ff00';
+				if (!($ag->status == AGENDAMENTO_STATUS_SOLICITADO or $ag->status == AGENDAMENTO_STATUS_APROVADO or $ag->status == AGENDAMENTO_STATUS_COMPARECEU)) $color = '#ff0000';
 			?>
 				{
 					title: '<?php echo $ag->usuario_nome . ' | ' . $ag->facility_nome . ' | ' . $ag->projeto_titulo; ?>',
 					start: '<?php echo $start;  ?>',
 					end: '<?php echo $end;  ?>'
+					
 					
 				},
 			<?php endforeach; ?>

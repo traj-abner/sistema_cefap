@@ -1,18 +1,17 @@
 
 <?php 
     $this->load->view('header');  
-	$today = getdate();
-	#@TODO definir nível de acesso
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style.css"/>
 <div id="myModal" class="modal hide fade">
 </div>
 
+
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Lista de Boletos</h2>
+    <div class="well"><h2>Lista de Usu&aacute;rios</h2>
         <div class="qntd_usuario_listar">
-            <h3>Boletos por página:</h3>
+            <h3>Usuários por página:</h3>
             <select id="selectQntd" class="input-mini">
                     <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
                     <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
@@ -22,7 +21,8 @@
         </div>
     </div>
     
-
+    
+ 
     <?php
     if(isset($msg) && isset($msg_type)){ ?>
        <div class="alert <?php echo $msg_type?>" id="alert-success">
@@ -38,7 +38,10 @@
 
      ?> 
     
+    
+    
 <!-- tabela -->	
+
     <ul class="pager">
             <li><a href="<?php echo $buttonArray[0]; ?>"><i class="icon-fast-backward"></i></a></li>
             <li><a href="<?php echo $buttonArray[1]; ?>"><i class="icon-backward"></i></a></li>
@@ -46,166 +49,150 @@
             <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
             <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
     </ul>
-     
+    <?php if($uRole == CREDENCIAL_USUARIO_SUPERADMIN){?>
+         <input type="submit" class="btn btn-primary" id="btn-right-listar" name="submit" value="Adicionar" onclick="window.location.href='../usuarios/adicionar'" />
+    <?php } ?>      
 <table class="table">
-    <caption >Lista de Boletos</caption>
+    <caption >Lista de Usuários</caption>
         <thead>
                 <tr>    
                         <th><input type="checkbox" name="selectALL" id="checkAll" onClick="toggleChecked(this.checked)"> </th>
-                        <th><a href='<?php echo base_url("creditos/listar/nosso_numero/$limit/$perpage/ASC"); ?>'>Nosso Numero
+                        <th><a href='<?php echo base_url("projetos/listar/id/$limit/$perpage/DESC"); ?>'>ID
                             <?php 
-                                if(isset($img) && $img == 'nosso_numero'){
+                                if(isset($img) && $img == 'id'){
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/nosso_numero/$limit/$perpage/DESC");
+                                    echo base_url("projetos/listar/id/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/nosso_numero/$limit/$perpage/ASC");
+                                    echo base_url("projetos/listar/id/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/listar/valor_total/$limit/$perpage/ASC"); ?>'>Valor
+                        <th><a href='<?php echo base_url("projetos/listar/titulo/$limit/$perpage/DESC"); ?>'>Tituto
                             <?php 
-                                if(isset($img) && $img == 'valor_total'){
+                                if(isset($img) && $img == 'titulo'){
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/valor_total/$limit/$perpage/DESC");
+                                    echo base_url("projetos/listar/titulo/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/valor_total/$limit/$perpage/ASC");
+                                    echo base_url("projetos/listar/titulo/$limit/$perpage/ASC");
+                                    echo '"<i class="icon-chevron-up"></i>';
+                                } 
+                            ?>                  
+                            </a>
+                        </th>
+                        <th><a href='<?php echo base_url("projetos/listar/responsavel/$limit/$perpage/DESC"); ?>'>Responsavel
+                            <?php 
+                                if(isset($img) && $img == 'email'){
+                                    echo '<a href="';
+                                    echo base_url("projetos/listar/email/$limit/$perpage/DESC");
+                                    echo '"<i class="icon-chevron-down"></i>';
+                                    
+                                    echo '<a href="';
+                                    echo base_url("projetos/listar/email/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/listar/usuario_nome/$limit/$perpage/ASC"); ?>'>Usuario
+                        <th><a href='<?php echo base_url("projetos/listar/instituicao/$limit/$perpage/DESC"); ?>'>Instituição
                             <?php 
-                                if(isset($img) && $img == 'usuario_nome'){
+                                if(isset($img) && $img == 'instituicao'){
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/usuario_nome/$limit/$perpage/DESC");
+                                    echo base_url("projetos/listar/instituicao/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/usuario_nome/$limit/$perpage/ASC");
+                                    echo base_url("projetos/listar/instituicao/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/listar/data_vencimento/$limit/$perpage/ASC"); ?>'>Data de Vencimento
+                        <th><a href='<?php echo base_url("projetos/listar/departamento/$limit/$perpage/DESC"); ?>'>Departamento
                             <?php 
-                                if(isset($img) && $img == 'data_vencimento'){
+                                if(isset($img) && $img == 'credencial'){
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/data_vencimento/$limit/$perpage/DESC");
+                                    echo base_url("projetos/listar/credencial/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
-                                    
+                                      
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/data_vencimento/$limit/$perpage/ASC");
+                                    echo base_url("projetos/listar/credencial/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <th><a href='<?php echo base_url("creditos/listar/status/$limit/$perpage/ASC"); ?>'>Status
+                        <th><a href='<?php echo base_url("projetos/listar/status/$limit/$perpage/DESC"); ?>'>Status
                             <?php 
                                 if(isset($img) && $img == 'status'){
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/status/$limit/$perpage/DESC");
+                                    echo base_url("projetos/listar/status/$limit/$perpage/DESC");
                                     echo '"<i class="icon-chevron-down"></i>';
                                     
                                     echo '<a href="';
-                                    echo base_url("creditos/listar/status/$limit/$perpage/ASC");
+                                    echo base_url("projetos/listar/status/$limit/$perpage/ASC");
                                     echo '"<i class="icon-chevron-up"></i>';
                                 } 
                             ?>
                             </a>
                         </th>
-                        <?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
-                        <th>Opções</th><?php endif; ?>
+                        <th>Opções</th>
                 </tr>
         </thead>
         
-        <tbody>  
-            <?php 
-			$config = new Configuracao();
-			$config->where('param','creditos_projeto_fusp')->get();
-			
-			
-			$i = 0; 
-			foreach($bols as $bol): ?>
+        <tbody>
+        <?php foreach($proj as $p){ ?>
 
-                <tr class="listar_usuario" id="usuario-<?php echo $bol->id?>">
+                <tr class="listar_usuario" id="usuario-<?php echo $p->id; ?>">
                         <td><input type="checkbox" name="user_List" id="chM" class="chM"/></td>
-                        <td><a href="<?php echo base_url('creditos/imprimir_boleto/'.$bol->chave); ?>" target="_blank"><?php echo $config->valor.str_pad($bol->id, 7, '0', STR_PAD_LEFT);?></a></td>
-                        <td><?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($bol->valor_total,2,TS,DS)?></td>
-                        <td><?php 
-						$usr = new Usuario();
-						$usr->where('id',$bol->usuario_id)->get();
-						echo $usr->nome;
-						 ?></td>
-                        <td><?php echo $dvc[$i];?></td>
-                        <td><?php 
-							switch ($bol->status):
-								case STATUS_BOLETO_EM_ABERTO: echo 'Em Aberto'; break;
-								case STATUS_BOLETO_VENCIDO: echo 'Vencido'; break;
-								case STATUS_BOLETO_PAGO: echo 'Pago'; break;
-								case STATUS_BOLETO_CANCELADO: echo 'Cancelado'; break;
+                        <td><?php echo $p->id;?></td>
+                        <td><?php echo $p->titulo; ?></td>
+                        <td><?php echo $p->responsavel; ?></td>
+                        <td><?php echo $p->instituicao; ?></td>
+                        <td> <?php echo $p->departamento; ?>
+                        </td>
+                       
+                        <td> <?php
+							switch ($p->status):
+								case STATUS_PROJETO_ATIVO: echo 'Ativo'; break;
+								case STATUS_PROJETO_INATIVO: echo 'Inativo'; break;
+								case STATUS_PROJETO_EXCLUIDO: echo 'Excluido'; break;
 							endswitch;
 						?>
-                        </td><?php  if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
+                        </td>
                         <td>
                             <select class="input-medium change_option" id="select_emlinha">
                                 <option value="selecione">Selecione...</option>
-                                
-                                <option value="ver_detalhes">Ver detalhes</option>                                   
-                                        <option value='<?php echo ("creditos/enviar_boleto/$bol->id"); ?>'>Enviar ao Usu&aacute;rio</option>
-                                        <option value='dados_pessoais' data-toggle="modal">Dados do Usu&aacute;rio</option>
-                                        <?php if ($bol->status != STATUS_BOLETO_PAGO):?>
-                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_PAGO); ?>">Marcar como Pago</option>
-                                        <?php else: ?>
-                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_EM_ABERTO); ?>">Marcar como Pendente</option>
-                                        <?php endif; ?>
-                                        <?php 
-										if($bol->status == STATUS_BOLETO_EM_ABERTO):
-											if(strtotime($bol->data_vencimento) < strtotime(CURRENT_DB_DATE)): 
-											 ?>
-												<option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_VENCIDO); ?>">Marcar como Vencido</option>
-											<?php endif; 
-										endif;?>
-                                        <?php if ($bol->status < STATUS_BOLETO_PAGO):?>
-                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>
-                                        <?php endif; ?>
-                                        <?php if ($bol->status == STATUS_BOLETO_PAGO && $uRole == CREDENCIAL_USUARIO_SUPERADMIN):?>
-                                            <option value="<?php echo ("creditos/mudar_status_boleto/$bol->id/" . STATUS_BOLETO_CANCELADO); ?>">Cancelar Boleto</option>
-                                        <?php endif; ?>
+                                <option value='dados_pessoais' data-toggle="modal">Ver Detalhes</option>
+                                <?php if ($uRole == STATUS_CREDENCIAL_SUPERADMIN or $p->created_by == $this->session->userdata('id')): ?>
+                                <option value='<?php echo ("projetos/editar/".$p->id);?>'>Editar Dados</option>
+									<?php if ($p->status == STATUS_PROJETO_INATIVO): ?><option value="<?php echo ("projetos/status/".STATUS_PROJETO_ATIVO.'/'.$p->id); ?>">Ativar</option>
+                                    <?php else: ?><option value="<?php echo ("projetos/status/".STATUS_PROJETO_INATIVO.'/'.$p->id); ?>">Inativar</option> <?php endif; ?>
+                                <?php endif; ?>
+                               </optgroup>
                             </select>
-                        </td><?php endif; ?>
+                        </td>
                 </tr>
-                
-                <?php $i++;
-				endforeach; ?>
-        
-        </tbody>
+           <?php } ?>  
+           </tbody>
     </table>
+         
+  
     
-     <?php if($uRole >= CREDENCIAL_USUARIO_ADMIN):?>
-    <div class="select">
-        <p>Com marcados:
-            <select class="change_option" id="comMarcados">
-                <option value="selecione">Selecione...</option>
-                <option value="<?php echo STATUS_BOLETO_PAGO; ?>">Marcar como Pago</option>
-                <option value="<?php echo STATUS_BOLETO_EM_ABERTO; ?>">Marcar como Em Aberto</option>
-                <option value="<?php echo STATUS_BOLETO_VENCIDO; ?>">Marcar como Vencido</option>
-                <option value="<?php echo STATUS_BOLETO_CANCELADO; ?>">Marcar como Cancelado</option>
-            </select>
-        </p>
-    </div>
-    <?php endif; ?>
+
+    <?php 
+    //require_once 'usuario_dados_pessoais.php';
+    //ver o código do renato no sistema de boletos para recuperar essa página com AJAX.
+    //para que o conteúdo da próxima view só seja carregado quando o usuário selecionar a opção de 'dados pessoais'.
     
-    <?php echo $page; ?>
-    
+        echo $page;
+        
+    ?>
     
 </div>
 <?php
@@ -234,20 +221,22 @@
         for (obj in this){
           text += this[obj] + separator}
         return text.slice(0,text.length - separator.length)}
-        
+
+
         
         jQuery('#selectQntd').change(function(){
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/listar/id");  ?>' + '/' + option + '/1' ;
+           window.location.href = '<?php echo base_url("projetos/listar/id");  ?>' + '/' + option + '/1' ;
         });
+   		
 		jQuery('#gotopage').change(function(){
 		   var qtd = $("#selectQntd option:selected").val();
            var option = jQuery(this).val();
-           window.location.href = '<?php echo base_url("creditos/listar/id");  ?>' + '/' + qtd + '/' + option ;
+           window.location.href = '<?php echo base_url("projetos/listar/id");  ?>' + '/' + qtd + '/' + option ;
         });
-		
-				   
-         jQuery(".change_option").change(function(){
+   
+   
+        jQuery(".change_option").change(function(){
          
            var option = jQuery(this).val();
            
@@ -267,10 +256,13 @@
                              userIds[index] = id;
                          });
                          id = userIds.join('_');
-
-                         window.location.href = '<?php echo base_url('creditos/mudar_status_boleto_multiplo'); ?>' + '/' + id + '/' + option;
+						if (option == 'mensagem'){
+                         window.location.href = '<?php echo base_url('mensagens/escrever/to/'); ?>' + '/' + id;}
+						else {
+							window.location.href = '<?php echo base_url('usuarios/mudar_status'); ?>' + '/' + id + '/' + option;
+						}
                     }else{
-                         alert('Selecione pelo menos um boleto');
+                         alert('Selecione pelo menos um usuário');
                          return;
                     }
                 }
@@ -286,7 +278,21 @@
                         id = id[1];
                         
                         jQuery.ajax({
-                            url: "<?php echo base_url("usuarios/dados_pessoais/"); ?>/" + id + '/boleto',
+                            url: "<?php echo base_url("projetos/ver/"); ?>/" + id,
+                            dataType: "html"
+                        }).done(function(data){
+                            jQuery("#myModal").html(data);
+                            jQuery("#myModal").modal();
+                        });
+						
+                    break;
+					
+					case 'creditos':      
+                        var id = jQuery(this).closest("tr.listar_usuario").attr("id").split("-");
+                        id = id[1];
+                        
+                        jQuery.ajax({
+                            url: "<?php echo base_url("creditos/extrato/"); ?>/" + id,
                             dataType: "html"
                         }).done(function(data){
                             jQuery("#myModal").html(data);

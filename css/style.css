@@ -193,6 +193,15 @@ strong
 {
 	background: #541378 url(../images/icon_calendar.png) no-repeat 6px 3px;
 }
+#mm_creditos
+{
+	background: transparent url(../images/US-dollar-icon.png) no-repeat 6px 3px;
+}
+
+#mm_creditos:hover
+{
+	background: #541378 url(../images/US-dollar-icon.png) no-repeat 6px 3px;
+}
 
 #mm_facilidades
 {
@@ -202,6 +211,24 @@ strong
 #mm_facilidades:hover
 {
 	background: #541378 url(../images/icon_lab.png) no-repeat 6px 3px;
+}
+#mm_relatorios
+{
+	background: transparent url(../images/report-icon.png) no-repeat 6px 3px;
+}
+
+#mm_relatorios:hover
+{
+	background: #541378 url(../images/report-icon.png) no-repeat 6px 3px;
+}
+#mm_meusdados
+{
+	background: transparent url(../images/personal-information-icon.png) no-repeat 6px 3px;
+}
+
+#mm_meusdados:hover
+{
+	background: #541378 url(../images/personal-information-icon.png) no-repeat 6px 3px;
 }
 
 .main_submenu li

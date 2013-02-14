@@ -23,7 +23,16 @@ class Agendamentos extends CI_Controller{
 		
 		if ($ur->credencial == CREDENCIAL_USUARIO_COMUM)
 			$agn->where('usuario_id',$this->session->userdata('id'));
-		$total = $agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->count();
+		
+		$fcl = new Facility();
+		if ($usr->credencial == CREDENCIAL_USUARIO_ADMIN):
+			$fcl->include_related('usuarios')->where_related_usuario('id',$this->session->userdata)->get();
+			$total = $agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->where_in('facility_id',$fcl)->count();
+		else:
+			$total = $agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->count();
+		endif;
+		
+		
 		
 		if ($total == 0)
 			error_reporting(0);
@@ -41,6 +50,8 @@ class Agendamentos extends CI_Controller{
 			}                    
 			if ($ur->credencial == CREDENCIAL_USUARIO_COMUM):
 				$agn->where('usuario_id',$this->session->userdata('id'))->limit($limit, $offset);
+			elseif ($ur->credencial == CREDENCIAL_USUARIO_ADMIN):
+				$agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->where_in('facility_id',$fcl)->limit($limit, $offset);
 			else:
 				$agn->where_not_in('status',AGENDAMENTO_STATUS_EXCLUIDO)->limit($limit, $offset);
 			endif;
@@ -179,6 +190,47 @@ class Agendamentos extends CI_Controller{
 		$agn->save();
 		$data = '';
 		redirect(base_url('agendamentos/listar/',$data));
+		
+	}
+	
+	public function calendario(){
+		$usr = new Usuario(); #current user
+		$usr->get_by_id($this->session->userdata('id'));
+		$data['uRole'] = $usr->credencial;
+		
+		$ag = new Agendamento();
+		$ag->get_by_id($this->uri->segment(3));
+		$data['ag'] = $ag;
+		$ur = new Usuario();
+		$ur->get_by_id($ag->usuario_id);
+		$data['ur'] = $ur;
+		
+		$ur_all = new Usuario();
+		$ur_all->order_by('nome')->get();
+		$data['ur_all'] = $ur_all;
+		
+		
+		$agn_all = new Agendamento();
+		$agn_all->include_related('facilities')->include_related('usuario')->include_related('projeto')->where('periodo_inicial >',date('Y-m-d 00:00:00'));
+		if ($this->uri->segment(3) != '') $agn_all->where('facility_id',$this->uri->segment(3));
+		$agn_all->get();
+		$data['agn'] = $agn_all;
+		
+		$flc = new Facility();
+		$data['fcl'] = $flc->where('id',$ag->facility_id)->get();
+		$flc_all = new Facility();
+		$data['fcl_all'] = $flc_all->order_by('nome')->get();
+		
+		
+		$proj = new Projeto();
+		$data['proj'] = $proj->where('id',$ag->projeto_id)->get();
+		$proj_all = new Projeto();
+		$data['proj_all'] = $proj_all->order_by('titulo')->get();
+		
+		$data['msg'] = '';
+		$data['title'] = 'Calendário de Agendamentos';
+
+		$this->load->view('agendamentos_calendario',$data);
 		
 	}
     
