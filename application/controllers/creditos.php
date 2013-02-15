@@ -117,7 +117,10 @@ class Creditos extends CI_Controller{
 						$usr->select('credencial')->where('id', $this->session->userdata('id'))->get();
 						// initialize user role with proper value
 						$data['uRole'] = $usr->credencial;
-						$bol->where('usuario_id',$this->session->userdata('id'))->limit($limit, $offset);
+						if ($data['uRole'] == CREDENCIAL_USUARIO_COMUM):
+							$bol->where('usuario_id',$this->session->userdata('id'));
+						endif;
+						$bol->limit($limit, $offset);
 						if(empty($order)):
 							$bol->order_by('id', $exib);
 						else:

@@ -1,11 +1,17 @@
 <?php
 if ($this->session->userdata('id') != NULL):
-$usr = new Usuario();
-$usr->get_by_id($this->session->userdata('id'));
-$uRole = $usr->credencial;
+	$usr = new Usuario();
+	$usr->get_by_id($this->session->userdata('id'));
+	$uRole = $usr->credencial;
+	$ur_m = new Mensagem();
+	$m_nao_lidas = $ur_m->where('status',STATUS_MSG_NAO_LIDA)->where('to_id',$this->session->userdata('id'))->count();
+	
 else:
+	$m_nao_lidas = 0;
 $uRole = -1;
 endif;
+
+
 
 ?>
 
@@ -43,14 +49,29 @@ endif;
 		font-size:10px;
 		text-decoration:underline;
 	}
+	
+	#superior {
+		text-align:right;
+		padding-top:5px;	
+		margin-right:10px;
+	}
 </style>    
     
 </head>
 <body>
 <div id="wrapper">
 	<div id="header">
-		<div id="top_bar"></div><!-- end top_bar -->
+		<div id="top_bar"><!--
+        	LOCAL RESERVADO PARA A BARRA SUPERIOR
+            <?php #variável dedicada a mensagens não lidas: $m_nao_lidas; ?>
+            -->
+            
+        </div><!-- end top_bar -->
 		<div id="header_container">
+        	<div id="superior"><a href="<?php echo base_url('mensagens/recebidas'); ?>">
+            	<?php if ($m_nao_lidas > 0): ?><div class="popover fade left in" style="top: 4px; left:940px; display:block; height:35px; width:220px;"><div class="arrow"></div> <h3 class="popover-title">Você tem novas mensagens</h3> </div> <?php echo $m_nao_lidas; if ($m_nao_lidas > 1): echo ' novas mensagens'; else: echo ' nova mensagem'; endif;?> 
+				<?php else: ?> Nenhuma nova mensagem
+                <?php endif; ?></a> | <a href="<?php echo base_url(); ?>">Home</a> | <a href="#">Site CEFAP</a> | <a href="<?php echo base_url('usuarios/logout'); ?>">Logout</a></div>
 			<h1>CEFAP</h1>
 		</div><!-- end header_container -->
 	</div><!-- end header -->
@@ -125,7 +146,7 @@ endif;
 						<li><a href="<?php echo base_url('projetos/listar_meus'); ?>">Projetos Cadastrados por Mim</a></li>
                         <li><a href="<?php echo base_url('projetos/inserir'); ?>">Novo Projeto de Pesquisa</a></li>
                         <li><a href="<?php echo base_url('usuarios/trocar_senha/'.$this->session->userdata('id')); ?>">Trocar Senha</a></li>
-                        <li><a href="<?php echo base_url('ajuda'); ?>">Ajuda</a></li>
+                        <li><a href="<?php echo base_url('configuracoes/ajuda'); ?>">Ajuda</a></li>
                         <li><a href="<?php echo base_url('mensagens/recebidas'); ?>">Mensagens Recebidas</a></li>
                         <li><a href="<?php echo base_url('mensagens/enviadas'); ?>">Mensagens Enviadas</a></li>
                         <li><a href="<?php echo base_url('mensagens/escrever'); ?>">Escrever Mensagem</a></li>
@@ -207,7 +228,7 @@ endif;
                         
 						<li><a href="<?php echo base_url('usuarios/editar/'.$this->session->userdata('id')); ?>">Dados Pessoais</a></li>
                         <li><a href="<?php echo base_url('usuarios/trocar_senha/'.$this->session->userdata('id')); ?>">Trocar Senha</a></li>
-                        <li><a href="<?php echo base_url('ajuda'); ?>">Ajuda</a></li>
+                        <li><a href="<?php echo base_url('configuracoes/ajuda'); ?>">Ajuda</a></li>
                         <li><a href="<?php echo base_url('mensagens/recebidas'); ?>">Mensagens Recebidas</a></li>
                         <li><a href="<?php echo base_url('mensagens/enviadas'); ?>">Mensagens Enviadas</a></li>
                         <li><a href="<?php echo base_url('mensagens/escrever'); ?>">Escrever Mensagem</a></li>
@@ -272,7 +293,8 @@ endif;
                         <li style="height:5px; vertical-align:middle; color:#fff; text-align:center">***</li>
 						<li><a href="<?php echo base_url('usuarios/editar/'.$this->session->userdata('id')); ?>">Dados Pessoais</a></li>
                         <li><a href="<?php echo base_url('usuarios/trocar_senha/'.$this->session->userdata('id')); ?>">Trocar Senha</a></li>
-                        <li><a href="<?php echo base_url('ajuda'); ?>">Ajuda</a></li>
+                        <li><a href="<?php echo base_url('configuracoes/ajuda'); ?>">Ajuda</a></li>
+                        <li><a href="<?php echo base_url('configuracoes/ajuda_editar'); ?>">Editar Ajuda</a></li>
                         <li><a href="<?php echo base_url('mensagens/recebidas'); ?>">Mensagens Recebidas</a></li>
                         <li><a href="<?php echo base_url('mensagens/enviadas'); ?>">Mensagens Enviadas</a></li>
                         <li><a href="<?php echo base_url('mensagens/escrever'); ?>">Escrever Mensagem</a></li>

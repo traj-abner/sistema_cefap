@@ -101,6 +101,42 @@ class Configuracoes extends CI_Controller{
          $data['title'] = 'Editar Configurações';
          $this->load->view('configuracoes_editar', $data);
     }
+	
+	public function ajuda_editar(){
+		if ($this->session->userdata('credencial') != CREDENCIAL_USUARIO_SUPERADMIN):
+			redirect('main');
+		endif;	
+		$aj = new Ajuda();
+		$aj->get_by_id(1);
+		$data['aj'] = $aj;
+		$data['msg'] = '';
+		$data['title'] = 'Editar Ajuda';
+					
+		$this->load->view('configuracoes_ajuda_editar',$data);
+	}
+	
+	public function ajuda_salvar() {
+		if ($this->session->userdata('credencial') != CREDENCIAL_USUARIO_SUPERADMIN):
+			redirect('main');
+		endif;	
+		$aj = new Ajuda();
+		$aj->get_by_id(1);
+		$aj->autor_id = $this->session->userdata('id');
+		$aj->conteudo = $_POST['elm1'];
+		$aj->save();
+		
+		redirect ('configuracoes/ajuda_editar');
+		
+	}
+	
+	public function ajuda(){
+		$data['title'] = 'Ajuda';
+		$aj = new Ajuda();
+		$aj->get_by_id(1);
+		$data['aj'] = $aj;
+		
+		$this->load->view('configuracoes_ajuda',$data);	
+	}
     
     public function __destruct(){
         

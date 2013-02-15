@@ -46,23 +46,19 @@
                 <?php 
                 
                 if($u == CREDENCIAL_USUARIO_COMUM){ ?>
-                    <li><a href="<?php echo base_url(""); ?>">Gerenciar meus projetos científicos</a></li>
+                    <li><a href="<?php echo base_url("projetos/listar_meus"); ?>">Gerenciar meus projetos científicos</a></li>
                 <?php } 
                 
                 if($u == CREDENCIAL_USUARIO_SUPERADMIN){ ?>
                     <li><a href="<?php echo base_url("configuracoes/editar"); ?>">Editar as configurações do sistema</a></li>
-                <?php } 
-                
-                if($u == CREDENCIAL_USUARIO_ADMIN){ ?>
-                    <li><a href="<?php echo base_url(""); ?>">Relatório de uso das facilities</a></li>
-                <?php } ?>    
+                    <li><a href="<?php echo base_url("usuarios/listar"); ?>">Listar Usuários</a></li>
+                     <?php } ?>
+                 
                 
                 
-                <li><a href="<?php echo base_url('usuarios/listar'); ?>">Listar</a></li>
-                <li><a href="<?php echo base_url('facilities/listar'); ?>">Facilities Listar</a></li>
-                <li><a href="<?php echo base_url('facilities/adicionar'); ?>">Facilitites Adicionar</a></li>
+                
             </ul>
-        </div>
+      </div>
         <div class="hr">&nbsp;</div>
         <div class="pull-right">
             <ul>
@@ -70,37 +66,44 @@
                 <?php 
                 
                 if($u == CREDENCIAL_USUARIO_COMUM){ ?>
-                    <li><a href="<?php echo base_url(""); ?>">Conhecer melhor as Facilities</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">FAQ - Perguntas mais frequentes</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">Obter extrato de créditos</a></li> 
+                    <li><a href="<?php echo base_url("ajuda"); ?>">FAQ - Perguntas mais frequentes</a></li>
+                    <li><a href="<?php echo base_url("mensagens/escrever"); ?>">Escrever nova mensagem</a></li>   
                 <?php } 
                 
                 if($u == CREDENCIAL_USUARIO_SUPERADMIN){ ?>    
-                    <li><a href="<?php echo base_url(""); ?>">Criar novo backup</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">Editar conteúdo da ajuda aos usuários</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">Boletos emitidos</a></li>         
+                    <li><a href="<?php echo base_url("editar_ajuda"); ?>">Editar conteúdo da ajuda aos usuários</a></li>
+                    <li><a href="<?php echo base_url("creditos/listar"); ?>">Boletos emitidos</a></li>
+                     <li><a href="<?php echo base_url("mensagem/escrever"); ?>">Escrever nova mensagem</a></li>         
                 <?php } 
                 
                 if($u == CREDENCIAL_USUARIO_ADMIN){ ?>    
-                    <li><a href="<?php echo base_url(""); ?>">Agendamentos solicitados</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">Download de relatórios já gerados</a></li>
-                    <li><a href="<?php echo base_url(""); ?>">Escrever nova mensagem</a></li>         
+                    <li><a href="<?php echo base_url("agendamentos/listar"); ?>">Agendamentos solicitados</a></li>
+                    <li><a href="<?php echo base_url("mensagem/escrever"); ?>">Escrever nova mensagem</a></li>         
                 <?php } ?>
             </ul>
         </div>
         
     </div>
     <div class="middle-right">
-        <h1>Último acesso</h1>
+    <div style="vertical-align:bottom;">
+             <input type="button" value="Inserir Créditos" class="btn" onclick="document.location='<?php echo base_url('creditos/inserir'); ?>'">
+            <input type="button" value="Extrato" class="btn" onclick="document.location='<?php echo base_url('creditos/extrato/'.$this->session->userdata('id')); ?>'">
+            </div><br /><br />
+            
+        <h1>Créditos</h1>
         <div>
-            <p>A ultima vez que você efetuou o login no sistema foi em:<br><br>
-                Sáb ado, 1 3/0 8 /2 0 1 2 2 0 : 4 0<br><br>
-                IP: 2 0 0 . 1 2 9. 34 5 . 4 5 6
-            </p>
+        	<p style="font-size:14px;"><strong>Saldo</strong>: 
+           <?php echo SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($sum,2,TS,DS);?>
+           </p>
         </div>
     </div>
     
     <div class="middle-down-left" id="middle-down">
+    	<div style="vertical-align:bottom;">
+             <input type="button" value="Escrever Mensagem" class="btn" onclick="document.location='<?php echo base_url('mensagens/escrever'); ?>'">
+            <input type="button" value="Recebidas" class="btn" onclick="document.location='<?php echo base_url('mensagens/recebidas/'); ?>'">
+            </div><br />
+            
         <h1>Mensagens recebidas</h1><br>
         <div style="text-align:left;">
         	<?php 
@@ -113,7 +116,7 @@
 			echo $um->nome;
 			?>
             <br><strong>Em</strong>: <?php echo date('d/m/Y H:i',strtotime($rm->data_envio)); ?>
-            <br><strong>Assunto</strong>: <?php echo date('d/m/Y H:i',strtotime($rm->Assunto)); ?><br>
+            <br><strong>Assunto</strong>: <?php echo $rm->assunto; ?><br>
                 <a href="<?php echo base_url('mensagens/ler/'.$rm->keygen);?>">Ler...</a>
             </p>
             <br>
@@ -128,26 +131,69 @@
     </div>
     
     <div class="middle-down-center" id="middle-down">
+    	<div style="vertical-align:bottom;">
+             <input type="button" value="Todos os Boletos" class="btn" onclick="document.location='<?php echo base_url('creditos/listar'); ?>'">
+            <input type="button" value="Lançamentos" class="btn" onclick="document.location='<?php echo base_url('creditos/lancamentos'); ?>'">
+            </div><br /><br />
+            
         <h1>Boletos</h1><br>
         <div>
-            <p>12 bol. em aberto: R$ 650,00<br><br></p>
-            <p>12 bol. em aberto: R$ 650,00<br><br></p>
-            <p>12 bol. em aberto: R$ 650,00<br><br></p>
-            <input type="submit" value="todos os boletos"><br><br>
-            <a href="">lista de lançamentos</a>
+        	<?php if (count($bols) > 0):
+				foreach ($bols as $b):
+			 ?>
+            <p style="text-align:left"><a href="<?php echo base_url('creditos/imprimir_boleto/'.$b->chave); ?>" target="_blank"><?php echo 'Venc: ' . date('d/m/Y',strtotime($b->data_vencimento)) . ' - ' . SIMBOLO_MOEDA_DEFAULT . '&nbsp;' . number_format($b->valor_total,2,TS,DS) . ' - '; 
+				switch($b->status):
+					case STATUS_BOLETO_EM_ABERTO: echo 'Em Aberto'; break;
+					case STATUS_BOLETO_VENCIDO: echo 'Vencido'; break;
+					case STATUS_BOLETO_PAGO: echo 'Pago'; break;
+					case STATUS_BOLETO_CANCELADO: echo 'Cancelado'; break;
+				endswitch;
+			?></a><br></p>
             <br>
+            <?php endforeach;
+			else: echo '<p>Nenhum boleto encontrado</p>';
+			endif; ?>
         </div>
     </div>
     <div class="middle-down-right" id="middle-down">
-        <h1>Solicitações de agendamentos</h1><br>
+    	<div style="vertical-align:bottom;">
+             <input type="button" value="Novo Agendamento" class="btn" onclick="document.location='<?php echo base_url('agendamentos/criar'); ?>'">
+            <input type="button" value="Solicitações" class="btn" onclick="document.location='<?php echo base_url('agendamentos/listar'); ?>'">
+            </div><br /><br />
+        <?php if ($uRole == CREDENCIAL_USUARIO_COMUM): ?><h1>Meus Agendamentos</h1><br> <?php endif; ?>
+        <?php if ($uRole > CREDENCIAL_USUARIO_COMUM): ?><h1>Agendamentos</h1><br> <?php endif; ?>
         <div>
-            <p>Ciclano 13/09/2012 14:00 às 16:00hs - BIOMASS<br><br></p>
-            <p>Ciclano 13/09/2012 14:00 às 16:00hs - BIOMASS<br><br></p>
-            <p>Ciclano 13/09/2012 14:00 às 16:00hs - BIOMASS<br><br></p>
-            <input type="submit" value="novo agendamento"><br><br>
-            <a href="">todas as solicitações</a>
-            <br>
+        	
+        	<?php 
+			if (count($agn) > 0): 
+			foreach ($agn as $ag):?>
+            <p style="margin-bottom:15px; text-align:left">
+            <?php 	
+					if ($uRole >= CREDENCIAL_USUARIO_ADMIN):
+						echo '<a href="'.base_url('agendamentos/editar/'.$ag->id).'">';
+					endif;
+					echo $ag->facility_nome_abreviado . ' - ';
+					if ($ag->periodo_inicial_marcado != '0000-00-00 00:00:00'): 
+						echo date('d/m/Y H:i',strtotime($ag->periodo_inicial_marcado)) . ' às ' . date('H:i',strtotime($ag->periodo_final_marcado)) ;
+					else:
+						echo date('d/m/Y H:i',strtotime($ag->periodo_inicial)) . ' às ' . date('H:i',strtotime($ag->periodo_final)) ;
+					endif; 
+					
+					echo ' - ' . $ag->usuario_nome;
+					
+					if ($uRole >= CREDENCIAL_USUARIO_ADMIN):
+						echo '</a>';
+					endif;
+					 ?>
+            </p>
+           
+            <? endforeach;
+			else: echo '<p>Nenhum agendamento encontrado</p>';
+			endif; ?>
+           
         </div>
+         
+            
     </div>
     
     <div class="down-left" id="down">

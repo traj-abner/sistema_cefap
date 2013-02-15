@@ -1,5 +1,23 @@
 sistema_cefap
 ================================================================================
+v0.28
+15/02/13 - Abner
+#descrição
+Dashboard, Ajuda, Header
+
+#changelog
+Implementação de Ajuda (ver e editar)
+Implementação de Dashboard
+Implementação básica do menu superior (pendente atualização pelo designer)
+
+#known issues
+Gráficos do Dashboard
+
+#todo
+
+
+================================================================================
+================================================================================
 v0.27
 14/02/13 - Abner
 #descrição

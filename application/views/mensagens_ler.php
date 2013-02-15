@@ -37,12 +37,39 @@
 {
 	padding-top:12px;
 	line-height:200%;
+	text-align:justify;
 }
 #message_content hr
 {
 	background-color:#333;
 	height:1px;
 }
+#message_content h1 { color:#000; font-size:18px; font-weight:bold; text-align:inherit; padding-left:0px; }
+#message_content h3 { color:#000; font-size:16px; font-weight:bold; text-align:inherit; padding-top:20px; }
+#message_content h3 { color:#000; font-size:14px; font-weight:bold; text-align:inherit; padding-top:20px; }
+#message_content h4 { color:#000; font-size:12px; font-weight:bold; font-style:italic; text-align:inherit; padding-top:20px; }
+#message_content h5 { color:#000; font-size:12px; font-style:italic; text-align:inherit; padding-top:20px; }
+#message_content h6 { color:#000; font-size:10px; font-style:italic; text-align:inherit; padding-top:20px; }
+
+#message_content ul, ol {
+	padding-left:25px;
+	padding-bottom:15px;
+	padding-top:15px;
+	line-height:150%;
+	}
+#message_content ul li {
+	list-style-type:circle;
+}
+#message_content ol li {
+	list-style-type:decimal;
+}
+#message_content ol li li {
+	list-style-type:lower-alpha;
+}
+#message_content ol li li li {
+	list-style-type:lower-greek;
+}
+#message_content h1 sup, h2 sup, h3 sup, h4 sup, h5 sup, sup {font-size:9px;}
 	
 	
 	
