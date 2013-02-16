@@ -14,17 +14,17 @@ class Usuario extends DataMapper {
 	 * Porém, o salt usado não é recuperado em $u->salt. Verificar necessidade de criar campo salt na tabela usuarios)
 	*/ 
 	public $validation = array(
-				array(
-						'field'	=> 'username',
-						'label'	=> 'Username',
-						'rules'	=> array('required', 'trim', 'unique', 'alpha_dash', 'min_length' => 3, 'max_length' => 20)
-				), // checar se username é único
-				array(
-						'field'	=> 'senha',
-						'label'	=> 'Senha',
-						'rules'	=> array('required', 'trim', 'min_length' => 6)
-				),
-				array(
+	array(
+			'field'	=> 'username',
+			'label'	=> 'Username',
+			'rules'	=> array('required', 'trim', 'unique', 'alpha_dash', 'min_length' => 3, 'max_length' => 20)
+	), // checar se username é único
+	array(
+			'field'	=> 'senha',
+			'label'	=> 'Senha',
+			'rules'	=> array('required', 'trim', 'min_length' => 6)
+	),
+	array(
 						'field'	=> 'senha_conf',
 						'label'	=> 'Redigite a Senha',
 						'rules'	=> array('matches'=>'senha')
@@ -77,22 +77,22 @@ class Usuario extends DataMapper {
 				array(
 						'field'	=> 'celular',
 						'label'	=> 'Celular',
-						'rules'	=> ''
+						'rules'	=> array('required')
 				),
 				array(
 						'field'	=> 'data_nascimento',
 						'label'	=> 'Data de Nascimento',
-						'rules'	=> ''
+						'rules'	=> array('required')
 				),
 				array(
 						'field'	=> 'cpf',
 						'label'	=> 'CPF',
-						'rules'	=> array('required','trim','unique')
+						'rules'	=> array('required', 'trim',' unique')
 				),
 				array(
 						'field'	=> 'email',
 						'label'	=> 'E-mail',
-						'rules'	=> array('required', 'trim', 'valid_email')
+						'rules'	=> array('required', 'trim', 'valid_email', 'unique')
 				),
 				array(
 						'field'	=> 'tipo',

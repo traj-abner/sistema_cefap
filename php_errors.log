@@ -1,0 +1,4 @@
+[16-Feb-2013 13:38:34 UTC] PHP Parse error:  syntax error, unexpected $end in C:\AppServ\www\sistema_cefap\application\views\dashboard.php on line 215
+[16-Feb-2013 13:44:21 UTC] PHP Parse error:  syntax error, unexpected $end in C:\AppServ\www\sistema_cefap\application\views\dashboard.php on line 215
+[16-Feb-2013 13:46:34 UTC] PHP Parse error:  syntax error, unexpected $end in C:\AppServ\www\sistema_cefap\application\views\dashboard.php on line 217
+[16-Feb-2013 16:25:25 UTC] PHP Parse error:  syntax error, unexpected T_STRING in C:\AppServ\www\sistema_cefap\application\config\constants.php on line 11

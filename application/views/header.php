@@ -10,12 +10,7 @@ else:
 	$m_nao_lidas = 0;
 $uRole = -1;
 endif;
-
-
-
 ?>
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pt">
 <head>
@@ -25,40 +20,41 @@ endif;
 	<!--  jquery ui -->
 	<script src="<?php echo base_url('js/jquery-ui-1.8.20.custom.min.js'); ?>" type="text/javascript"></script>
 	<script src="<?php echo base_url('js/jquery.maskedinput-1.3.js'); ?>" type="text/javascript"></script>
+	<script src="<?php echo base_url('js/jquery.validate.js'); ?>" type="text/javascript"></script>
 	<script src="<?php echo base_url('js/bootstrap.js'); ?>" type="text/javascript"></script>
+	
+	<!--[if lt IE 9]>
+		<script type="text/javascript" src="<?php echo base_url('js/PIE_IE678.js'); ?>"></script>
+	<![endif]-->
+	<!--[if IE 9]>
+		<script type="text/javascript" src="<?php echo base_url('js/PIE_IE9.js'); ?>"></script>
+	<![endif]-->
 	
 	<link rel='stylesheet' id='bootstrap-css' href='<?php echo base_url('css/bootstrap.css'); ?>' type='text/css' media='all' />
 	<link rel='stylesheet' id='main-css-css' href='<?php echo base_url('css/style.css'); ?>' type='text/css' media='all' />	
 	<title><?php echo $title; ?> - CEFAP ICB-USP</title>
         
 	<meta name='robots' content='noindex,nofollow' />
-    
-<style>
-	.facility {
-		font-weight:normal;
-		font-size:14px;
-		padding-left: 10px;
-		padding-top: 10px;
-		color: #FFF;
-	}
-	.facility a{
-		font-size:10px;
-		text-decoration:none;
-	}
-	.facility a:hover{
-		font-size:10px;
-		text-decoration:underline;
-	}
-	
-	#superior {
-		text-align:right;
-		padding-top:5px;	
-		margin-right:10px;
-	}
-</style>    
-    
 </head>
 <body>
+
+<script type="text/javascript">
+$(document).ready(function() {
+		if (window.PIE) {
+			$('.pie').each(function() {
+				PIE.attach(this);
+			});
+		}
+	});
+	
+$(document).ready(function(){
+	$('.s-popover').popover({
+		trigger: 'focus'
+	});
+});
+
+</script>
+
 <div id="wrapper">
 	<div id="header">
 		<div id="top_bar"><!--
@@ -68,22 +64,43 @@ endif;
             
         </div><!-- end top_bar -->
 		<div id="header_container">
-        	<div id="superior"><a href="<?php echo base_url('mensagens/recebidas'); ?>">
-            	<?php if ($m_nao_lidas > 0): ?><div class="popover fade left in" style="top: 4px; left:940px; display:block; height:35px; width:220px;"><div class="arrow"></div> <h3 class="popover-title">Você tem novas mensagens</h3> </div> <?php echo $m_nao_lidas; if ($m_nao_lidas > 1): echo ' novas mensagens'; else: echo ' nova mensagem'; endif;?> 
-				<?php else: ?> Nenhuma nova mensagem
-                <?php endif; ?></a> | <a href="<?php echo base_url(); ?>">Home</a> | <a href="#">Site CEFAP</a> | <a href="<?php echo base_url('usuarios/logout'); ?>">Logout</a></div>
-			<h1>CEFAP</h1>
+		<?php if ($this->session->userdata('logged_in')) : ?>
+		
+        	<div id="superior">
+            	<?php if ($m_nao_lidas > 0): ?><a href="<?php echo base_url('mensagens/recebidas'); ?>"><div class="popover fade left in" style="top: 4px; left:940px; display:block; height:35px; width:220px;"><div class="arrow"></div> <h3 class="popover-title">Você tem novas mensagens</h3> </div> <?php echo $m_nao_lidas; if ($m_nao_lidas > 1): echo ' novas mensagens'; else: echo ' nova mensagem'; endif;?></a> 
+				<?php else: ?> Nenhuma nova mensagem&nbsp;&nbsp;
+                <?php endif; ?> | <a href="<?php echo base_url(); ?>" class="link-superior">Página inicial do sistema</a> | <a target="_blank" href="<?php echo URL_SITE_CEFAP; ?>" class="link-superior">Site CEFAP</a> | &nbsp;&nbsp;<a class="btn btn-mini btn-danger" href="<?php echo base_url('usuarios/logout'); ?>"><i class="icon-remove icon-white"></i> Sair</a>
+			</div>
+
+			<?php else: ?>
+			
+        	<div id="superior">
+                <a class="link-superior" href="<?php echo base_url(); ?>">Página inicial do sistema</a> | <a target="_blank" href="<?php echo URL_SITE_CEFAP; ?>" class="link-superior">Site CEFAP</a>
+			</div>
+			
+			<?php endif; ?>
+			<h1><a href="<?php echo base_url(); ?>">CEFAP</a></h1>
+			
+		
 		</div><!-- end header_container -->
 	</div><!-- end header -->
 	
-	<div id="content">
+	<div id="content" class="pie">
    
-		<div id="main_menu_container">
+		<div id="main_menu_container" class="pie">
+			<?php if (!$this->session->userdata('id')) : ?>
+			
+			<div id="bemvindo">
+			Bem-vindo ao sistema de agendamento!
+			</div>
+			<?php endif; ?>
+		
+		
         	<?php if ($uRole == CREDENCIAL_USUARIO_COMUM): ?>
         	 <!-- REGULAR USER -->
 			<ul id="main_menu_left" class="main_menu">
                 <li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						<li><a href="<?php echo base_url('agendamentos/criar'); ?>">Novo Agendamento</a></li>
                         <li><a href="<?php echo base_url('agendamentos/listar'); ?>">Todos os Agendamentos</a></li>
                         <li><a href="<?php echo base_url('agendamentos/calendario'); ?>">Próximos Agendamentos</a></li>
@@ -91,7 +108,7 @@ endif;
 					</ul><!-- end main_submenu_agendamentos -->
 				</li>
                 <li id="mm_creditos" class="mm_primeiro"><a href="#">Creditos</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						<li><a href="<?php echo base_url('creditos/inserir'); ?>">Inserir Créditos</a></li>
                         <li><a href="<?php echo base_url('creditos/extrato/'.$this->session->userdata('id')); ?>">Extrato de Créditos</a></li>
                         <li><a href="<?php echo base_url('creditos/listar'); ?>">Boletos Emititos</a></li>
@@ -126,7 +143,7 @@ endif;
 					</ul><!-- end main_submenu_agendamentos -->
 				</li>
 				<li id="mm_facilidades" class="mm_primeiro"><a href="#">Facilidades</a>
-					<ul class="main_submenu" id="main_submenu_facilidades">
+					<ul class="main_submenu pie" id="main_submenu_facilidades">
                     <?php 
 						$m_ft = new Facility();
 						$m_ft->order_by('nome')->get();
@@ -141,7 +158,7 @@ endif;
 			
 			<ul id="main_menu_right" class="main_menu">
 				<li id="mm_meusdados" class="mm_primeiro"><a href="#">Pessoal</a>
-						<ul class="main_submenu" id="main_submenu_meusdados">
+						<ul class="main_submenu pie" id="main_submenu_meusdados">
 						<li><a href="<?php echo base_url('usuarios/editar/'.$this->session->userdata('id')); ?>">Dados Pessoais</a></li>
 						<li><a href="<?php echo base_url('projetos/listar_meus'); ?>">Projetos Cadastrados por Mim</a></li>
                         <li><a href="<?php echo base_url('projetos/inserir'); ?>">Novo Projeto de Pesquisa</a></li>
@@ -162,7 +179,7 @@ endif;
         	 <!-- ADMIN USER -->
 			<ul id="main_menu_left" class="main_menu">
                 <li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						<li><a href="<?php echo base_url('agendamentos/criar'); ?>">Novo Agendamento</a></li>
                         <li><a href="<?php echo base_url('agendamentos/listar'); ?>">Todos os Agendamentos</a></li>
                         <li><a href="<?php echo base_url('agendamentos/calendario'); ?>">Próximos Agendamentos</a></li>
@@ -172,7 +189,7 @@ endif;
 					</ul><!-- end main_submenu_agendamentos -->
 				</li>
                 <li id="mm_creditos" class="mm_primeiro"><a href="#">Creditos</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						<li><a href="<?php echo base_url('creditos/inserir'); ?>">Inserir Créditos</a></li>
                         <li><a href="<?php echo base_url('creditos/extrato/'.$this->session->userdata('id')); ?>">Extrato de Créditos</a></li>
                         <li><a href="<?php echo base_url('creditos/listar'); ?>">Boletos Emititos</a></li>
@@ -207,7 +224,7 @@ endif;
 					</ul><!-- end main_submenu_agendamentos -->
 				</li>
 				<li id="mm_facilidades" class="mm_primeiro"><a href="#">Facilidades</a>
-					<ul class="main_submenu" id="main_submenu_facilidades">
+					<ul class="main_submenu pie" id="main_submenu_facilidades">
                     <?php 
 						$m_ft = new Facility();
 						$m_ft->include_related('usuario')->where_related_usuario('id',$this->session->userdata('id'))->order_by('nome')->get();
@@ -224,7 +241,7 @@ endif;
 			
 			<ul id="main_menu_right" class="main_menu">
 				<li id="mm_meusdados" class="mm_primeiro"><a href="#">Usuários / Pessoal</a>
-						<ul class="main_submenu" id="main_submenu_meusdados">
+						<ul class="main_submenu pie" id="main_submenu_meusdados">
                         
 						<li><a href="<?php echo base_url('usuarios/editar/'.$this->session->userdata('id')); ?>">Dados Pessoais</a></li>
                         <li><a href="<?php echo base_url('usuarios/trocar_senha/'.$this->session->userdata('id')); ?>">Trocar Senha</a></li>
@@ -243,7 +260,7 @@ endif;
         	 <!-- ADMIN USER -->
 			<ul id="main_menu_left" class="main_menu">
                 <li id="mm_agendamentos" class="mm_primeiro"><a href="#">Agendamentos</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						<li><a href="<?php echo base_url('agendamentos/criar'); ?>">Novo Agendamento</a></li>
                         <li><a href="<?php echo base_url('agendamentos/listar'); ?>">Todos os Agendamentos</a></li>
                         <li><a href="<?php echo base_url('agendamentos/calendario'); ?>">Próximos Agendamentos</a></li>
@@ -258,7 +275,7 @@ endif;
 				</li>
                 
 				<li id="mm_facilidades" class="mm_primeiro"><a href="#">Facilidades</a>
-					<ul class="main_submenu" id="main_submenu_facilidades">
+					<ul class="main_submenu pie" id="main_submenu_facilidades">
                     	<div class="facility">Gerenciar<br />
                     	<a href="<?php echo base_url('facilities/listar'); ?>">Listar</a> | 
                         <a href="<?php echo base_url('facilities/adicionar'); ?>">Adicionar</a>
@@ -275,7 +292,7 @@ endif;
 					</ul><!-- end main_submenu_facilidades -->
 				</li>
                 <li id="mm_relatorios" class="mm_primeiro"><a href="#">Relatórios</a>
-					<ul class="main_submenu" id="main_submenu_agendamentos">
+					<ul class="main_submenu pie" id="main_submenu_agendamentos">
 						
                         <li><a href="#">Relatórios</a>
                         
@@ -287,7 +304,7 @@ endif;
 			
 			<ul id="main_menu_right" class="main_menu">
 				<li id="mm_meusdados" class="mm_primeiro"><a href="#">Usuários / Pessoal</a>
-						<ul class="main_submenu" id="main_submenu_meusdados">
+						<ul class="main_submenu pie" id="main_submenu_meusdados">
                         <li><a href="<?php echo base_url('usuarios/listar/'); ?>">Todos os Usuarios</a></li>
                         <li><a href="<?php echo base_url('usuarios/adicionar/'); ?>">Adicionar</a></li>
                         <li style="height:5px; vertical-align:middle; color:#fff; text-align:center">***</li>

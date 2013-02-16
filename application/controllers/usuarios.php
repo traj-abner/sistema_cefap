@@ -76,7 +76,7 @@ class Usuarios extends CI_Controller{
                 
                 }else{
                     $data['msg'] = '<strong>Nenhum usuário encontrado.</strong>';
-                    $data['msg_type'] = 'alert-block';
+                    $data['msg_type'] = 'alert-error';
                 }     
           }
                 /* PAGINAÇÃO */
@@ -136,11 +136,11 @@ class Usuarios extends CI_Controller{
     
     public function adicionar(){
 		
-                //checa se o usuário já está logado e qual a credencial. Caso seja admin ou comum, eles não podem adicionar novos usuários 
-                if ($this->session->userdata('logged_in')){
-                    if ( $this->uRole == CREDENCIAL_USUARIO_ADMIN || $this->uRole == CREDENCIAL_USUARIO_COMUM )
-		    redirect('main');
-               }
+		//checa se o usuário já está logado e qual a credencial. Caso seja admin ou comum, eles não podem adicionar novos usuários 
+		if ($this->session->userdata('logged_in')){
+			if ( $this->uRole == CREDENCIAL_USUARIO_ADMIN || $this->uRole == CREDENCIAL_USUARIO_COMUM )
+			redirect('main');
+	   }
         // default view
         $view = 'usuario_adicionar';
 		
@@ -169,40 +169,41 @@ class Usuarios extends CI_Controller{
 			// $u->obs		= '';
 			$u->credencial		= ($this->uRole == CREDENCIAL_USUARIO_SUPERADMIN) ? $post['credencial'] : CREDENCIAL_USUARIO_COMUM; // check if user submitting form is a superadmin
 			$u->email		= $post['email'];
-			$u->celular		= isset($post['celular']) ? $post['celular'] : 0;
+			$u->celular		= $post['celular'];
 			$u->telefone		= $post['telefone'];
 			$u->cpf			= $post['cpf'];
 			$u->tipo                = isset($post['tipo']) ? $post['tipo'] : NULL;
 			$u->newsletter		= isset($post['newsletter']) ? $post['newsletter'] : 0;
 			$u->cep			= $post['cep'];
 			
-                        /* Recupera os dados digitados se retornar erro */
-                        session_start(); // iniciamos a session
-                        $_SESSION['username'] = $_POST['username']; 
-                        $_SESSION['nome'] = $_POST['nome'];
-                        $_SESSION['sobrenome'] = $_POST['sobrenome'];
-                        $_SESSION['endereco'] = $_POST['endereco'];
-                        $_SESSION['cep'] = $_POST['cep'];
-                        $_SESSION['cidade'] = $_POST['cidade'];
-                        $_SESSION['uf'] = $_POST['uf'];
-                        $_SESSION['instituicao'] = $_POST['instituicao'];
-                        $_SESSION['departamento'] = $_POST['departamento'];
-                        $_SESSION['telefone'] = $_POST['telefone'];
-                        $_SESSION['celular'] = $_POST['celular'];
-                        $_SESSION['data_nascimento'] = $_POST['data_nascimento'];
-                        $_SESSION['cpf'] = $_POST['cpf'];
-                        $_SESSION['email'] = $_POST['email'];
-                        $_SESSION['tipo'] = $_POST['tipo'];
+			/* Recupera os dados digitados se retornar erro */
+			session_start(); // iniciamos a session
+			$_SESSION['username'] = $u->username; 
+			$_SESSION['nome'] = $u->nome;
+			$_SESSION['sobrenome'] = $u->sobrenome;
+			$_SESSION['endereco'] = $u->endereco;
+			$_SESSION['cep'] = $u->cep;
+			$_SESSION['cidade'] = $u->cidade;
+			$_SESSION['uf'] = $u->uf;
+			$_SESSION['instituicao'] = $u->instituicao;
+			$_SESSION['departamento'] = $u->departamento;
+			$_SESSION['telefone'] = $u->telefone;
+			$_SESSION['celular'] = $u->celular;
+			$_SESSION['data_nascimento'] = $u->data_nascimento;
+			$_SESSION['cpf'] = $u->cpf;
+			$_SESSION['email'] = $u->email;
+			$_SESSION['tipo'] = $u->tipo;
+			$_SESSION['newsletter'] = $u->newsletter;
                         
 			if( !$u->save() ) { // error on save
 				
 				if ( $u->valid ) { // validation ok; database error on insert or update
 					$data['msg'] = MSG_ERRO_BD;
-					$data['msg_type'] = 'error';
+					$data['msg_type'] = 'alert-error';
                                         
 				} else { // validation error
 					$data['msg'] = $u->error->string;
-					$data['msg_type'] = 'error';	
+					$data['msg_type'] = 'alert-error';	
 				}
 				
 			} else { // success
@@ -220,9 +221,10 @@ class Usuarios extends CI_Controller{
 				
 				// echo $this->email->print_debugger();
 				
-                                $data['msg']        = 'Novo usário ' .$u->username. ' cadastrado com sucesso!';
-                                $data['msg_type']   = 'success';
-                	
+				$_SESSION['msg']        = 'Novo usuário ' .$u->username. ' cadastrado com sucesso!';
+				$_SESSION['msg_type']   = 'alert-success';
+   
+				redirect('main');    
 			}
 			
                     }
@@ -552,7 +554,7 @@ class Usuarios extends CI_Controller{
         // Attempt to log user in with the data they supplied, using the login function setup in the User model
         // You might want to have a quick look at that login function up the top of this page to see how it authenticates the user
         if ($u->login()) {
-        	$data['msg'] = 'Bem-vindo, ' .$u->username. '!';
+        	$data['msg'] = '<strong>Bem-vindo, ' .$u->username. '!</strong>';
         	$data['msg_type'] = 'alert-success';
                 
         	$userdata = array(
@@ -566,7 +568,7 @@ class Usuarios extends CI_Controller{
         	$this->session->set_userdata($userdata);
                 redirect('main');   
         }else{
-            $data['msg'] = 'Usuário ou senha Incorretos.';
+            $data['msg'] = '<strong>Erro!</strong> Usuário ou senha Incorretos.';
             $data['msg_type'] = 'alert-error';
             
             $this->load->view('inicial', $data); 

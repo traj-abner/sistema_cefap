@@ -16,6 +16,55 @@ if (!function_exists('msg'))
     }
 }
 
+function check_cpf($cpf)
+{
+	$dv_informado = substr($cpf, 9,2);
+	for($i=0; $i<=8; $i++)
+	{
+		$digito[$i] = substr($cpf, $i,1);
+	}
+
+	/*Agora sera calculado o valor do decimo digito de verificacao*/
+	$posicao = 10;
+	$soma = 0;
+	for($i=0; $i<=8; $i++)
+	{
+		$soma = $soma + $digito[$i] * $posicao;
+		$posicao = $posicao - 1;
+	}
+	$digito[9] = $soma % 11;
+	if($digito[9] < 2)
+	{
+		$digito[9] = 0;
+	}
+	else
+	{
+		$digito[9] = 11 - $digito[9];
+	}
+	/*Agora sera calculado o valor do decimo primeiro digito de verificacao*/
+	$posicao = 11;
+	$soma = 0;
+	for ($i=0; $i<=9; $i++)
+	{
+		$soma = $soma + $digito[$i] * $posicao;
+		$posicao = $posicao - 1;
+	}
+	$digito[10] = $soma % 11;
+	if ($digito[10] < 2)
+	{
+		$digito[10] = 0;
+	}
+	else
+	{
+		$digito[10] = 11 - $digito[10];
+	}
+	/*Nessa parte do script sera verificado se o digito verificador e igual ao informado pelo
+	 usuario*/
+	$dv = $digito[9] * 10 + $digito[10];
+	return ($dv == $dv_informado);
+}
+
+
 // return FALSE if there's no logged in user; or return the WP user ID if there is
 function get_logged_user()
 {

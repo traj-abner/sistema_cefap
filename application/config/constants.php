@@ -2,9 +2,12 @@
 
 	#DECIMAL SEPARATOR
 	define("DS", ".");
+	
 	#THOUSAND SEPARATOR
 	define("TS",",");
 
+	define("URL_SITE_CEFAP", "http://cefap.trajettoria.com");
+	
 	define("BACKUP_ARQUIVOS_EXCLUIDOS", 0);
 	define("BACKUP_ARQUIVOS_PRESENTES", 1);
 

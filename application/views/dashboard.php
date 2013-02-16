@@ -2,8 +2,7 @@
     $this->load->view('header'); 
 ?>
 <div id="main_content">
-    <?php echo set_breadcrumb(); 
-        echo '<br><br>';
+    <?php //echo set_breadcrumb(); 
         if(isset($msg) && isset($msg_type)){ ?>
            <div class="alert <?php echo $msg_type?>" id="alert-success">
                <?php echo $msg; ?>
@@ -53,10 +52,6 @@
                     <li><a href="<?php echo base_url("configuracoes/editar"); ?>">Editar as configurações do sistema</a></li>
                     <li><a href="<?php echo base_url("usuarios/listar"); ?>">Listar Usuários</a></li>
                      <?php } ?>
-                 
-                
-                
-                
             </ul>
       </div>
         <div class="hr">&nbsp;</div>
@@ -97,7 +92,8 @@
            </p>
         </div>
     </div>
-    
+  
+  
     <div class="middle-down-left" id="middle-down">
     	<div style="vertical-align:bottom;">
              <input type="button" value="Escrever Mensagem" class="btn" onclick="document.location='<?php echo base_url('mensagens/escrever'); ?>'">
@@ -129,7 +125,7 @@
 			?>
         </div>
     </div>
-    
+
     <div class="middle-down-center" id="middle-down">
     	<div style="vertical-align:bottom;">
              <input type="button" value="Todos os Boletos" class="btn" onclick="document.location='<?php echo base_url('creditos/listar'); ?>'">
@@ -164,7 +160,8 @@
         <?php if ($uRole > CREDENCIAL_USUARIO_COMUM): ?><h1>Agendamentos</h1><br> <?php endif; ?>
         <div>
         	
-        	<?php 
+
+			<?php 
 			if (count($agn) > 0): 
 			foreach ($agn as $ag):?>
             <p style="margin-bottom:15px; text-align:left">
@@ -187,13 +184,13 @@
 					 ?>
             </p>
            
-            <? endforeach;
+            <?php endforeach;
 			else: echo '<p>Nenhum agendamento encontrado</p>';
 			endif; ?>
-           
+			
+ 
         </div>
-         
-            
+  
     </div>
     
     <div class="down-left" id="down">
@@ -208,7 +205,8 @@
     
     
     
-</div>
+</div>  
+  
 <?php
     
     $this->load->view('footer'); 

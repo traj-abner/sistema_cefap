@@ -14,7 +14,7 @@ class Main extends CI_Controller {
             if ( $this->session->userdata('logged_in')) {
                 // @TODO implementar direcionamento ao dashboard de acordo com a credencial
                 // mensagem abaixo meramente para debugar.
-                $data['msg'] = 'Bem-vindo, ' .$this->session->userdata('username'). '! <a href="' .base_url('usuarios/logout'). '"><p id="logout-right">LOGOUT</p></a>';
+                $data['msg'] = '<strong>Bem-vindo, ' .$this->session->userdata('username'). '!</strong>';
                 $data['msg_type'] = 'success';
 
                 $data['uRole'] = $this->session->userdata('credencial');
@@ -65,11 +65,7 @@ class Main extends CI_Controller {
                 $view = 'inicial';
 
             }
-			
-		
-			
-			
-            
+
             $this->load->view($view,$data);
 	}
 	

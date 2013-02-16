@@ -1,6 +1,6 @@
 <?php
 
-class Mensagens extends CI_Controller{
+class Geral extends CI_Controller{
     
    public function __constructor(){
         
@@ -8,6 +8,15 @@ class Mensagens extends CI_Controller{
         
     }
     
+	public function checar_cpf()
+	{
+		$cpf = $_GET["cpf"];
+		$cpf = str_replace(".", "" ,$cpf);
+		$cpf = str_replace("-", "" ,$cpf);
+		if(check_cpf($cpf)) echo 'ok';
+		else echo 'erro';
+	}
+	
     public function index(){
         
         
@@ -53,9 +62,6 @@ class Mensagens extends CI_Controller{
         
     }
     
-    public function __destruct(){
-        
-        parent::__destruct();
-    }
+
 }
 ?>
