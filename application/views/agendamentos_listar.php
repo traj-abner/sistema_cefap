@@ -3,25 +3,17 @@
     $this->load->view('header');  
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/css/modal-style-small.css"/>
-<div id="myModal" class="modal hide fade" style="margin-top:0px;">
+<div id="myModal" class="modal hide fade" style="">
 </div>
 
 
 <div id="main_content">	
    <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well">
         <h2>Lista de Agendamentos</h2>
-        <div class="qntd_usuario_listar">
-            <h3>Agendamentos por página:</h3>
-            <select id="selectQntd" class="input-mini">
-                    <option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
-                    <option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
-                    <option <?php if ($limit == '20') echo 'selected="selected"'; ?> value="20">20</option>
-                    <option <?php if ($limit == '30') echo 'selected="selected"'; ?> value="30">30</option>
-            </select>
-        </div>
-    </div>
-    
+		<a href="<?php echo base_url('/agendamentos/criar'); ?>" class="btn btn-primary" id="btn-right-listar"><i class="icon-plus icon-white"></i> Adicionar</a>
+		<div class="clear"></div>
+
+    <div class="clear"></div>
     
  
     <?php
@@ -44,17 +36,31 @@
     
     
 <!-- tabela -->	
-
-    <ul class="pager">
-            <li><a href="<?php echo $buttonArray[0]; ?>"><i class="icon-fast-backward"></i></a></li>
-            <li><a href="<?php echo $buttonArray[1]; ?>"><i class="icon-backward"></i></a></li>
-            <li><input type="text" id="gotopage" class="input-mini input-page" /></li>
-            <li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
-            <li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
-    </ul>
-    
+	<div class="clear"></div>
+	<div>
+		<ul class="pager">
+				<li><a href="<?php echo $buttonArray[0]; ?>"><i class="icon-fast-backward"></i></a></li>
+				<li><a href="<?php echo $buttonArray[1]; ?>"><i class="icon-backward"></i></a></li>
+				<li><input type="text" id="gotopage" class="input-mini input-page" /></li>
+				<li><a href="<?php echo $buttonArray[2]; ?>"><i class="icon-forward"></i></a></li>
+				<li><a href="<?php echo $buttonArray[3]; ?>"><i class="icon-fast-forward"></i></a></li> 
+		</ul>
+		
+		<div class="qntd_usuario_listar seletor_qtde_container">
+			<p>Agendamentos por página:
+			<select id="selectQntd" class="input-mini">
+					<option <?php if ($limit == '5') echo 'selected="selected"'; ?> value="5">5</option>
+					<option <?php if ($limit == '10') echo 'selected="selected"'; ?> value="10">10</option>
+					<option <?php if ($limit == '20') echo 'selected="selected"'; ?> value="20">20</option>
+					<option <?php if ($limit == '30') echo 'selected="selected"'; ?> value="30">30</option>
+			</select>
+			</p>
+		</div>
+	</div>
+		
+    <div class="clear"></div>
           
-         	<a href="../agendamentos/criar" class="btn btn-primary" id="btn-right-listar">Adicionar</a>
+    
 <table class="table">
     <caption >Lista de Usuários</caption>
         <thead>
@@ -225,11 +231,7 @@
     
 
     <?php 
-    //require_once 'usuario_dados_pessoais.php';
-    //ver o código do renato no sistema de boletos para recuperar essa página com AJAX.
-    //para que o conteúdo da próxima view só seja carregado quando o usuário selecionar a opção de 'dados pessoais'.
-    
-        echo $page;
+    echo $page;
         
     ?>
     

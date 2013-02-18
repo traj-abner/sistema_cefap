@@ -136,7 +136,7 @@ class Usuario extends DataMapper {
 			'other_field' => 'usuario',
 		),
 		
-		'agendamento' => array (
+		'agendamentos' => array (
 			'class' => 'agendamento',
 			'other_field' => 'usuario'
 		),
@@ -170,7 +170,7 @@ class Usuario extends DataMapper {
         // this user object would be fully populated, complete with their ID.
 
         // If there was no matching record, this user would be completely cleared so their id would be empty.
-        if (empty($this->id)) {
+        if (empty($this->id) || ($u->status != STATUS_USUARIO_ATIVO)) {
             // Login failed, so set a custom error message
             $this->error_message('login', 'Username ou senha inválido');
 

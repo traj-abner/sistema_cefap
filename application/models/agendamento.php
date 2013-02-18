@@ -1,5 +1,5 @@
 <?php
-class Agendamento extends Datamapper{
+class Agendamento extends DataMapper{
     
     public $model = 'agendamento';
 	public $table = 'agendamentos';
@@ -9,7 +9,7 @@ class Agendamento extends Datamapper{
     public $has_one = array(
         'usuario'      => array(			// in the code, we will refer to this relation by using the object name 'book'
                 'class'         => 'usuario',			// This relationship is with the model class 'book'
-                'other_field'   => 'agdms'
+                'other_field'   => 'agendamentos'
          ),
         
         'aprovado_por'      => array(			// in the code, we will refer to this relation by using the object name 'book'

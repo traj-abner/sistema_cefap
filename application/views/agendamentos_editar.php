@@ -113,6 +113,14 @@ table td {
 
 	$(document).ready(function() {
 	
+		$('#how2').click(function(){
+			if($(this).attr('checked') == 'checked') $('#seletor-data').show();
+		});
+		
+		$('#how1').click(function(){
+			if($(this).attr('checked') == 'checked') $('#seletor-data').hide();
+		});
+	
 		var date = new Date();
 		var d = date.getDate();
 		var m = date.getMonth();
@@ -180,6 +188,8 @@ table td {
 			]
 		});
 			
+		$('#seletor-data').hide();
+			
 	});
 
 
@@ -203,10 +213,7 @@ table td {
 <?php endif; ?>
 
  <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well">
-      <h2>Aprovar Agendamento</h2>
-      
-    </div>
+    <h2>Editar Agendamento</h2>
     
   
      <?php $attributes = array(
@@ -216,6 +223,16 @@ table td {
         echo form_open_multipart('agendamentos/salvar/'.$this->uri->segment(3),$attributes['form']);
     ?>
     	<table>
+            <tr>
+            	<td class="right title">Projeto de Pesquisa</td>
+                <td class="left" colspan="6"> 
+                	<select style="width:500px;" name="projeto">
+	                    	<?php foreach ($proj_all as $ur_1): ?>
+	                			<option <?php if ($ag->projeto_id == $ur_1->id): echo 'selected="selected"'; endif;?> value="<?php echo $ur_1->id; ?>"><?php echo $ur_1->titulo . ' ' . $ur_1->sobrenome; ?></option>
+	                        <?php endforeach; ?>
+                    	</select>
+                </td>
+            </tr>		
         	<tr>
             	<td class="right title">Usuário</td>
                 <td class="left" colspan="6">
@@ -240,16 +257,7 @@ table td {
                     	</select>
                 </td>
             </tr>
-            <tr>
-            	<td class="right title">Projeto de Pesquisa</td>
-                <td class="left" colspan="6"> 
-                	<select style="width:500px;" name="projeto">
-	                    	<?php foreach ($proj_all as $ur_1): ?>
-	                			<option <?php if ($ag->projeto_id == $ur_1->id): echo 'selected="selected"'; endif;?> value="<?php echo $ur_1->id; ?>"><?php echo $ur_1->titulo . ' ' . $ur_1->sobrenome; ?></option>
-	                        <?php endforeach; ?>
-                    	</select>
-                </td>
-            </tr>
+
             <tr>
             	<td class="right title">Data Requisitada</td>
                 <td class="left" colspan="6"> <?php echo date('d/m/Y H:i',strtotime($ag->periodo_inicial)).' a '.date('H:i',strtotime($ag->periodo_final)); ?> </td>
@@ -297,34 +305,37 @@ table td {
             </tr>
             <tr>
             	<td class="right title">Agendamento</td>
-                <td class="left" colspan="2"><input type="radio" name="how" id="how1" checked="checked" value="keep" />Manter Data Requisitada</td>
-                <td class="left" colspan="2"><input type="radio" name="how" id="how2" value="change" />Usar data Selecionada</td>
+                <td class="left" colspan="2"><input type="radio" name="how" id="how1" checked="checked" value="keep" />Manter data requisitada</td>
+                <td class="left" colspan="2"><input type="radio" name="how" id="how2" value="change" />Usar data selecionada</td>
             </tr>
             <?php endif;?>
         </table>
-        <table class="tablepad">
-        	<tr>
-            	<td class="title right">Data</td>
-                <td class="left"><input type="date" name="dateField" id="dateField" style="width:130px;" value="<?php echo $tomorrow; ?>"></td>
-                <td class="title right">Início</td>
-                <td class="left"><input class="right" type="number" name="hinicio" id="hinicio" style="width:49px;" min="0" max="23" value="09">:<input class="left" type="number" name="minicio" id="minicio" style="width:49px;" min="0" max="59" value="00"></td>
-                <td class="title right">Fim</td>
-                <td class="left"><input class="right" type="number" name="hfim" id="hfim" style="width:49px;" min="0" max="23" value="17">:<input class="left" type="number" name="mfim" id="mfim" style="width:49px;" min="0" max="59" value="00"></td>
-            </tr>
-        </table>
-        
-        <br />
-		<div id='calendar'></div>
-		<?php if ($adminRights):?>
-		<table style="width:95%; margin-left: 20px;" align="center">
-			<tr>
-				<?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):?><td class="left"><input type="button" class="btn btn-danger" onclick="confirmExclusion()" value="Excluir" /></td><?php endif;?>
-				<td class="right"><input type="submit" class="btn btn-success" /></td>
-			</tr>
-		</table>
-        	
-        <?php endif;?>
-            
+		<div id="seletor-data">
+			<table class="tablepad">
+				<tr>
+					<td class="title right">Data</td>
+					<td class="left"><input type="date" name="dateField" id="dateField" style="width:130px;" value="<?php echo $tomorrow; ?>"></td>
+					<td class="title right">Início</td>
+					<td class="left"><input class="right" type="number" name="hinicio" id="hinicio" style="width:49px;" min="0" max="23" value="09">:<input class="left" type="number" name="minicio" id="minicio" style="width:49px;" min="0" max="59" value="00"></td>
+					<td class="title right">Fim</td>
+					<td class="left"><input class="right" type="number" name="hfim" id="hfim" style="width:49px;" min="0" max="23" value="17">:<input class="left" type="number" name="mfim" id="mfim" style="width:49px;" min="0" max="59" value="00"></td>
+				</tr>
+			</table>
+			
+			<br />
+			<div id='calendar'></div>
+
+        </div>
+			<?php if ($adminRights):?>
+				<div class="form-actions">
+                    <input type="submit" class="btn btn-primary" name="submit" value="Confirmar" />
+                    
+					<?php if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):?><input type="button" class="btn btn-danger" name="excluir" value="Excluir" onclick="confirmExclusion()"/><?php endif; ?>
+					
+					<input type="button" class="btn btn-link" name="cancelar" value="Cancelar" onclick="window.location.href='<?php echo base_url('agendamentos/listar'); ?>'"/>
+                </div>
+				
+			<?php endif;?>
       </form>
 
 <script>

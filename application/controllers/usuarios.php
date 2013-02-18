@@ -130,10 +130,7 @@ class Usuarios extends CI_Controller{
          $this->load->view('usuario_listar',$data);
         
     }
-	
 
-		
-    
     public function adicionar(){
 		
 		//checa se o usuário já está logado e qual a credencial. Caso seja admin ou comum, eles não podem adicionar novos usuários 
@@ -209,19 +206,22 @@ class Usuarios extends CI_Controller{
 			} else { // success
 				
 				$this->load->library('email');
-				
                                 
 				$this->email->from(EMAIL_FROM, EMAIL_NAME);
 				$this->email->to($u->email);
 				
-				$this->email->subject('Confirmação de Cadastro');
-				$this->email->message('Olá, ' .$u->nome. '! Confirme seu cadastro <a href="' .base_url('usuarios/ativar/'.$u->key). '">clicando aqui</a>.');
+				$this->email->subject('[CEFAP] Confirmação de Cadastro');
+				
+				$msg = "<strong>CEFAP - Centro de Facilidades de Apoio à Pesquisa</strong><hr><br>";
+				
+				$this->email->message($msg . 'Olá, ' .$u->nome. ' (username: ' . $u->username .')!<br>Confirme seu cadastro acessando este endereço no navegador:<br><a href="' .base_url('usuarios/ativar/'.$u->key) . '">' . base_url('usuarios/ativar/'.$u->key) . '</a><br><br><hr>Equipe CEFAP<br><a href="' . base_url() . '">' . base_url() . '</a>');
 				
 				$this->email->send();
 				
 				// echo $this->email->print_debugger();
 				
-				$_SESSION['msg']        = 'Novo usuário ' .$u->username. ' cadastrado com sucesso!';
+				//session_start();
+				$_SESSION['msg']        = '<strong>Novo usuário ' . $u->username . ' cadastrado com sucesso!</strong><br>Um e-mail de ativação foi enviado para o endereço cadastrado.';
 				$_SESSION['msg_type']   = 'alert-success';
    
 				redirect('main');    
@@ -233,9 +233,8 @@ class Usuarios extends CI_Controller{
 		
 	}
         
-        public function ativar(){
-        
-	
+	public function ativar(){
+    
 		$u = new Usuario();
 	
 		// se o segmento 3 existe e é uma key válida cadastrada para um usuário do banco, ativa o usuário
@@ -246,7 +245,7 @@ class Usuarios extends CI_Controller{
 			$u->where('key', $key)->update('status', STATUS_USUARIO_ATIVO);
 				
 			$data['title'] = "Cadastro Confirmado";
-                        $data['msg'] = 'Usuário ativado com sucesso! <br><br>Dentro de alguns instantes você será redirecionado para a página inicial.';
+                        $data['msg'] = '<strong>Usuário ativado com sucesso!</strong><br>Dentro de alguns instantes você será redirecionado para a página inicial.';
                         $data['msg_type'] = "alert-success";
 			// @TODO preparar $data['msg'] para ser mostrada na view
 			$this->load->view('usuario_ativar', $data);
@@ -541,7 +540,7 @@ class Usuarios extends CI_Controller{
     
     public function login() {
         
-            // Create user object
+        // Create user object
         $u = new Usuario();
 		$post = $this->input->post(NULL, TRUE); // returns all POST items with XSS filter
 
@@ -561,7 +560,7 @@ class Usuarios extends CI_Controller{
         			'id'		=> $u->id,
         			'username'      => $u->username,
         			'email'         => $u->email,
-                                'credencial'    => $u->credencial,
+                    'credencial'    => $u->credencial,
         			'logged_in'     => TRUE
         	);
         	

@@ -96,18 +96,13 @@ table td {
     <div class="modal-body">
 
        <table align="center">
-    	<tr>
-            <td class="section" colspan="3">
-                Agendamento
-                <hr  />
-            </td>
-        </tr>
+
         <tr>
         	<td class="title right" >Solicitado por</td>
             <td class="left " ><?php echo $ur->nome . ' ' . $ur->sobrenome; ?></td>
         </tr>
         <tr>
-        	<td class="title right">Facility</td>
+        	<td class="title right">Facilidade</td>
             <td class="left " ><?php echo $fcl->nome; ?></td>
         </tr>
         <tr>

@@ -200,7 +200,8 @@ table td {
 		<?php echo $msg; ?>
 	</div>	
 <?php	endif; ?>
-		<div class="center title huge">Calendário de Agendamentos Futuros</div>
+<div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
+		<h2>Calendário de Agendamentos Futuros</h2>
 		<div id='calendar'></div>
 
 </div>

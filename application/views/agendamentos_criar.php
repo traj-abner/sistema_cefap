@@ -34,7 +34,7 @@ table td {
 }
 .tablepad {
 	margin-top:30px;
-	margin-left:87px;
+	margin-left:33px;
 	margin-bottom:30px;
 }
 
@@ -68,7 +68,7 @@ table td {
 		margin: 0 auto;
 		}
 .submit {
-	text-align:right;
+	text-align:center;
 	margin-top:30px;
 	margin-right:15px;
 }
@@ -184,9 +184,7 @@ table td {
 <?php	endif;
 ?>
  <div id="breadcrumbs"><?php    echo set_breadcrumb(); ?> </div> 
-    <div class="well"><h2>Criar Agendamento</h2>
-      
-    </div>
+	<h2>Novo Agendamento</h2>
     
   
      <?php $attributes = array(
@@ -195,7 +193,19 @@ table td {
 
         echo form_open_multipart('agendamentos/novo',$attributes['form']);
     ?>
+		<div class="alert alert-info">Seu <strong>projeto de pesquisa</strong> precisa estar cadastrado no sistema antes de você solicitar um agendamento. Se ele ainda não estiver cadastrado, <a href="<?php echo base_url('projetos/inserir/'); ?>">cadastre-o primeiro</a>.</div>
     	<table>
+		    <tr>
+            	<td class="right title">Projeto de Pesquisa</td>
+                <td class="left">
+                	<select style="width:500px;" name="projeto">
+                    	<?php foreach ($proj as $p): ?>
+                		<option value="<?php echo $p->id; ?>"><?php echo $p->titulo; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td class="left"><a class="btn btn-small btn-primary" href="<?php echo base_url('projetos/inserir/'); ?>"><i class="icon-plus icon-white"></i> Novo projeto...</a></td>
+            </tr>
     		<?php 
     			if ($uRole == CREDENCIAL_USUARIO_SUPERADMIN):
     		?>
@@ -211,7 +221,7 @@ table td {
     			</tr>
     		<?php endif; ?>
         	<tr>
-            	<td class="right title">Facility</td>
+            	<td class="right title">Facilidade</td>
                 <td class="left" colspan="2">
                 	<select style="width:500px;" name="facility">
                     	<?php foreach ($fcl as $ft): ?>
@@ -220,21 +230,16 @@ table td {
                     </select>
                 </td>
             </tr>
-            <tr>
-            	<td class="right title">Projeto de Pesquisa</td>
-                <td class="left">
-                	<select style="width:500px;" name="projeto">
-                    	<?php foreach ($proj as $p): ?>
-                		<option value="<?php echo $p->id; ?>"><?php echo $p->titulo; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </td>
-                <td class="left"><a class="btn btn-primary" href="<?php echo base_url('projetos/inserir/'); ?>" target="_blank"><i class="icon-file icon-white"></i>Criar Novo</a></td>
-            </tr>
+
         </table>
+		
+		<div class="alert alert-info" style="margin-top: 20px; margin-bottom: 20px;"><strong>Seletor de data</strong><br>Selecione um dia e um intervalo de horário em que deseja utilizar a facilidade de interesse.<br>Você pode tanto utilizar os três campos abaixo, como selecionar sua opção de data/horários clicando no calendário mostrado logo abaixo. Se optar pelo calendário, os campos abaixo serão atualizados conforme sua opção feita no calendário.</div>
+		
+		<div class="alert alert-warning"><strong>Nota: </strong>a data e intervalo de horário definitivos serão definidos pela equipe do CEFAP após aprovação de sua solicitação. Esta é apenas uma <strong>sugestão</strong> de data.</div>
+		
         <table class="tablepad">
         	<tr>
-            	<td class="title right">Data</td>
+            	<td class="title right">Data sugerida</td>
                 <td class="left"><input type="date" name="dateField" id="dateField" style="width:130px;" value="<?php echo $tomorrow; ?>"></td>
                 <td class="title right">Início</td>
                 <td class="left"><input class="right" type="number" name="hinicio" id="hinicio" style="width:49px;" min="0" max="23" value="09">:<input class="left" type="number" name="minicio" id="minicio" style="width:49px;" min="0" max="59" value="00"></td>
@@ -246,7 +251,7 @@ table td {
         <br />
 		<div id='calendar'></div>
 		<div class="submit">
-        	<input type="submit" class="btn btn-success" />
+        	<input type="submit" class="btn btn-primary" value="Solicitar agendamento" />
         </div>
         
             

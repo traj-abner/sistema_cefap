@@ -5,14 +5,17 @@
     <div id="main_content">
         
         <?php //echo set_breadcrumb(); ?>
-        
+		
 		<?php
+		session_start();
 		if(isset($_SESSION['msg']) && isset($_SESSION['msg_type']))
 		{
 			$msg = $_SESSION['msg'];
 			$msg_type = $_SESSION['msg_type'];
+			
+			unset($_SESSION['msg']);
+			unset($_SESSION['msg_type']);
 		}
-		
 		?>
 		
         <?php

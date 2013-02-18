@@ -89,7 +89,7 @@ class Agendamentos extends CI_Controller{
 				$order = $this->uri->segment(3, 'id');
 				
 				$url = base_url("agendamentos/listar/$order/$limit/$i");
-				$links .= "<a href='$url'>$i</a>&nbsp;";
+				$links .= "<a href='$url'>[ $i ] </a>&nbsp;";
 				$urlarray[$i-1]=$url;
 					if ($i == 1) 
 					{
@@ -117,7 +117,7 @@ class Agendamentos extends CI_Controller{
 			} 
 				$data['buttonArray'] = $buttonArray;
 				$data['urlarray'] = $urlarray;  
-				$data['page'] =  $links;
+				$data['page'] =  "Páginas: " . $links;
 
 				
 				

@@ -1,4 +1,52 @@
 sistema_cefap
+v0.30 18/02/13 - Francisco
+
+DESCRIÇÃO
+- Aperfeiçoamentos de layout, sobretudo em adicionar usuário, listar agendamentos, novo agendamento
+- Correção de vários bugs e diagnóstico de outros ainda pendentes (abaixo)
+- Utilizado style.less para edição dos estilos e fornecido o compilador SimpLESS (pasta DEVELOPMENT) para gerar o arquivo style.css após edição de style.less, sempre que necessário
+- Implementadas rotinas de validação dinâmica em adicionar usuário, com validação do CPF e outras. Implementadas máscaras de campos em adicionar usuário.
+
+BUGS
+- vários links apontando para endereços relativos do tipo "../usuarios/adicionar", que se tornam incorretos quando o URL contém mais segmentos. CORRIGIDO
+- views/dashboard.php, linha 188, faltou "php" na abertura da tag. CORRIGIDO
+- login não está restringindo usuários que não confirmaram inscrição. CORRIGIDO
+- na construção do menu, deve-se exibir somente as facilities ativas. CORRIGIDO
+- faltando mostrar o saldo na topbar, se usuário comum. CORRIGIDO
+- relacionamento de usuarios com agendamentos com erro em "usuarios.php", "other_field". CORRIGIDO
+- gravação incorreta do campo "tipo_agendamento" na tabela "facilities". Usar a constante definida para tal, e não a string
+- dashboards incorretos. Não batem com os wireframes
+- editar agendamento: data agendada não está sendo pré-populada
+- definir action padrão para todos os controllers (redirecionar para "listar")
+- não entendi a diferença entre "aprovar" e "editar" agendamento? Aprovar não contém o mesmo código que Editar?
+- faltando filtros com select box em listar agendamentos, etc.
+- faltando mostrar o total de registros sendo mostrados, em relação ao total, em todos os "listar" ("Mostrando usuários 1 ao 19, de um total de 230").
+- width dos colunas está pequeno quando aparecem as setas de ordenação, ocorrendo quebra de linha quando não deveria
+- faltando popular o número da página atual no seletor de pag.
+- validar se número da página requisitada existe antes de continuar o processamento.
+- título errado no listar projetos
+- erros de digitação/acentuação nos headers de listar projetos
+- css: centralizar nos arquivos .css. Deixar blocos <style> somente quando for algo muito específico para a página sendo editada
+- MVC não seguida no controller Main, etc.
+- breadcrumbs incorretos. Editar breadcrumbs.php para corrigir nomes sendo exibidos.
+
+
+TODOs
+- correção dos bugs
+- corrigir formatos de campos em todas as tabelas do banco de dados. Em "usuarios", por exemplo, está tudo como varchar(45).
+- implementar @TODOs citados no código
+- padronizar marcação HTML, seguindo o padrão usado em adicionar usuário, listar agendamentos, novo agendamento
+- Em facilities_listar:
+	- acrescentar "com marcados" em facilities_listar
+	- mostrar status das facilities em "facilities_listar"
+	- recuperar qtde de exibições por página ao redirecionar. Este dado está sendo perdido
+
+
+PARA V2.0
+- módulo FORMULÁRIOS
+- módulo RELATÓRIOS
+- módulo LOGS
+
 ================================================================================
 v0.28
 15/02/13 - Abner

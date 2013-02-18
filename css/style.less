@@ -81,7 +81,7 @@ strong
 
 #header
 {
-	height: 155px;
+	height: 140px;
 	margin: 0 auto;	
 	display: block;
 }
@@ -107,6 +107,7 @@ strong
 	width: 800px;
 	height: 115px;
 	background: transparent url(../images/logo_cefap.png) no-repeat top left;
+	margin-top: -20px;
 }
 
 #content
@@ -243,6 +244,16 @@ strong
 	background: @destaque_hover url(../images/personal-information-icon.png) no-repeat 6px 3px;
 }
 
+.main_submenu
+{
+	z-index: 1000;
+}
+
+#main_content
+{
+	z-index: 50;
+}
+
 .main_submenu li
 {
 	padding: 8px 8px 8px 20px;
@@ -253,7 +264,7 @@ strong
 {
 	color: #fff;
 	text-decoration: none;
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: normal;
 	padding: 3px 0;
 	
@@ -262,6 +273,24 @@ strong
 .main_submenu li:hover, .main_submenu li a:hover
 {
 	background: @destaque;
+}
+
+.li-sem-hover:hover, .li-sem-hover li:hover, .li-sem-hover a:hover, .li-sem-hover a:visited:hover
+{
+	background: @destaque_hover !important;
+}
+
+.li-separador
+{
+	border-top: 1px dotted #ccc; 
+	margin-right: 10px; 
+	margin-left: -2px;
+}
+
+
+.btn-mini .caret, .btn-small .caret
+{
+	margin-top: 8px !important;
 }
 
 .main_submenu
@@ -303,6 +332,10 @@ strong
 {
 	font-size: 18px;
 	color: #c2c2c2;
+	.rounded-corners;
+	border: 1px solid #eee;
+	padding: 7px;
+	background: #eee;
 }
 
 #main_content h2 span
@@ -335,12 +368,12 @@ input.input-page {margin-bottom: 0;}
 /*THAIS - 19/11/2012 - STYLES PARA AS DASHBOARDS*/
 h1{text-align: center; padding: 5px;}
 #selectDashboard {margin-left: 70%;}
-#middle-down {border: 1px solid black; width: 290px; height: 180px; padding: 5px; text-align: center;}
-#down {border: 1px solid black; width: 447px; height: 150px; padding: 5px;}
+#middle-down {width: 290px; height: 180px; padding: 5px; text-align: center;}
+#down {width: 447px; height: 150px; padding: 5px;}
 .hr {width:1px; height:50px; background-color:#ccc; position:relative; top:5%; left:50%; z-index:10;}
-.top {border: 1px solid black; width: auto; height: auto;}
-.middle-left {border: 1px solid black; width: 603px; height: 100px; padding: 5px;}
-.middle-right {width: 290px; border: 1px solid black; float: right; margin-top: -112px; height: 100px; text-align: center; padding: 5px; }
+.top {width: auto; height: auto;}
+.middle-left {width: 603px; height: 100px; padding: 5px;}
+.middle-right {width: 290px; float: right; margin-top: -112px; height: 100px; text-align: center; padding: 5px; }
 .middle-down-left {margin-top:15px;}
 .middle-down-center{ margin-left: 314px; margin-top: -191px; }
 .middle-down-right {float: right; margin-top: -191px;}
@@ -361,7 +394,8 @@ h1{text-align: center; padding: 5px;}
 
 #breadcrumbs
 {
-	margin-bottom: 30px;
+	/*margin-bottom: 30px;*/
+	margin-bottom: 5px;
 	font-size: 14px;
 }
 
@@ -440,18 +474,20 @@ h4
 }
 
 .facility {
-	font-weight:normal;
+	font-weight:bold;
 	font-size:14px;
-	padding-left: 10px;
+	line-height:20px;
+	padding-left: 20px;
+	padding-right: 20px;
 	padding-top: 10px;
 	color: #FFF;
 }
 .facility a{
-	font-size:10px;
+	font-size:12px;
+	font-weight: normal;
 	text-decoration:none;
 }
 .facility a:hover{
-	font-size:10px;
 	text-decoration:underline;
 }
 
@@ -517,6 +553,79 @@ label
 }
 
 .radio-container input
+{
+	margin-top: -5px;
+	margin-right: 5px;
+}
+
+.saldo-negativo
+{
+	color: red !important;
+}
+
+.saldo-positivo
+{
+	color: green !important;
+}
+
+.div-dashboard
+{
+	border: 1px solid #ccc;
+	background: #eee;
+	padding: 15px;
+	line-height: 18px;
+	
+	.rounded-corners(5px);
+	margin-bottom: 20px;
+}
+
+.div-dashboard h3
+{
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.div-dashboard h4
+{
+	font-weight: bold;
+	font-size: 12px !important;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 8px;
+	margin-top: 8px;
+}
+.p-msg
+{
+	margin: 5px 0; 
+	background: #fbf9f9; padding: 5px;
+	.rounded-corners;
+}
+
+.seletor_qtde_container
+{
+	margin-top: -60px;
+	display: block;
+}
+.pager
+{
+	margin-top: 0 !important;
+}
+
+.fc-header-title h2
+{
+	color: #000 !important;
+	font-size: 16px !important;
+}
+
+.fc-header-title
+{
+	margin-top: -20px !important;
+}
+
+td input[type=radio]
 {
 	margin-top: -5px;
 	margin-right: 5px;

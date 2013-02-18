@@ -98,7 +98,7 @@ $(document).ready(function(){
                 <div class="control-group">
                     <label class="control-label" for="endereco">Endereço</label>
                     <div class="controls">
-                            <textarea name="endereco" class="input-xlarge s-popover" data-placement="right" data-title="Endereço" data-content="Exemplo: Av. Brig. Faria Lima, 400 - Ap. 35 - Bloco 4 (Digite todos os complementos necessários.)" ><?php (empty($_SESSION['endereco'])) ? print '' : print $_SESSION['endereco']; ?></textarea><br>
+                            <textarea name="endereco" class="input-xlarge s-popover" data-placement="right" data-title="Exemplo" data-content="Av. Brig. Faria Lima, 400 - Ap. 35 - Bloco 4" ><?php (empty($_SESSION['endereco'])) ? print '' : print $_SESSION['endereco']; ?></textarea><br>
                     </div>
                 </div>
                  
@@ -238,7 +238,7 @@ $(document).ready(function(){
 
                  <div class="form-actions">
                     <input type="submit" class="btn btn-primary" name="submit" value="Confirmar" />
-                    <input type="button" class="btn btn-link" name="cancelar" value="Cancelar" onclick="window.location.href='../usuarios/listar'"/>
+                    <input type="button" class="btn btn-link" name="cancelar" value="Cancelar" onclick="window.location.href='<?php echo base_url('usuarios/listar'); ?>'"/>
                 </div>
         </form>   
     </div>
